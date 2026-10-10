@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Disease Detector — Project Proposal</title>
+</head>
+<body>
+
+    <h1>Crop Disease Detector — Project Proposal</h1>
+
+    <h2>1. Problem Statement</h2>
+
+    <p>
+        Farmers, especially in developing regions, often lack access to agricultural experts who can quickly and accurately diagnose plant diseases. By the time a disease is identified through traditional means, it has frequently spread beyond the point of effective treatment, leading to significant crop loss and economic hardship. There is a clear need for an accessible, instant, and trustworthy diagnostic tool that not only identifies the disease but also tells the farmer what to do about it.
+    </p>
+
+    <p>
+        This project builds a Crop Disease Detector — an AI-powered web application that lets a farmer upload a photo of a diseased leaf and instantly receive:
+    </p>
+
+    <ol>
+        <li>The predicted disease (with confidence score).</li>
+        <li>A visual explanation (Grad-CAM heatmap) showing which parts of the leaf the model focused on to make its decision.</li>
+        <li>Actionable treatment recommendations — specific fungicides, dosage, organic alternatives, and preventive measures tailored to the diagnosed disease.</li>
+    </ol>
+
+
+    <h2>2. Dataset</h2>
+
+    <h3>PlantVillage Dataset (Kaggle)</h3>
+
+    <ul>
+        <li>~54,000 labeled leaf images</li>
+        <li>38 disease classes across multiple crop species (tomato, potato, pepper, apple, grape, corn, etc.)</li>
+        <li>Pre-split into train/validation/test sets</li>
+        <li>Clean, well-documented, and widely used as a benchmark</li>
+    </ul>
+
+    <p>
+        <strong>Known limitation (which we address):</strong> The dataset contains mostly lab-condition images with uniform backgrounds. Models trained on it can appear highly accurate while failing on real-world field photos. Our robustness testing (see Section 5) explicitly investigates this gap.
+    </p>
+
+
+    <h2>3. Model &amp; Architecture</h2>
+
+    <p>
+        <strong>Base model:</strong> Fine-tuned ResNet50 (or EfficientNet-B0) via transfer learning.
+    </p>
+
+    <p><strong>Why transfer learning:</strong></p>
+
+    <ul>
+        <li>Pretrained ImageNet weights provide strong low-level feature extractors (edges, textures, color gradients).</li>
+        <li>Fine-tuning only the later layers drastically reduces training time and data requirements.</li>
+        <li>Proven to achieve &gt;95% accuracy on PlantVillage with modest compute.</li>
+    </ul>
+
+    <p><strong>Training pipeline:</strong></p>
+
+    <ul>
+        <li>Input: 224×224 RGB images</li>
+        <li>Augmentation: random flips, rotations, color jitter, RandAugment</li>
+        <li>Loss: Cross-entropy with class weights (to handle class imbalance)</li>
+        <li>Optimizer: AdamW with cosine annealing</li>
+        <li>Early stopping on validation F1</li>
+    </ul>
+
+
+    <h2>4. Core Differentiator: Explainability + Treatment Engine</h2>
+
+    <p>
+        Most student projects stop at "predicted class + confidence." Ours goes two steps further.
+    </p>
+
+
+    <h3>4.1 Grad-CAM Visual Explanations</h3>
+
+    <p><strong>What it does:</strong> Generates a heatmap overlaying the input image, highlighting the regions the model considered most important for its prediction.</p>
+
+    <p><strong>Why it matters:</strong></p>
+
+    <ul>
+        <li>
+            <strong>Builds trust:</strong> A farmer (or evaluator) can see the model is looking at the diseased spot, not the background.
+        </li>
+        <li>
+            <strong>Supports bias analysis:</strong> Reveals whether the model is "cheating" by learning dataset artifacts (e.g., uniform backgrounds) instead of actual disease patterns.
+        </li>
+        <li>
+            <strong>Debugging tool:</strong> If the heatmap highlights irrelevant areas, we know the model needs retraining or better augmentation.
+        </li>
+    </ul>
+
+    <p>
+        <strong>Implementation:</strong> pytorch-grad-cam or captum library, integrated directly into the Streamlit UI.
+    </p>
+
+
+    <h3>4.2 Treatment Recommendation Engine</h3>
+
+    <p>
+        <strong>What it does:</strong> After diagnosis, the app displays a structured treatment plan specific to the detected disease.
+    </p>
+
+    <p><strong>Content per disease class (38 total):</strong></p>
+
+    <p><strong>Field Example (Early Blight – Tomato)</strong></p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Cause</td>
+                <td>Fungus Alternaria solani</td>
+            </tr>
+            <tr>
+                <td>Chemical treatment</td>
+                <td>Chlorothalonil or Mancozeb spray, every 7–10 days</td>
+            </tr>
+            <tr>
+                <td>Organic alternative</td>
+                <td>Neem oil spray, copper-based fungicide</td>
+            </tr>
+            <tr>
+                <td>Immediate action</td>
+                <td>Remove and destroy infected leaves; avoid overhead watering</td>
+            </tr>
+            <tr>
+                <td>Prevention</td>
+                <td>Crop rotation, resistant varieties, proper spacing for airflow</td>
+            </tr>
+            <tr>
+                <td>Severity guidance</td>
+                <td>If &gt;30% leaf area affected, consider removing the plant</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>Implementation approach:</strong></p>
+
+    <ul>
+        <li>
+            <strong>Phase 1 (MVP):</strong> Curated JSON/dictionary mapping each of the 38 classes to treatment info, sourced from agricultural extension documents (FAO, university guides).
+        </li>
+        <li>
+            <strong>Phase 2 (stretch):</strong> RAG pipeline over agricultural PDFs using LangChain + vector DB for more nuanced, context-aware advice.
+        </li>
+    </ul>
+
+
+    <h2>5. Real-World Robustness Testing</h2>
+
+    <p>
+        <strong>The problem:</strong> PlantVillage's clean lab images don't represent real field conditions — soil, shadows, multiple leaves, blur, varying lighting.
+    </p>
+
+    <p><strong>What we'll do:</strong></p>
+
+    <ol>
+        <li>Collect ~100 real-world field images (from PlantDoc dataset, Google Images, or iNaturalist).</li>
+        <li>Run the model on them and record the accuracy drop (expected: ~98% → ~60%).</li>
+        <li>Apply mitigations: test-time augmentation, background removal (rembg), or fine-tuning on a small field-image set.</li>
+        <li>Report before/after results.</li>
+    </ol>
+
+    <p>
+        <strong>Why this matters:</strong> It transforms the project from "I trained a classifier" to "I built and rigorously evaluated a real-world diagnostic tool." This is the kind of finding that earns high marks for Technical Implementation and Experimental Rigor.
+    </p>
+
+
+    <h2>6. User Interface (Streamlit)</h2>
+
+    <p><strong>Flow:</strong></p>
+
+    <ol>
+        <li>User opens the hosted web app.</li>
+        <li>User uploads a leaf photo (drag-and-drop or camera capture on mobile).</li>
+        <li>
+            App displays:
+            <ul>
+                <li>Predicted disease name + confidence score</li>
+                <li>Grad-CAM heatmap (original image side-by-side with highlighted version)</li>
+                <li>Treatment plan (structured card with chemical, organic, immediate, and preventive advice)</li>
+                <li>Confidence warning if score &lt; 70% ("Please upload a clearer image")</li>
+            </ul>
+        </li>
+        <li>Option to download the diagnosis as a PDF report.</li>
+    </ol>
+
+    <p>
+        <strong>Hosting:</strong> Streamlit Community Cloud (free) + model hosted on Hugging Face Hub or GitHub Releases.
+    </p>
+
+
+    <h2>7. Evaluation &amp; Bias Check</h2>
+
+    <p><strong>Metrics:</strong></p>
+
+    <ul>
+        <li>Overall accuracy, macro F1, per-class precision/recall</li>
+        <li>Confusion matrix (38×38)</li>
+        <li>Top-3 accuracy</li>
+    </ul>
+
+    <p><strong>Bias check:</strong></p>
+
+    <ul>
+        <li>Per-class performance breakdown → identify which diseases the model struggles with</li>
+        <li>Class imbalance analysis → does the model favor majority classes?</li>
+        <li>Grad-CAM analysis → does the model focus on disease regions or background artifacts?</li>
+        <li>Robustness gap → lab vs. field image performance</li>
+    </ul>
+
+
+    <h2>8. Tech Stack</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Tool</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Model training</td>
+                <td>PyTorch, torchvision</td>
+            </tr>
+            <tr>
+                <td>Explainability</td>
+                <td>pytorch-grad-cam / captum</td>
+            </tr>
+            <tr>
+                <td>UI</td>
+                <td>Streamlit</td>
+            </tr>
+            <tr>
+                <td>Treatment data</td>
+                <td>Curated JSON (Phase 1) / LangChain + ChromaDB (Phase 2)</td>
+            </tr>
+            <tr>
+                <td>Deployment</td>
+                <td>Streamlit Community Cloud + Hugging Face</td>
+            </tr>
+            <tr>
+                <td>Version control</td>
+                <td>GitHub (with .gitignore for datasets)</td>
+            </tr>
+            <tr>
+                <td>Report</td>
+                <td>LaTeX</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>9. Deliverables</h2>
+
+    <ol>
+        <li>
+            GitHub repository — clean code, commit history showing individual contributions, README with setup instructions.
+        </li>
+        <li>
+            Hosted web application — live URL, not localhost.
+        </li>
+        <li>
+            LaTeX technical report — methodology, architecture diagrams, Grad-CAM analysis, robustness findings, challenges faced.
+        </li>
+        <li>
+            Treatment knowledge base — JSON or RAG pipeline, documented.
+        </li>
+    </ol>
+
+
+    <h2>10. Timeline (2–3 Weeks, Part-Time)</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Phase</th>
+                <th>Task</th>
+                <th>Days</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Setup, dataset download, EDA</td>
+                <td>1–2</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Preprocessing, augmentation pipeline</td>
+                <td>1–2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Baseline ResNet50 training</td>
+                <td>2–3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Fine-tuning + hyperparameter search</td>
+                <td>2–4</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Grad-CAM integration</td>
+                <td>1–2</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Treatment engine (JSON + UI cards)</td>
+                <td>1–2</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Robustness testing on field images</td>
+                <td>2–3</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Streamlit UI + deployment</td>
+                <td>1–2</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Evaluation, bias check, LaTeX report</td>
+                <td>2–3</td>
+            </tr>
+            <tr>
+                <td>—</td>
+                <td>Buffer for debugging</td>
+                <td>2–3</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Total</strong></td>
+                <td><strong>~2–3 weeks</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>11. Why This Project Works</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Criterion</th>
+                <th>How We Address It</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Originality</td>
+                <td>Grad-CAM + treatment engine + robustness testing goes far beyond typical PlantVillage projects</td>
+            </tr>
+            <tr>
+                <td>Data Preprocessing</td>
+                <td>Augmentation, class imbalance handling, field-image preprocessing</td>
+            </tr>
+            <tr>
+                <td>Technical Implementation</td>
+                <td>Transfer learning, explainability, deployment, optional RAG</td>
+            </tr>
+            <tr>
+                <td>UI / Rigor</td>
+                <td>Clean Streamlit app + rigorous bias/robustness analysis</td>
+            </tr>
+            <tr>
+                <td>Documentation</td>
+                <td>LaTeX report with architecture diagrams, Grad-CAM visuals, robustness findings</td>
+            </tr>
+            <tr>
+                <td>Bias Check</td>
+                <td>Per-class performance + Grad-CAM artifact analysis + lab-vs-field gap</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>12. Risks &amp; Mitigations</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Risk</th>
+                <th>Mitigation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Model overfits to clean backgrounds</td>
+                <td>Aggressive augmentation + robustness testing</td>
+            </tr>
+            <tr>
+                <td>Class imbalance skews results</td>
+                <td>Weighted loss + per-class metrics</td>
+            </tr>
+            <tr>
+                <td>Deployment issues</td>
+                <td>Use Streamlit Cloud (zero-config) + Hugging Face for model</td>
+            </tr>
+            <tr>
+                <td>Treatment info accuracy</td>
+                <td>Source from FAO / university extension docs; cite sources</td>
+            </tr>
+            <tr>
+                <td>Time overrun</td>
+                <td>MVP first (classifier + Grad-CAM + JSON treatments), then stretch goals</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>Bottom line</h2>
+
+    <p>
+        This is a feasible, well-scoped project that hits every rubric line. The Grad-CAM + treatment engine combo transforms a common classifier into a genuine decision-support tool, and the robustness testing gives you a real finding to report. It's impressive, practical, and achievable in 2–3 weeks.
+    </p>
+
+</body>
+</html>

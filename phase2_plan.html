@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crop Disease Detector — Phase 2 Plan (Data Acquisition &amp; Setup)</title>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; max-width: 920px; margin: 0 auto; padding: 16px; line-height: 1.5; color: #1a1a1a; }
+  h1 { border-bottom: 2px solid #333; padding-bottom: 6px; }
+  h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  h3 { margin-top: 1.4em; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.93em; }
+  th, td { border: 1px solid #bbb; padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  pre { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; overflow-x: auto; font-size: 0.85em; }
+  code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 0.92em; }
+  pre code { background: none; padding: 0; }
+  .wide { overflow-x: auto; }
+  .note { background: #fff8e1; border-left: 4px solid #f5b400; padding: 8px 12px; margin: 12px 0; }
+  .warn { background: #fdecea; border-left: 4px solid #d93025; padding: 8px 12px; margin: 12px 0; }
+  .ok { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 12px 0; }
+  ul.check { list-style: none; padding-left: 4px; }
+  ul.check li { margin: 4px 0; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.8em; color: #fff; }
+  .L { background: #1565c0; } .A { background: #6a1b9a; } .B { background: #ef6c00; } .ALL { background: #455a64; }
+</style>
+</head>
+<body>
+
+<h1>Crop Disease Detector — Phase 2 Plan<br><small>Data Acquisition &amp; Setup</small></h1>
+
+<p>
+  <strong>Team:</strong> <span class="tag L">Leader</span> (the project leader), <span class="tag A">Anas</span>, <span class="tag B">Babar</span><br>
+  <strong>Track:</strong> A (Application Development) &nbsp;|&nbsp; <strong>Phase:</strong> 2 of 6 &nbsp;|&nbsp; <strong>Dataset:</strong> PlantVillage + ~150 real field images
+</p>
+
+<div class="note">
+  <strong>How to use this page:</strong> every task has a checkbox. Tick them as you go (your browser remembers ticks on your own machine only).
+  The instructor may change which phases are bundled in a deliverable, so treat this as the master plan and adjust dates once the Phase 2 requirements are announced.
+</div>
+
+<h2>0. Goal and "Definition of Done"</h2>
+
+<p>
+  Phase 2 turns the proposal into data we can actually train on. By the end, anyone on the team should be able to clone the repo on a fresh machine, follow the README, download the data, and get identical splits, identical class weights and a working <code>DataLoader</code>.
+</p>
+
+<p><strong>Phase 2 is DONE when all of these are true:</strong></p>
+<ul class="check">
+  <li><label><input type="checkbox"> PlantVillage is downloaded, verified (class count, image count, no corrupt files) and its location/version is documented.</label></li>
+  <li><label><input type="checkbox"> EDA is complete: class distribution, image sizes, sample grids, imbalance analysis, all figures saved.</label></li>
+  <li><label><input type="checkbox"> Duplicates / near-duplicates are handled; train / val / test split is stratified, reproducible (fixed seed) and saved as CSVs.</label></li>
+  <li><label><input type="checkbox"> Preprocessing + augmentation pipeline is written as reusable code in <code>src/</code> and tested.</label></li>
+  <li><label><input type="checkbox"> Class weights are computed from the <em>train</em> split only and saved.</label></li>
+  <li><label><input type="checkbox"> ≥ 150 real field images collected, labelled with PlantVillage class names, sources and licences recorded; test/adaptation split fixed.</label></li>
+  <li><label><input type="checkbox"> Treatment knowledge base (all 38 classes) drafted in JSON with cited sources and passes the validation script.</label></li>
+  <li><label><input type="checkbox"> Repo is clean: <code>.gitignore</code> works, no data/model files committed, README has working setup instructions, requirements pinned.</label></li>
+  <li><label><input type="checkbox"> All three members have commits (roughly even) and reviewed each other's pull requests.</label></li>
+  <li><label><input type="checkbox"> LaTeX report has a Phase 2 section (dataset, preprocessing, splits, field data, KB, challenges) and compiles to PDF.</label></li>
+</ul>
+
+<h2>1. Work split at a glance</h2>
+
+<div class="wide">
+<table>
+  <tr><th style="width:14%">Person</th><th>Owns (primary)</th><th style="width:22%">Also does</th></tr>
+  <tr>
+    <td><span class="tag L">Leader</span></td>
+    <td>
+      <strong>L1</strong> Repo + environment + README + <code>.gitignore</code> + project structure<br>
+      <strong>L2</strong> Download &amp; verify PlantVillage; dataset documentation<br>
+      <strong>L3</strong> EDA notebook, figures, imbalance analysis<br>
+      <strong>L4</strong> Integration: review PRs, run final end-to-end check, compile report
+    </td>
+    <td>Treatment KB: Apple (4), Corn (4), Grape (4), Blueberry (1), Cherry (2) = 15 classes</td>
+  </tr>
+  <tr>
+    <td><span class="tag A">Anas</span></td>
+    <td>
+      <strong>A1</strong> Data quality checks (corrupt, duplicates, near-duplicates)<br>
+      <strong>A2</strong> Stratified split + saved CSVs + class weights<br>
+      <strong>A3</strong> <code>Dataset</code> class, transforms, augmentation, <code>DataLoader</code><br>
+      <strong>A4</strong> Unit tests + augmentation visual sanity check
+    </td>
+    <td>Treatment KB: Orange (1), Peach (2), Raspberry (1), Soybean (1), Squash (1), Strawberry (2) = 8 classes</td>
+  </tr>
+  <tr>
+    <td><span class="tag B">Babar</span></td>
+    <td>
+      <strong>B1</strong> Field-image collection (≥150) + labelling + licence tracking<br>
+      <strong>B2</strong> Class-name mapping (PlantDoc / field → PlantVillage names)<br>
+      <strong>B3</strong> Treatment KB schema + validation script + sources file<br>
+      <strong>B4</strong> Field-set split (test vs adaptation) + field-data statistics
+    </td>
+    <td>Treatment KB: Tomato (10), Potato (3), Pepper (2) = 15 classes</td>
+  </tr>
+  <tr>
+    <td><span class="tag ALL">Everyone</span></td>
+    <td colspan="2">Write your own LaTeX subsection; append to <code>docs/challenges_log.md</code>; review one other member's PR; be able to explain the others' code (viva rule).</td>
+  </tr>
+</table>
+</div>
+
+<p><strong>Class count check (must total 38):</strong> Apple 4, Blueberry 1, Cherry 2, Corn 4, Grape 4, Orange 1, Peach 2, Pepper 2, Potato 3, Raspberry 1, Soybean 1, Squash 1, Strawberry 2, Tomato 10 = 38 ✔.</p>
+
+<h3>Dependencies (who waits on whom)</h3>
+<pre><code>Leader L1 (repo + env)  ──►  everyone can clone and work
+Leader L2 (download)    ──►  Anas A1/A2/A3 and Leader L3 (EDA)
+Anas   A1 (dedupe)      ──►  Anas A2 (split) ──► Leader L3 (EDA uses final splits) 
+Babar  B1/B2/B3         ──►  independent (start Day 1)
+Babar  B3 (schema)      ──►  Leader + Anas KB entries (use the schema Babar publishes)</code></pre>
+
+<div class="note">
+  Until L2 finishes, Anas can write code against a tiny fake folder (3 classes × 5 images) so nobody is blocked.
+</div>
+
+<h2>2. Suggested timeline (adjust to the real deadline)</h2>
+
+<div class="wide">
+<table>
+  <tr><th>Day</th><th>Leader</th><th>Anas</th><th>Babar</th></tr>
+  <tr><td>1</td><td>L1: repo, structure, .gitignore, README skeleton, invite members, requirements. L2: start download.</td><td>Clone, create env, read this plan; write skeleton for <code>src/data/</code> using a mini fake dataset.</td><td>Clone, create env; publish KB schema (B3) <em>first</em>; start field-image search.</td></tr>
+  <tr><td>2</td><td>L2: verify + document dataset. Start L3 EDA.</td><td>A1: quality + duplicate scan.</td><td>B1/B2: collect + label field images; mapping table.</td></tr>
+  <tr><td>3</td><td>L3: finish EDA + figures. Draft KB (15).</td><td>A2: split + CSVs + class weights. Draft KB (8).</td><td>B3 validation script; draft KB (15). B4 field split.</td></tr>
+  <tr><td>4</td><td>Review PRs; update README; LaTeX 2.1–2.2.</td><td>A3 + A4: dataset, transforms, tests, augmentation grid. LaTeX 2.3–2.4.</td><td>Finish KB + sources. LaTeX 2.5–2.6.</td></tr>
+  <tr><td>5</td><td>L4: fresh-clone test, final checklist, compile report, tag <code>phase2-done</code>.</td><td>Fix review comments; viva practice.</td><td>Fix review comments; viva practice.</td></tr>
+</table>
+</div>
+
+<p>Submit at least <strong>24 hours before</strong> the deadline — late submissions are never accepted, whatever the reason.</p>
+
+<h2>3. Repository structure (where every file goes)</h2>
+
+<pre><code>crop-disease-detector/
+├── README.md                     # setup + how to reproduce (Leader)
+├── requirements.txt              # pinned dependencies (Leader)
+├── .gitignore                    # see section 4 (Leader)
+├── .gitattributes                # optional, see section 5
+├── LICENSE                       # optional
+│
+├── data/                         # NEVER committed (except the two files below)
+│   ├── README.md                 # where to download, versions, folder layout  [COMMIT]
+│   ├── .gitkeep                  # keeps folder in git                         [COMMIT]
+│   ├── raw/
+│   │   ├── plantvillage/         # downloaded dataset (color/ folder used)     [IGNORED]
+│   │   └── field/                # real field images + field_labels.csv        [IGNORED images]
+│   └── processed/                # any cached/resized tensors                  [IGNORED]
+│
+├── splits/                       # small text files — COMMIT these so everyone has identical splits
+│   ├── class_names.json          # ordered list of 38 class names → index
+│   ├── train.csv                 # path,label,label_idx
+│   ├── val.csv
+│   ├── test.csv
+│   ├── field_test.csv
+│   ├── field_adapt.csv
+│   ├── class_weights.json        # from TRAIN split only
+│   └── dedupe_report.csv         # exact/near duplicate groups found
+│
+├── field_meta/                   # field-image metadata (COMMIT; images stay in data/)
+│   ├── field_labels.csv          # filename,label,source,url,licence,notes
+│   └── class_mapping.csv         # source class name → PlantVillage class name
+│
+├── knowledge_base/
+│   ├── treatments.json           # 38 entries (COMMIT)
+│   ├── schema.json               # JSON schema / required fields (COMMIT)
+│   └── SOURCES.md                # every citation (COMMIT)
+│
+├── src/
+│   ├── __init__.py
+│   ├── config.py                 # paths, seed=42, image size, mean/std
+│   └── data/
+│       ├── __init__.py
+│       ├── dataset.py            # PlantDataset (torch Dataset)
+│       ├── transforms.py         # train / eval transforms
+│       ├── splits.py             # split logic (imported by script)
+│       └── quality.py            # corrupt / duplicate detection
+│
+├── scripts/
+│   ├── download_data.md          # exact download commands (or .sh)
+│   ├── check_dataset.py          # A1: quality scan → dedupe_report.csv
+│   ├── make_splits.py            # A2: writes splits/*.csv + class_weights.json
+│   ├── make_field_splits.py      # B4: field_test / field_adapt
+│   └── validate_treatments.py    # B3: checks treatments.json
+│
+├── notebooks/
+│   └── 01_eda.ipynb              # Leader (outputs stripped, see nbstripout)
+│
+├── reports/
+│   └── figures/                  # PNG/PDF figures used in the LaTeX report (COMMIT)
+│       ├── eda_class_distribution.png
+│       ├── eda_sample_grid.png
+│       ├── eda_image_sizes.png
+│       ├── aug_examples.png
+│       └── field_vs_lab_examples.png
+│
+├── tests/
+│   └── test_data.py              # Anas
+│
+├── docs/
+│   ├── proposal/
+│   │   ├── proposal.tex          # COMMIT
+│   │   └── proposal.pdf          # COMMIT (compiled)
+│   ├── report/
+│   │   ├── main.tex
+│   │   ├── references.bib
+│   │   └── sections/
+│   │       ├── 02_data.tex       # Phase 2 section (3 subsections, one per member)
+│   │       └── (later phases go here)
+│   └── challenges_log.md         # everyone appends problems + fixes (feeds the report)
+│
+├── models/                       # trained weights — IGNORED (later hosted on Hugging Face)
+│   └── .gitkeep
+└── app/                          # Streamlit app (Phase 5) — empty for now
+    └── .gitkeep</code></pre>
+
+<h3>Placement rules (quick lookup)</h3>
+<div class="wide">
+<table>
+  <tr><th>Thing</th><th>Goes in</th><th>In Git?</th></tr>
+  <tr><td>Raw PlantVillage images</td><td><code>data/raw/plantvillage/</code></td><td>No</td></tr>
+  <tr><td>Field images</td><td><code>data/raw/field/</code></td><td>No (share via Google Drive link in <code>data/README.md</code>)</td></tr>
+  <tr><td>Field labels / licences</td><td><code>field_meta/field_labels.csv</code></td><td>Yes</td></tr>
+  <tr><td>Split CSVs, class weights, class names</td><td><code>splits/</code></td><td>Yes (small text)</td></tr>
+  <tr><td>Treatment JSON + sources</td><td><code>knowledge_base/</code></td><td>Yes</td></tr>
+  <tr><td>Reusable code</td><td><code>src/</code></td><td>Yes</td></tr>
+  <tr><td>One-off scripts</td><td><code>scripts/</code></td><td>Yes</td></tr>
+  <tr><td>Report figures (small PNG/PDF)</td><td><code>reports/figures/</code></td><td>Yes</td></tr>
+  <tr><td>Trained weights (<code>.pth/.pt/.ckpt</code>)</td><td><code>models/</code></td><td>No (Hugging Face later)</td></tr>
+  <tr><td>Compiled report/proposal PDFs</td><td><code>docs/…</code></td><td>Yes (required for submission)</td></tr>
+  <tr><td>LaTeX junk (<code>.aux .log .out .toc</code>…)</td><td>beside the <code>.tex</code></td><td>No</td></tr>
+  <tr><td>Kaggle API key (<code>kaggle.json</code>), <code>.env</code></td><td><code>~/.kaggle/</code> / project root</td><td><strong>NEVER</strong></td></tr>
+</table>
+</div>
+
+<h2>4. <code>.gitignore</code> (copy this exactly)</h2>
+
+<pre><code># ---------- Data (too big for GitHub; link in data/README.md) ----------
+data/*
+!data/README.md
+!data/.gitkeep
+
+# ---------- Models / checkpoints ----------
+models/*
+!models/.gitkeep
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.onnx
+*.safetensors
+*.npy
+*.npz
+*.pkl
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# ---------- Secrets ----------
+.env
+*.env
+kaggle.json
+secrets.toml
+.streamlit/secrets.toml
+
+# ---------- Experiment tracking / logs ----------
+runs/
+wandb/
+lightning_logs/
+mlruns/
+*.log
+
+# ---------- LaTeX build files (keep .tex, .bib and the final PDFs) ----------
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# ---------- OS / editors ----------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ---------- Archives (datasets often arrive zipped) ----------
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z</code></pre>
+
+<div class="warn">
+  <strong>Do not</strong> add <code>*.pdf</code> or <code>*.png</code> to <code>.gitignore</code> — the compiled report/proposal and report figures must be in the repo. The <code>data/*</code> + <code>!data/README.md</code> pattern is deliberate: ignoring the folder itself (<code>data/</code>) would make the exceptions impossible.
+</div>
+
+<p><strong>Verify the ignore works</strong> (Leader runs this on Day 1, everyone re-runs before pushing):</p>
+<pre><code>git status --short                       # data/ and models/ must NOT appear
+git check-ignore -v data/raw/x.jpg       # should print the matching rule
+git ls-files | xargs -I{} du -k {} | sort -n | tail -5   # largest tracked files; none above ~5 MB</code></pre>
+
+<div class="warn">
+  If a big file is ever committed by mistake, deleting it in a later commit does <strong>not</strong> remove it from history. Tell the Leader immediately, before pushing, and undo with <code>git reset --soft HEAD~1</code>.
+</div>
+
+<h2>5. Git workflow (counts toward individual-contribution marks)</h2>
+
+<p>The commit history is analysed to verify individual contributions, and an even distribution is expected. So:</p>
+<ul class="check">
+  <li><label><input type="checkbox"> Leader creates the repo (public or private) and adds Anas and Babar as collaborators with write access.</label></li>
+  <li><label><input type="checkbox"> Everyone sets their identity: <code>git config user.name "Full Name"</code> and <code>git config user.email "the-email-linked-to-your-GitHub"</code> (otherwise commits are not credited to you).</label></li>
+  <li><label><input type="checkbox"> <code>main</code> is always working. Nobody commits directly to <code>main</code>; work happens on branches.</label></li>
+  <li><label><input type="checkbox"> Branch names: <code>leader/repo-setup</code>, <code>anas/split-pipeline</code>, <code>babar/field-data</code>, etc.</label></li>
+  <li><label><input type="checkbox"> Small, frequent commits with clear messages: <code>data: add stratified split script</code>, <code>kb: add tomato early blight entry</code>, <code>docs: add EDA figures</code>.</label></li>
+  <li><label><input type="checkbox"> Every pull request is reviewed by <em>another</em> member before merging (rotation: Leader → Anas → Babar → Leader).</label></li>
+  <li><label><input type="checkbox"> Merge with “Create a merge commit” or “Rebase”, not by one person copying everyone's files into a single commit.</label></li>
+  <li><label><input type="checkbox"> Notebooks: install <code>nbstripout</code> (<code>pip install nbstripout &amp;&amp; nbstripout --install</code>) so outputs do not bloat diffs.</label></li>
+  <li><label><input type="checkbox"> Before every push: <code>git status</code>, <code>git diff --stat --cached</code>, confirm no data/model/secret files are staged.</label></li>
+</ul>
+
+<p><strong>Daily rhythm:</strong></p>
+<pre><code>git checkout main &amp;&amp; git pull
+git checkout -b anas/split-pipeline
+# ... work, commit often ...
+git push -u origin anas/split-pipeline
+# open Pull Request on GitHub → teammate reviews → merge → delete branch</code></pre>
+
+<div class="note">
+  Optional <code>.gitattributes</code> (avoids line-ending noise between Windows and Mac/Linux):<br>
+  <code>* text=auto</code>
+</div>
+
+<h2>6. Leader tasks <span class="tag L">Leader</span></h2>
+
+<h3>L1 — Repo, environment, README</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Create GitHub repo <code>crop-disease-detector</code>; add collaborators.</label></li>
+  <li><label><input type="checkbox"> Create the full folder structure from section 3 (add <code>.gitkeep</code> in empty folders).</label></li>
+  <li><label><input type="checkbox"> Add <code>.gitignore</code> from section 4; run the three verification commands.</label></li>
+  <li><label><input type="checkbox"> Move the proposal into <code>docs/proposal/</code> (<code>.tex</code> + compiled <code>.pdf</code>).</label></li>
+  <li><label><input type="checkbox"> Write <code>src/config.py</code> (single source of truth so nobody hard-codes paths):
+<pre><code>from pathlib import Path
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+RAW_PV = DATA_DIR / "raw" / "plantvillage"
+RAW_FIELD = DATA_DIR / "raw" / "field"
+SPLITS_DIR = ROOT / "splits"
+SEED = 42
+IMG_SIZE = 224
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD = [0.229, 0.224, 0.225]</code></pre></label></li>
+  <li><label><input type="checkbox"> Create <code>requirements.txt</code> with versions pinned after the first successful install (<code>pip freeze</code> for the packages below only):
+<pre><code>torch
+torchvision
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+pillow
+imagehash
+tqdm
+pyyaml
+jsonschema
+jupyter
+pytest
+nbstripout
+kaggle</code></pre>
+  Use the CPU/GPU install line from pytorch.org if needed and write it in the README.</label></li>
+  <li><label><input type="checkbox"> Write the <code>README.md</code> skeleton (required by the submission rules): project summary, team, folder map, setup (venv, <code>pip install -r requirements.txt</code>), how to get the data (link to <code>data/README.md</code>), how to regenerate splits, how to run tests, how to compile the report. Phase-by-phase status table at the bottom.</label></li>
+  <li><label><input type="checkbox"> Create <code>docs/challenges_log.md</code> with the template: <em>Date | Who | Problem | Fix | Time lost</em>.</label></li>
+</ul>
+
+<h3>L2 — Download and document PlantVillage</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Create a Kaggle account → Settings → <em>Create New API Token</em> → place <code>kaggle.json</code> in <code>~/.kaggle/</code> (never in the repo).</label></li>
+  <li><label><input type="checkbox"> Download into <code>data/raw/</code>:
+<pre><code>kaggle datasets download -d abdallahalidev/plantvillage-dataset -p data/raw --unzip</code></pre>
+  I could not verify this exact Kaggle slug live — search “PlantVillage Dataset” on Kaggle, confirm it has ~54k images, and write the final URL in <code>data/README.md</code>. If Kaggle gives trouble, download in the browser and unzip by hand.</label></li>
+  <li><label><input type="checkbox"> Check which versions exist inside (often <code>color/</code>, <code>grayscale/</code>, <code>segmented/</code>). <strong>Decision to document:</strong> use <code>color/</code> only for training; the others are ignored (segmented could be a later ablation).</label></li>
+  <li><label><input type="checkbox"> Verify: 38 class folders, total ≈ 54,3xx images. If you see 39 classes, an extra <em>Background_without_leaves</em> class exists — decide to keep or drop, and record it.</label></li>
+  <li><label><input type="checkbox"> Check the version note: some Kaggle copies are pre-augmented (≈87k images with their own train/valid split). If so, <strong>do not</strong> use their split — pre-augmented copies leak augmented duplicates across splits. Prefer the original-image version and make our own split (Anas, A2).</label></li>
+  <li><label><input type="checkbox"> Write <code>data/README.md</code>: dataset name, Kaggle URL, original paper (Hughes &amp; Salathé, 2015), licence, version used, expected folder layout, image count, class count, and download commands.</label></li>
+  <li><label><input type="checkbox"> Generate <code>splits/class_names.json</code>: sorted list of the 38 folder names (index = position). This fixes label order for the whole project.</label></li>
+  <li><label><input type="checkbox"> Post “download done” in the team chat; share a Google Drive link of the zipped data for teammates with bad internet (link goes in <code>data/README.md</code>, zip itself does not).</label></li>
+</ul>
+
+<h3>L3 — EDA notebook (<code>notebooks/01_eda.ipynb</code>)</h3>
+<p>Run after Anas's final split exists so val/test are included in the analysis.</p>
+<ul class="check">
+  <li><label><input type="checkbox"> Counts: total images, images per class (sorted bar chart, 38 bars), per crop, healthy vs diseased. → <code>eda_class_distribution.png</code></label></li>
+  <li><label><input type="checkbox"> Imbalance numbers: largest class, smallest class, ratio, coefficient of variation; a sentence on what this means for weighted loss.</label></li>
+  <li><label><input type="checkbox"> Image properties: width/height histogram, file formats, colour mode, file sizes (confirm all ≈ 256×256 RGB). → <code>eda_image_sizes.png</code></label></li>
+  <li><label><input type="checkbox"> Sample grid: 4–5 random images per selected class. → <code>eda_sample_grid.png</code></label></li>
+  <li><label><input type="checkbox"> Pixel statistics: per-channel mean/std on a sample, compare to ImageNet values (justify using ImageNet normalisation).</label></li>
+  <li><label><input type="checkbox"> Background analysis: describe the uniform lab backgrounds (this is the “shortcut learning” risk behind our robustness study). Include 6 lab vs 6 field images side by side (needs Babar's images). → <code>field_vs_lab_examples.png</code></label></li>
+  <li><label><input type="checkbox"> Split sanity: class proportions in train/val/test are nearly identical.</label></li>
+  <li><label><input type="checkbox"> Write 5–8 bullet “key findings” at the top of the notebook (these become report text).</label></li>
+  <li><label><input type="checkbox"> Save all figures at 200 dpi into <code>reports/figures/</code>.</label></li>
+</ul>
+
+<h3>L4 — Integration and review</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Review Anas's and Babar's PRs within 24 h of opening.</label></li>
+  <li><label><input type="checkbox"> Fresh-clone test: clone the repo into an empty folder, follow the README <em>only</em>, and confirm splits + tests + KB validation all run. Fix README gaps.</label></li>
+  <li><label><input type="checkbox"> Assemble <code>docs/report/main.tex</code> (title, author block, includes <code>sections/02_data.tex</code>), compile, fix errors.</label></li>
+  <li><label><input type="checkbox"> Run the final checklist in section 11; tag the commit: <code>git tag phase2-done &amp;&amp; git push --tags</code>.</label></li>
+</ul>
+
+<h2>7. Anas tasks <span class="tag A">Anas</span></h2>
+
+<h3>A1 — Data quality checks (<code>src/data/quality.py</code>, <code>scripts/check_dataset.py</code>)</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> List every image path + label into a DataFrame.</label></li>
+  <li><label><input type="checkbox"> Open each image with Pillow (<code>Image.open(...).verify()</code>, then re-open and <code>.convert("RGB")</code>) → log corrupt/unreadable files.</label></li>
+  <li><label><input type="checkbox"> Exact duplicates: hash file bytes (MD5) → groups with the same hash.</label></li>
+  <li><label><input type="checkbox"> Near duplicates: perceptual hash (<code>imagehash.phash</code>), flag pairs with Hamming distance ≤ 4 within the same class. PlantVillage has many shots of the same leaf, so a purely random split would leak.</label></li>
+  <li><label><input type="checkbox"> Cross-class duplicates (same image in two classes = label noise) → list separately.</label></li>
+  <li><label><input type="checkbox"> Write <code>splits/dedupe_report.csv</code> (columns: <code>group_id, path, label, hash_type</code>). Decision rule: remove corrupt files; remove exact duplicates (keep one); keep near-duplicates but force each group into the <strong>same split</strong> (see A2).</label></li>
+  <li><label><input type="checkbox"> Record counts before/after for the report (e.g. “N corrupt, M exact dupes, K near-dup groups”).</label></li>
+</ul>
+
+<h3>A2 — Stratified split + class weights (<code>scripts/make_splits.py</code>)</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Split ratio <strong>70 / 15 / 15</strong> (train / val / test), stratified by class, <code>SEED = 42</code>.</label></li>
+  <li><label><input type="checkbox"> Because of near-duplicate groups, use <code>sklearn.model_selection.StratifiedGroupKFold</code> (or group-then-stratify) with the near-dup <code>group_id</code> as group, so one leaf never appears in two splits.</label></li>
+  <li><label><input type="checkbox"> Output <code>splits/train.csv</code>, <code>val.csv</code>, <code>test.csv</code> with columns <code>path,label,label_idx</code>; <code>path</code> relative to <code>data/raw/plantvillage/</code> so it works on all three laptops.</label></li>
+  <li><label><input type="checkbox"> Assertions in the script: no path appears in two splits; every class is present in every split; total = total after cleaning.</label></li>
+  <li><label><input type="checkbox"> Class weights from <strong>train only</strong>: <code>w_c = N_train / (K × n_c)</code> with K = 38. Save <code>splits/class_weights.json</code> (ordered by <code>label_idx</code>).</label></li>
+  <li><label><input type="checkbox"> Print and save a table of per-split per-class counts for the report.</label></li>
+  <li><label><input type="checkbox"> Re-running the script twice gives byte-identical CSVs (proves reproducibility).</label></li>
+</ul>
+
+<h3>A3 — Dataset, transforms, DataLoader (<code>src/data/</code>)</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> <code>PlantDataset(csv_path, root, transform)</code> returning <code>(image_tensor, label_idx)</code>; handles RGB conversion.</label></li>
+  <li><label><input type="checkbox"> <code>transforms.py</code> with two pipelines (values come from <code>config.py</code>):
+<pre><code># train
+RandomResizedCrop(224, scale=(0.6, 1.0))
+RandomHorizontalFlip(); RandomVerticalFlip()
+RandomRotation(30)
+ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.05)
+RandAugment()            # optional; keep only if it helps and is documented
+ToTensor(); Normalize(IMAGENET_MEAN, IMAGENET_STD)
+
+# eval (val / test / field)
+Resize(256); CenterCrop(224)
+ToTensor(); Normalize(IMAGENET_MEAN, IMAGENET_STD)</code></pre></label></li>
+  <li><label><input type="checkbox"> Make sure val/test/field use <em>only</em> the eval pipeline (no random augmentation leaks into evaluation).</label></li>
+  <li><label><input type="checkbox"> Helper <code>get_dataloaders(batch_size, num_workers)</code> returning train/val/test loaders; seeded generator and <code>worker_init_fn</code> for reproducibility.</label></li>
+  <li><label><input type="checkbox"> Also a <code>FieldDataset</code> (reads <code>splits/field_test.csv</code>) that reuses the eval transform.</label></li>
+  <li><label><input type="checkbox"> Optional: <code>WeightedRandomSampler</code> function as an alternative to weighted loss (document, don't turn on yet).</label></li>
+  <li><label><input type="checkbox"> Add a Windows-safe note in the README: <code>num_workers=0</code> if DataLoader hangs.</label></li>
+</ul>
+
+<h3>A4 — Tests and visual sanity check</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> <code>tests/test_data.py</code> with at least: 38 class names; splits disjoint; every class in every split; one batch has shape <code>(B, 3, 224, 224)</code> and <code>float32</code>; labels in 0–37; class weights length 38 and all &gt; 0; eval transform is deterministic (same image twice → equal tensors).</label></li>
+  <li><label><input type="checkbox"> Run <code>pytest -q</code> — must pass before each PR.</label></li>
+  <li><label><input type="checkbox"> Augmentation grid: one original and 7 augmented versions for 3 images → <code>reports/figures/aug_examples.png</code> (un-normalise before plotting).</label></li>
+  <li><label><input type="checkbox"> Time one epoch of data loading (images/second); note it in the challenges log.</label></li>
+</ul>
+
+<h2>8. Babar tasks <span class="tag B">Babar</span></h2>
+
+<h3>B3 (do this first, Day 1) — Treatment KB schema</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Publish <code>knowledge_base/schema.json</code> and a one-entry example so Leader and Anas can start writing.</label></li>
+  <li><label><input type="checkbox"> Key = exact PlantVillage class name (e.g. <code>Tomato___Early_blight</code>). Required fields per entry:
+<pre><code>{
+  "Tomato___Early_blight": {
+    "crop": "Tomato",
+    "disease": "Early blight",
+    "is_healthy": false,
+    "cause": "Fungus Alternaria solani",
+    "symptoms": "Dark concentric-ringed spots on older leaves, yellowing around spots.",
+    "chemical_treatment": "Chlorothalonil or mancozeb spray every 7-10 days (follow the product label).",
+    "organic_treatment": "Copper-based fungicide; neem oil.",
+    "immediate_action": "Remove and destroy infected leaves; avoid overhead watering.",
+    "prevention": "Crop rotation, resistant varieties, proper spacing for airflow.",
+    "severity_guidance": "If more than 30% of the leaf area is affected, consider removing the plant.",
+    "sources": ["FAO ...", "University extension ... URL"],
+    "last_reviewed": "2026-10-xx",
+    "reviewed_by": "Babar"
+  }
+}</code></pre>
+  Healthy classes: <code>is_healthy: true</code>, no chemical treatment (“none needed”), maintenance/prevention tips only.</label></li>
+  <li><label><input type="checkbox"> <code>scripts/validate_treatments.py</code>: loads JSON; asserts keys exactly equal <code>splits/class_names.json</code>; every required field is a non-empty string (<code>sources</code> a non-empty list); no duplicate keys; prints a per-crop summary. Use <code>jsonschema</code>.</label></li>
+  <li><label><input type="checkbox"> <code>knowledge_base/SOURCES.md</code>: numbered list of every source (organisation, title, URL, access date). Rule: <strong>every entry cites at least one source</strong>; never invent dosages — if a source gives a range, copy it and say “follow the label”.</label></li>
+  <li><label><input type="checkbox"> Add a global <code>disclaimer</code> (“decision support only; consult a local agronomist; follow product labels and local regulations”) — shown later in the app.</label></li>
+  <li><label><input type="checkbox"> Write your 15 entries: all Tomato (10), Potato (3), Pepper (2).</label></li>
+</ul>
+
+<h3>B1 — Field image collection (≥ 150 images)</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Primary source: the PlantDoc dataset (GitHub “PlantDoc-Dataset”; check the repo for its licence/terms). Secondary: iNaturalist (check each observation's licence — use CC-BY / CC0 only), Wikimedia Commons, your own phone photos (best — no licence trouble).</label></li>
+  <li><label><input type="checkbox"> Only keep images of classes that exist in PlantVillage's 38 (see B2). Aim for at least 3–5 images in as many classes as possible; target ≥ 150 in total (100 for testing + 50 for the mitigation experiment).</label></li>
+  <li><label><input type="checkbox"> Image rules: one clearly visible diseased leaf, real background (soil, other leaves, hands), minimum ~224 px on the short side, no watermarks, no duplicates, no lab-style photos.</label></li>
+  <li><label><input type="checkbox"> Store as <code>data/raw/field/&lt;PV_class_name&gt;/&lt;file&gt;.jpg</code>.</label></li>
+  <li><label><input type="checkbox"> Record every image in <code>field_meta/field_labels.csv</code>: <code>filename,label,source,url,licence,notes</code>. This file is committed; images are not.</label></li>
+  <li><label><input type="checkbox"> Label verification: a second team member double-checks every label (wrong labels would corrupt the robustness result). Doubtful ones are removed.</label></li>
+  <li><label><input type="checkbox"> Upload the field folder to Google Drive (zip) and link it in <code>data/README.md</code>.</label></li>
+</ul>
+
+<h3>B2 — Class-name mapping</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> <code>field_meta/class_mapping.csv</code> with columns <code>source_dataset,source_class,plantvillage_class,notes</code>.</label></li>
+  <li><label><input type="checkbox"> Mark classes that exist in PlantDoc but <em>not</em> in PlantVillage (and vice versa) — those are excluded from the lab-vs-field comparison, and the report says so.</label></li>
+</ul>
+
+<h3>B4 — Field set split and statistics</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> <code>scripts/make_field_splits.py</code> → <code>splits/field_test.csv</code> (~2/3) and <code>splits/field_adapt.csv</code> (~1/3), stratified where possible, seed 42, fixed <em>now</em>.</label></li>
+  <li><label><input type="checkbox"> <strong>Rule written in the README:</strong> <code>field_test.csv</code> is never used for training, tuning or threshold selection. Only <code>field_adapt.csv</code> may be used for the fine-tuning mitigation later.</label></li>
+  <li><label><input type="checkbox"> Count table per class and per source for the report.</label></li>
+  <li><label><input type="checkbox"> Draft your 15 KB entries if not finished (see B3).</label></li>
+</ul>
+
+<h2>9. Treatment KB — who writes which classes</h2>
+
+<div class="wide">
+<table>
+  <tr><th>Owner</th><th>Crop (classes)</th><th>Count</th></tr>
+  <tr><td><span class="tag B">Babar</span></td><td>Tomato (10), Potato (3), Pepper (2)</td><td>15</td></tr>
+  <tr><td><span class="tag L">Leader</span></td><td>Apple (4), Corn (4), Grape (4), Blueberry (1), Cherry (2)</td><td>15</td></tr>
+  <tr><td><span class="tag A">Anas</span></td><td>Orange (1), Peach (2), Raspberry (1), Soybean (1), Squash (1), Strawberry (2)</td><td>8</td></tr>
+</table>
+</div>
+<ul class="check">
+  <li><label><input type="checkbox"> Everyone adds entries on their own branch (<code>kb/&lt;name&gt;</code>) to different crop blocks so JSON merge conflicts are rare.</label></li>
+  <li><label><input type="checkbox"> Run <code>python scripts/validate_treatments.py</code> before every PR.</label></li>
+  <li><label><input type="checkbox"> Cross-check: each person spot-checks 5 entries written by someone else against the cited source.</label></li>
+  <li><label><input type="checkbox"> Class names must match <code>splits/class_names.json</code> exactly (the validator enforces it).</label></li>
+</ul>
+
+<h2>10. LaTeX report — Phase 2 section</h2>
+
+<p>File: <code>docs/report/sections/02_data.tex</code>, included from <code>docs/report/main.tex</code>. Each member writes their own subsection on a branch; Leader merges and compiles.</p>
+
+<div class="wide">
+<table>
+  <tr><th>Subsection</th><th>Author</th><th>Content</th></tr>
+  <tr><td>2.1 Dataset description</td><td><span class="tag L">Leader</span></td><td>Source, size, 38 classes (table of crops/classes), version used, why PlantVillage, known limitations (lab backgrounds)</td></tr>
+  <tr><td>2.2 Exploratory analysis</td><td><span class="tag L">Leader</span></td><td>Class distribution figure, imbalance numbers, image properties, key findings</td></tr>
+  <tr><td>2.3 Data cleaning and splitting</td><td><span class="tag A">Anas</span></td><td>Corrupt/duplicate handling with counts, leakage argument, 70/15/15 grouped stratified split, per-split table, class weights formula</td></tr>
+  <tr><td>2.4 Preprocessing and augmentation</td><td><span class="tag A">Anas</span></td><td>Resize/normalise, each augmentation and why, augmentation figure, eval pipeline</td></tr>
+  <tr><td>2.5 Real-world field dataset</td><td><span class="tag B">Babar</span></td><td>Sources, licences, selection rules, count table, class mapping, test/adapt split policy</td></tr>
+  <tr><td>2.6 Treatment knowledge base</td><td><span class="tag B">Babar</span></td><td>Schema, sources, validation, example entry table, limitations/disclaimer</td></tr>
+  <tr><td>2.7 Challenges faced</td><td><span class="tag ALL">Everyone</span></td><td>Pulled from <code>docs/challenges_log.md</code> (environment setup, download issues, duplicate leakage, label mismatches, licences…)</td></tr>
+</table>
+</div>
+<ul class="check">
+  <li><label><input type="checkbox"> Figures use <code>\includegraphics{../../reports/figures/...}</code> with captions and references in the text.</label></li>
+  <li><label><input type="checkbox"> Every number in the text is produced by the scripts/notebook (no “about” numbers typed from memory).</label></li>
+  <li><label><input type="checkbox"> References (Hughes &amp; Salathé 2015 PlantVillage; PlantDoc paper; Grad-CAM paper if mentioned) in <code>references.bib</code>.</label></li>
+  <li><label><input type="checkbox"> The compiled <code>main.pdf</code> is committed to <code>docs/report/</code>; aux files are ignored.</label></li>
+</ul>
+
+<h2>11. Final "nothing left behind" checklist</h2>
+
+<h3>Repository</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Repo opens on GitHub and shows README with setup steps.</label></li>
+  <li><label><input type="checkbox"> No <code>data/</code> images, no <code>*.pth</code>, no zips, no <code>kaggle.json</code>, no <code>.env</code> tracked (<code>git ls-files</code> reviewed).</label></li>
+  <li><label><input type="checkbox"> Largest tracked file is small (&lt; ~5 MB).</label></li>
+  <li><label><input type="checkbox"> <code>splits/</code>, <code>field_meta/</code>, <code>knowledge_base/</code>, <code>reports/figures/</code> are tracked.</label></li>
+  <li><label><input type="checkbox"> <code>requirements.txt</code> installs cleanly in a new virtual environment.</label></li>
+  <li><label><input type="checkbox"> <code>pytest -q</code> passes; <code>validate_treatments.py</code> passes.</label></li>
+  <li><label><input type="checkbox"> Fresh-clone test done on a different machine than the author's.</label></li>
+</ul>
+
+<h3>Data</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Dataset URL, version, licence, and download steps are in <code>data/README.md</code>.</label></li>
+  <li><label><input type="checkbox"> 38 classes verified; image counts recorded; corrupt/duplicate counts recorded.</label></li>
+  <li><label><input type="checkbox"> Splits are reproducible; no leakage between train/val/test; <code>field_test</code> never used for training.</label></li>
+  <li><label><input type="checkbox"> Class weights come from train only.</label></li>
+  <li><label><input type="checkbox"> Field images: ≥150, labels double-checked, sources and licences recorded.</label></li>
+</ul>
+
+<h3>Knowledge base</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> 38/38 entries; each has at least one cited source; healthy classes handled.</label></li>
+  <li><label><input type="checkbox"> Disclaimer present; no unsourced dosages.</label></li>
+</ul>
+
+<h3>Team and rules</h3>
+<ul class="check">
+  <li><label><input type="checkbox"> Each member has a similar number of commits and merged PRs (<code>git shortlog -sn</code>).</label></li>
+  <li><label><input type="checkbox"> Every member can explain every script (viva: you may be asked to change logic live — e.g. change the split ratio, add an augmentation, add a class to the KB). Do a 20-minute walkthrough where each person presents their part to the others.</label></li>
+  <li><label><input type="checkbox"> AI-assisted code is understood line by line, not just pasted.</label></li>
+  <li><label><input type="checkbox"> No copied code or text from other students' or past projects (plagiarism = zero).</label></li>
+  <li><label><input type="checkbox"> Submission: GitHub URL + compiled LaTeX PDF through GCR, <strong>≥ 24 h before the deadline</strong>.</label></li>
+</ul>
+
+<h2>12. Common pitfalls (read once)</h2>
+<ul>
+  <li><strong>Leakage:</strong> random splitting of PlantVillage puts near-identical photos of one leaf in train and test and inflates accuracy. That is why A1/A2 group near-duplicates.</li>
+  <li><strong>Pre-augmented Kaggle copies</strong> look like “free extra data” but spread augmented copies of the same image across splits. Use the original images.</li>
+  <li><strong>Normalising val/test with their own statistics</strong> is wrong — use the fixed ImageNet values for everything.</li>
+  <li><strong>Class weights computed on all data</strong> leak test information. Train split only.</li>
+  <li><strong>Absolute paths in CSVs</strong> break on teammates' laptops. Use relative paths and <code>config.py</code>.</li>
+  <li><strong>Different label order per person</strong> breaks the model later. Everyone uses <code>splits/class_names.json</code>.</li>
+  <li><strong>Field images with wrong labels or unclear licences</strong> hurt both the result and the report. Double-check and record.</li>
+  <li><strong>Committing a big file</strong> — see the warning in section 4.</li>
+  <li><strong>One person doing everything in one big commit</strong> — the commit analysis will show it.</li>
+</ul>
+
+<script>
+  // Remember ticked boxes on this machine only (optional convenience)
+  (function () {
+    var boxes = document.querySelectorAll('input[type=checkbox]');
+    var key = 'phase2_plan_checks';
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) {}
+    boxes.forEach(function (b, i) {
+      if (saved[i]) b.checked = true;
+      b.addEventListener('change', function () {
+        saved[i] = b.checked;
+        try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {}
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
