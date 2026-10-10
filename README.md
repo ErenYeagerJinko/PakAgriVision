@@ -1,7 +1,7 @@
 ﻿# PakAgriVision
 
 **Team Yeagerists++**
-- **Abdul Ahad** — 24L4-3029
+- **Abdul Ahad** — 24L-3029
 - **M. Anas** — 24L-3004
 - **M. Babar Shahzad** — 24L-3047
 
@@ -240,7 +240,7 @@ streamlit run app/
 
 | Member        | ID          | Primary Responsibilities                                                                 |
 |---------------|-------------|------------------------------------------------------------------------------------------|
-| **Abdul Ahad**   | 24L4-3029   | L1: Repo setup, environment, README, .gitignore; L2: Download & verify PlantVillage; L4: Integration, final checklist, compile report |
+| **Abdul Ahad**   | 24L-3029   | L1: Repo setup, environment, README, .gitignore; L2: Download & verify PlantVillage; L4: Integration, final checklist, compile report |
 | **M. Anas**     | 24L-3004    | A1: Data quality checks (corrupt, duplicates, near-duplicates); A2: Stratified split + CSVs + class weights; A3: Dataset class, transforms, DataLoader; A4: Unit tests, augmentation visual sanity check |
 | **M. Babar Shahzad** | 24L-3047 | B1: Field-image collection (≥150) + labelling + licence tracking; B2: Class-name mapping; B3: Treatment KB schema + validation; B4: Field-set split + statistics |
 
