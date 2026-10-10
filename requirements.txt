@@ -1,0 +1,16 @@
+torch
+torchvision
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+pillow
+imagehash
+tqdm
+pyyaml
+jsonschema
+jupyter
+pytest
+nbstripout
+kaggle
