@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Treatment Knowledge Base Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["crop", "disease", "is_healthy", "cause", "symptoms", "chemical_treatment", "organic_treatment", "immediate_action", "prevention", "severity_guidance", "sources", "last_reviewed", "reviewed_by"],
+  "properties": {
+    "crop": {"type": "string"},
+    "disease": {"type": "string"},
+    "is_healthy": {"type": "boolean"},
+    "cause": {"type": "string"},
+    "symptoms": {"type": "string"},
+    "chemical_treatment": {"type": "string"},
+    "organic_treatment": {"type": "string"},
+    "immediate_action": {"type": "string"},
+    "prevention": {"type": "string"},
+    "severity_guidance": {"type": "string"},
+    "sources": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "last_reviewed": {"type": "string", "format": "date"},
+    "reviewed_by": {"type": "string"}
+  }
+}

@@ -1,0 +1,209 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black}
+\setlist{itemsep=2pt,topsep=4pt}
+\renewcommand{\arraystretch}{1.25}
+
+\title{\textbf{Crop Disease Detector}\\[4pt]\large Project Proposal -- Track A: Application Development}
+\author{
+  Member 1 (ID) \quad Member 2 (ID) \quad Member 3 (ID)\\[4pt]
+  GitHub: \url{https://github.com/your-username/crop-disease-detector}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Problem Statement}
+Farmers, especially in developing regions, often lack access to agricultural experts who can quickly and accurately diagnose plant diseases. By the time a disease is identified through traditional means, it has frequently spread beyond the point of effective treatment, leading to significant crop loss and economic hardship. There is a clear need for an accessible, instant, and trustworthy diagnostic tool that not only identifies the disease but also tells the farmer what to do about it.
+
+This project builds a Crop Disease Detector, an AI-powered web application that lets a farmer upload a photo of a diseased leaf and instantly receive:
+\begin{enumerate}
+  \item The predicted disease (with confidence score).
+  \item A visual explanation (Grad-CAM heatmap) showing which parts of the leaf the model focused on.
+  \item Actionable treatment recommendations: specific fungicides, dosage, organic alternatives, and preventive measures tailored to the diagnosed disease.
+\end{enumerate}
+
+\section{Dataset}
+\textbf{PlantVillage Dataset (Kaggle)}
+\begin{itemize}
+  \item $\sim$54,000 labeled leaf images.
+  \item 38 disease classes across multiple crop species (tomato, potato, pepper, apple, grape, corn, etc.).
+  \item Clean, well-documented, and widely used as a benchmark.
+\end{itemize}
+\textbf{Known limitation (which we address):} the dataset contains mostly lab-condition images with uniform backgrounds. Models trained on it can appear highly accurate while failing on real-world field photos. Our robustness testing (Section~\ref{sec:robust}) explicitly investigates this gap.
+
+\section{Model and Architecture}
+\textbf{Base model:} fine-tuned ResNet50 (or EfficientNet-B0) via transfer learning.
+
+\textbf{Why transfer learning:}
+\begin{itemize}
+  \item Pretrained ImageNet weights provide strong low-level feature extractors (edges, textures, color gradients).
+  \item Fine-tuning only the later layers substantially reduces training time and data requirements.
+  \item Reported in the literature to reach high accuracy on PlantVillage with modest compute.
+\end{itemize}
+
+\textbf{Training pipeline:}
+\begin{itemize}
+  \item Input: $224\times224$ RGB images.
+  \item Augmentation: random flips, rotations, color jitter, RandAugment.
+  \item Loss: cross-entropy with class weights (to handle class imbalance).
+  \item Optimizer: AdamW with cosine annealing.
+  \item Early stopping on validation F1.
+\end{itemize}
+
+\section{Core Differentiator: Explainability and Treatment Engine}
+Most student projects stop at ``predicted class + confidence.'' Ours goes two steps further.
+
+\subsection{Grad-CAM Visual Explanations}
+Grad-CAM generates a heatmap overlaid on the input image, highlighting the regions the model considered most important for its prediction.
+\begin{itemize}
+  \item \textbf{Builds trust:} the user can see whether the model is looking at the diseased spot rather than the background.
+  \item \textbf{Supports bias analysis:} reveals whether the model learns dataset artifacts (e.g., uniform backgrounds) instead of disease patterns.
+  \item \textbf{Debugging tool:} irrelevant highlighted regions signal the need for retraining or better augmentation.
+\end{itemize}
+\textit{Implementation:} \texttt{pytorch-grad-cam} or \texttt{captum}, integrated into the Streamlit UI.
+
+\subsection{Treatment Recommendation Engine}
+After diagnosis, the app displays a structured treatment plan for the detected disease, covering all 38 classes.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}>{\bfseries}p{3.4cm}p{11cm}@{}}
+\toprule
+Field & Example (Early Blight -- Tomato) \\
+\midrule
+Cause & Fungus \textit{Alternaria solani} \\
+Chemical treatment & Chlorothalonil or Mancozeb spray, every 7--10 days \\
+Organic alternative & Neem oil spray, copper-based fungicide \\
+Immediate action & Remove and destroy infected leaves; avoid overhead watering \\
+Prevention & Crop rotation, resistant varieties, proper spacing for airflow \\
+Severity guidance & If $>30\%$ of leaf area is affected, consider removing the plant \\
+\bottomrule
+\end{tabular}
+\caption{Example treatment record. Final content will be verified against cited sources.}
+\end{table}
+
+\textbf{Implementation approach:}
+\begin{itemize}
+  \item \textbf{MVP:} curated JSON mapping each of the 38 classes to treatment info, sourced from agricultural extension documents (FAO, university guides).
+  \item \textbf{Stretch:} RAG pipeline over agricultural PDFs using LangChain and a vector database for more context-aware advice.
+\end{itemize}
+
+\section{Real-World Robustness Testing}\label{sec:robust}
+\textbf{The problem:} PlantVillage's clean lab images do not represent real field conditions: soil, shadows, multiple leaves, blur, and varying lighting.
+
+\textbf{What we will do:}
+\begin{enumerate}
+  \item Collect $\sim$100 real-world field images (PlantDoc dataset, iNaturalist, or similar).
+  \item Run the model on them and record the accuracy drop (hypothesis: a substantial drop relative to lab-condition accuracy).
+  \item Apply mitigations: test-time augmentation, background removal (\texttt{rembg}), or fine-tuning on a small field-image set.
+  \item Report before/after results.
+\end{enumerate}
+
+\section{User Interface (Streamlit)}
+\textbf{Flow:}
+\begin{enumerate}
+  \item User opens the hosted web app.
+  \item User uploads a leaf photo (drag-and-drop or camera capture on mobile).
+  \item The app displays: predicted disease and confidence; Grad-CAM heatmap beside the original image; a structured treatment plan (chemical, organic, immediate, preventive); and a warning if confidence is below 70\%.
+  \item Optional: download the diagnosis as a PDF report.
+\end{enumerate}
+\textbf{Hosting:} Streamlit Community Cloud (frontend) with the model hosted on Hugging Face Hub or GitHub Releases. No localhost-only evaluation.
+
+\section{Evaluation and Bias Check}
+\textbf{Metrics:} overall accuracy, macro F1, per-class precision/recall, $38\times38$ confusion matrix, top-3 accuracy.
+
+\textbf{Bias check:}
+\begin{itemize}
+  \item Per-class performance breakdown to identify weak diseases.
+  \item Class imbalance analysis: does the model favor majority classes?
+  \item Grad-CAM analysis: does the model focus on disease regions or background artifacts?
+  \item Robustness gap: lab vs.\ field image performance.
+\end{itemize}
+
+\section{Tech Stack}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Layer & Tool \\
+\midrule
+Model training & PyTorch, torchvision \\
+Explainability & pytorch-grad-cam / captum \\
+UI & Streamlit \\
+Treatment data & Curated JSON (MVP) / LangChain + ChromaDB (stretch) \\
+Deployment & Streamlit Community Cloud + Hugging Face \\
+Version control & GitHub (datasets excluded via \texttt{.gitignore}) \\
+Report & \LaTeX{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Deliverables}
+\begin{enumerate}
+  \item GitHub repository: clean code, commit history showing individual contributions, README with setup instructions.
+  \item Hosted web application with a live URL.
+  \item \LaTeX{} technical report: methodology, architecture diagrams, Grad-CAM analysis, robustness findings, challenges faced.
+  \item Treatment knowledge base (JSON or RAG pipeline), documented.
+\end{enumerate}
+
+\section{Team Roles}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}>{\bfseries}p{3cm}p{11.4cm}@{}}
+\toprule
+Member & Primary responsibility \\
+\midrule
+Member 1 & Data pipeline, preprocessing, model training and evaluation \\
+Member 2 & Grad-CAM, treatment knowledge base, robustness testing \\
+Member 3 & Streamlit UI, deployment, report assembly \\
+\bottomrule
+\end{tabular}
+\caption{Initial split; all members review and understand the full codebase.}
+\end{table}
+
+\section{Timeline}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}cp{9cm}c@{}}
+\toprule
+Step & Task & Days \\
+\midrule
+1 & Setup, dataset download, EDA & 1--2 \\
+2 & Preprocessing, augmentation pipeline & 1--2 \\
+3 & Baseline ResNet50 training & 2--3 \\
+4 & Fine-tuning and hyperparameter search & 2--4 \\
+5 & Grad-CAM integration & 1--2 \\
+6 & Treatment engine (JSON + UI cards) & 1--2 \\
+7 & Robustness testing on field images & 2--3 \\
+8 & Streamlit UI and deployment & 1--2 \\
+9 & Evaluation, bias check, \LaTeX{} report & 2--3 \\
+-- & Buffer for debugging & 2--3 \\
+\bottomrule
+\end{tabular}
+\caption{Tentative schedule; adjusted to the instructor's deliverable dates.}
+\end{table}
+
+\section{Risks and Mitigations}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}p{6cm}p{9.4cm}@{}}
+\toprule
+Risk & Mitigation \\
+\midrule
+Model overfits to clean backgrounds & Aggressive augmentation and robustness testing \\
+Class imbalance skews results & Weighted loss and per-class metrics \\
+Deployment issues & Streamlit Cloud (low-config) with model on Hugging Face \\
+Treatment information accuracy & Source from FAO / university extension documents; cite sources \\
+Time overrun & MVP first (classifier + Grad-CAM + JSON treatments), then stretch goals \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}
