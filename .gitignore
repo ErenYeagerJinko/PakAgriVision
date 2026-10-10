@@ -1,0 +1,71 @@
+# ---------- Data (too big for GitHub; link in data/README.md) ----------
+data/*
+!data/README.md
+!data/.gitkeep
+
+# ---------- Models / checkpoints ----------
+models/*
+!models/.gitkeep
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.onnx
+*.safetensors
+*.npy
+*.npz
+*.pkl
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env/
+pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# ---------- Secrets ----------
+.env
+*.env
+kaggle.json
+secrets.toml
+.streamlit/secrets.toml
+.html
+
+# ---------- Experiment tracking / logs ----------
+runs/
+wandb/
+lightning_logs/
+mlruns/
+*.log
+
+# ---------- LaTeX build files (keep .tex, .bib and the final PDFs) ----------
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# ---------- OS / editors ----------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ---------- Archives (datasets often arrive zipped) ----------
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
