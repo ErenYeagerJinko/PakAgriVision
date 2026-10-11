@@ -1,0 +1,13 @@
+\section{Dataset Acquisition \& Provenance}
+\label{sec:dataset}
+
+\subsection{PlantVillage Benchmark Dataset}
+The primary baseline training dataset is the public PlantVillage benchmark~\cite{plantvillage}, obtained via the Kaggle API (\texttt{abdallahalidev/plantvillage-dataset}).
+\begin{itemize}
+    \item \textbf{Total Scale:} 54,303 color images across 14 distinct crop species and 38 distinct crop-disease pairings.
+    \item \textbf{Input Resolution:} Standardized 256$\times$256 pixels in RGB color format.
+    \item \textbf{License \& Integrity:} CC0 Public Domain / Open Educational License.
+\end{itemize}
+
+\subsection{Field-Image Collection for Domain Shift Evaluation}
+Because standard PlantVillage images were captured under controlled laboratory lighting against monochrome gray/black backgrounds, models trained naively exhibit brittle performance when deployed in field conditions. To rigorously assess generalization, PakAgriVision incorporates a dedicated field-collected test set ($\ge$150 images) documenting leaves under natural Pakistani sunlight, soil backgrounds, and complex foliage occlusion. Metadata, sources, and crop-name mappings are tracked in \texttt{field\_meta/field\_labels.csv} and \texttt{field\_meta/class\_mapping.csv}.

@@ -1,0 +1,68 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black
+}
+
+\setlist{itemsep=2pt,topsep=4pt}
+\renewcommand{\arraystretch}{1.2}
+
+\title{
+    \textbf{PakAgriVision: Crop Disease Detector}\\
+    \large Deliverable 1: Problem Definition \& Data Foundations\\
+    \normalsize Track A: Application Development
+}
+
+\author{
+    \textbf{Abdul Ahad} (24L-3029) \quad 
+    \textbf{M. Anas} (24L-3004) \quad 
+    \textbf{M. Babar Shahzad} (24L-3047)\\[4pt]
+    \small National University of Computer and Emerging Sciences (FAST-NUCES)\\
+    \small Repository: \url{https://github.com/ErenYeagerJinko/PakAgriVision}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. This report presents Deliverable~1, establishing the problem definition, raw data foundations from the PlantVillage benchmark ($\sim$54,000 images across 38 classes), local field image metadata collection, data validation and deduplication protocols, stratified leakage-free split strategies, and a standardized 13-field treatment knowledge base schema.
+\end{abstract}
+
+\input{sections/01_problem_statement.tex}
+\input{sections/02_dataset_acquisition.tex}
+\input{sections/03_data_cleaning.tex}
+\input{sections/04_eda.tex}
+\input{sections/05_dataset_splits.tex}
+\input{sections/06_treatment_kb.tex}
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{plantvillage}
+Hughes, D.~P., \& Salath{\'e}, M. (2015).
+An open access repository of images on plant health to enable the development of mobile disease diagnostics.
+\emph{arXiv preprint arXiv:1511.08060}.
+
+\bibitem{gradcam}
+Selvaraju, R.~R., Cogswell, M., Das, A., Vedaldi, A., Parikh, D., \& Batra, D. (2017).
+Grad-CAM: Visual explanations from deep networks via gradient-based localization.
+\emph{IEEE ICCV}, 618--626.
+\end{thebibliography}
+
+\end{document}
