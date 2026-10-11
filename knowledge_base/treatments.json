@@ -1,0 +1,20 @@
+{
+  "disclaimer": "Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.",
+  "Tomato___Early_blight": {
+    "crop": "Tomato",
+    "disease": "Early blight",
+    "is_healthy": false,
+    "cause": "Fungus Alternaria solani",
+    "symptoms": "Dark concentric-ringed spots on older leaves, yellowing around spots.",
+    "chemical_treatment": "Chlorothalonil or mancozeb spray every 7-10 days (follow the product label).",
+    "organic_treatment": "Copper-based fungicide; neem oil.",
+    "immediate_action": "Remove and destroy infected leaves; avoid overhead watering.",
+    "prevention": "Crop rotation, resistant varieties, proper spacing for airflow.",
+    "severity_guidance": "If more than 30% of the leaf area is affected, consider removing the plant.",
+    "sources": [
+      "FAO Plant Health Profiles - Tomato Early Blight, https://www.fao.org/plant-health/tpp/pestsp/Tomato/early-blight/en/, accessed 2026-10-10"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  }
+}
