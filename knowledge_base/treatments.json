@@ -1,18 +1,265 @@
 {
   "disclaimer": "Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.",
+  "Pepper___bell_Bacterial_spot": {
+    "crop": "Pepper",
+    "disease": "Bacterial spot",
+    "is_healthy": false,
+    "cause": "Bacteria Xanthomonas spp. (commonly X. euvesicatoria and related pathovars)",
+    "symptoms": "Small water-soaked leaf spots that turn brown with yellow halos; raised scabby lesions on fruit; severe defoliation in wet weather.",
+    "chemical_treatment": "Copper-based bactericides, often tank-mixed with mancozeb where labeled for pepper bacterial spot; apply preventively and rotate modes of action (follow the product label).",
+    "organic_treatment": "Fixed copper products labeled for organic use; combine with strict sanitation and resistant cultivars.",
+    "immediate_action": "Remove severely infected leaves and fruit; avoid working plants when wet; disinfect stakes and tools.",
+    "prevention": "Use certified disease-free seed/transplants, resistant varieties, crop rotation away from solanaceous crops, and drip irrigation instead of overhead watering.",
+    "severity_guidance": "If fruit lesions are widespread and plants are defoliating rapidly, prioritize removal of the worst plants and protect remaining canopy with labeled sprays.",
+    "sources": [
+      "Cornell Plant Clinic — Pepper Bacterial Spot, https://plantclinic.cornell.edu/factsheets/pepper-bacterial-spot.html, accessed 2026-10-10",
+      "Cornell Vegetable MD Online — Bacterial Spot of Tomato and Pepper, https://www.vegetables.cornell.edu/pest-management/disease-factsheets/bacterial-spot-of-tomato-and-pepper/, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Pepper___healthy": {
+    "crop": "Pepper",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; plant shows normal growth.",
+    "symptoms": "Uniform green leaves without spots, wilting, or unusual mottling; fruit develops normally.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; continue cultural best practices.",
+    "immediate_action": "Continue routine scouting for early spots, insects, and nutrient stress.",
+    "prevention": "Balanced fertility, adequate spacing for airflow, drip irrigation, and weed control around the bed.",
+    "severity_guidance": "No disease action required; re-check after weather events that favor foliar disease.",
+    "sources": [
+      "Cornell Plant Clinic — Pepper Bacterial Spot, https://plantclinic.cornell.edu/factsheets/pepper-bacterial-spot.html, accessed 2026-10-10"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Potato___Early_blight": {
+    "crop": "Potato",
+    "disease": "Early blight",
+    "is_healthy": false,
+    "cause": "Fungus Alternaria solani (and related Alternaria species)",
+    "symptoms": "Dark brown leaf lesions with concentric rings (target-like), often on older leaves; yellowing and premature defoliation.",
+    "chemical_treatment": "Protectant fungicides such as chlorothalonil or mancozeb on a regular schedule under disease-favorable weather; alternate FRAC groups (follow the product label).",
+    "organic_treatment": "Copper fungicides labeled for potato early blight; improve airflow and reduce leaf wetness.",
+    "immediate_action": "Remove heavily blighted lower leaves; avoid overhead irrigation late in the day.",
+    "prevention": "Crop rotation, adequate nitrogen (avoid severe stress), certified seed tubers, and hilling/mulch to reduce soil splash.",
+    "severity_guidance": "If lesions move into the upper canopy before tuber bulking is complete, intensify protectant sprays and consult local extension timing guidance.",
+    "sources": [
+      "University of Florida IFAS — Potato Early Blight, https://edis.ifas.ufl.edu/publication/PP128, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Potato___Late_blight": {
+    "crop": "Potato",
+    "disease": "Late blight",
+    "is_healthy": false,
+    "cause": "Oomycete Phytophthora infestans",
+    "symptoms": "Water-soaked grey-green lesions that rapidly turn brown/black; white fuzzy sporulation on leaf undersides in humid conditions; tuber rot risk.",
+    "chemical_treatment": "Use late-blight–labeled fungicides (protectants and locally systemic products as recommended for your region); spray preventively when forecasts are high risk (follow the product label).",
+    "organic_treatment": "Copper products labeled for late blight plus aggressive sanitation; organic programs need early and frequent coverage.",
+    "immediate_action": "Destroy hotspots quickly; do not compost infected vines; kill vines before harvest if tubers are at high risk of infection.",
+    "prevention": "Plant certified seed, destroy volunteer potatoes, avoid prolonged leaf wetness, and monitor regional late-blight alerts.",
+    "severity_guidance": "Rapid canopy collapse under cool, wet weather is an emergency: remove infected material and protect neighboring plantings immediately.",
+    "sources": [
+      "University of Minnesota Extension — Late Blight of Potato, https://extension.umn.edu/plant-diseases/late-blight-potato, accessed 2026-10-10"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Potato___healthy": {
+    "crop": "Potato",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; plant shows normal growth.",
+    "symptoms": "Leaves uniformly green without water-soaked or target-like lesions; stems firm.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; maintain cultural practices.",
+    "immediate_action": "Keep scouting, especially after cool rainy periods that favor late blight.",
+    "prevention": "Certified seed, rotation, good drainage, and timely hilling.",
+    "severity_guidance": "No disease action required.",
+    "sources": [
+      "University of Minnesota Extension — Late Blight of Potato, https://extension.umn.edu/plant-diseases/late-blight-potato, accessed 2026-10-10"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Bacterial_spot": {
+    "crop": "Tomato",
+    "disease": "Bacterial spot",
+    "is_healthy": false,
+    "cause": "Bacteria Xanthomonas spp.",
+    "symptoms": "Small water-soaked spots on leaves that become brown with yellow halos; raised scabby fruit lesions; defoliation in wet weather.",
+    "chemical_treatment": "Copper bactericides, often combined with mancozeb where labeled; begin before symptoms if disease pressure is high (follow the product label).",
+    "organic_treatment": "Fixed copper labeled for tomato bacterial spot; emphasize sanitation and resistant cultivars.",
+    "immediate_action": "Remove badly spotted leaves; avoid working wet plants; disinfect pruning tools.",
+    "prevention": "Pathogen-free seed/transplants, crop rotation, drip irrigation, and resistant varieties where available.",
+    "severity_guidance": "Widespread fruit spotting that reduces marketability warrants stricter spray intervals and removal of the worst plants.",
+    "sources": [
+      "Cornell Vegetable MD Online — Bacterial Spot of Tomato and Pepper, https://www.vegetables.cornell.edu/pest-management/disease-factsheets/bacterial-spot-of-tomato-and-pepper/, accessed 2026-10-11",
+      "Clemson HGIC — Tomato Diseases & Disorders, https://hgic.clemson.edu/factsheet/tomato-diseases-disorders/, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
   "Tomato___Early_blight": {
     "crop": "Tomato",
     "disease": "Early blight",
     "is_healthy": false,
     "cause": "Fungus Alternaria solani",
-    "symptoms": "Dark concentric-ringed spots on older leaves, yellowing around spots.",
-    "chemical_treatment": "Chlorothalonil or mancozeb spray every 7-10 days (follow the product label).",
-    "organic_treatment": "Copper-based fungicide; neem oil.",
+    "symptoms": "Dark concentric-ringed spots on older leaves, yellowing around spots; can progress up the canopy and affect stems/fruit.",
+    "chemical_treatment": "Chlorothalonil or mancozeb sprays on a preventive schedule under wet weather; rotate FRAC groups (follow the product label).",
+    "organic_treatment": "Copper-based fungicide; neem oil as a supplemental cultural aid where labeled.",
     "immediate_action": "Remove and destroy infected leaves; avoid overhead watering.",
-    "prevention": "Crop rotation, resistant varieties, proper spacing for airflow.",
-    "severity_guidance": "If more than 30% of the leaf area is affected, consider removing the plant.",
+    "prevention": "Crop rotation, resistant varieties, staking/pruning for airflow, and mulch to reduce soil splash.",
+    "severity_guidance": "If more than about 30% of the leaf area is affected, consider removing the worst plants and protecting neighbors with labeled fungicides.",
     "sources": [
-      "FAO Plant Health Profiles - Tomato Early Blight, https://www.fao.org/plant-health/tpp/pestsp/Tomato/early-blight/en/, accessed 2026-10-10"
+      "FAO Plant Health Profiles — Tomato Early Blight, https://www.fao.org/plant-health/tpp/pestsp/Tomato/early-blight/en/, accessed 2026-10-10",
+      "University of Kentucky — Foliar Diseases of Tomato (Early Blight, Septoria, Target Spot), https://plantpathology.ca.uky.edu/files/ppfs-vg-25.pdf, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Late_blight": {
+    "crop": "Tomato",
+    "disease": "Late blight",
+    "is_healthy": false,
+    "cause": "Oomycete Phytophthora infestans",
+    "symptoms": "Large water-soaked grey-green lesions that turn brown/black quickly; white sporulation on leaf undersides in humid weather; firm brown fruit lesions.",
+    "chemical_treatment": "Apply late-blight–labeled fungicides promptly when risk is high; protectants alone may be insufficient under severe pressure (follow the product label and local alerts).",
+    "organic_treatment": "Copper products labeled for late blight plus immediate removal of infected plants; coverage must be thorough.",
+    "immediate_action": "Bag and destroy infected plants (do not compost); notify nearby growers if outbreaks are regional.",
+    "prevention": "Resistant cultivars where available, night-time leaf wetness reduction, and monitoring of late-blight forecast systems.",
+    "severity_guidance": "Any confirmed late blight in humid weather is high severity — act the same day to limit spread.",
+    "sources": [
+      "University of Minnesota Extension — Late Blight of Tomato, https://extension.umn.edu/diseases/late-blight, accessed 2026-10-11",
+      "Penn State Extension — Scouting and Identifying Tomato Diseases, https://extension.psu.edu/scouting-and-identifying-tomato-diseases, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Leaf_Mold": {
+    "crop": "Tomato",
+    "disease": "Leaf mold",
+    "is_healthy": false,
+    "cause": "Fungus Passalora fulva (syn. Cladosporium fulvum)",
+    "symptoms": "Pale yellow spots on upper leaf surfaces with olive-green to brown velvety mold on the corresponding undersides; common in humid greenhouses/high tunnels.",
+    "chemical_treatment": "Preventive fungicides labeled for tomato leaf mold (e.g. chlorothalonil, mancozeb, or copper where listed); alternate modes of action (follow the product label).",
+    "organic_treatment": "Copper hydroxide products labeled for leaf mold; improve ventilation aggressively.",
+    "immediate_action": "Prune for airflow, reduce humidity, and remove heavily infected leaves.",
+    "prevention": "Resistant cultivars, wider spacing, lower night humidity, and avoid wetting foliage.",
+    "severity_guidance": "Rapid lower-canopy yellowing with fuzzy undersides in a closed tunnel warrants immediate humidity control plus labeled sprays.",
+    "sources": [
+      "University of Minnesota Extension — Tomato Leaf Mold, https://extension.umn.edu/disease-management/tomato-leaf-mold, accessed 2026-10-11",
+      "Clemson HGIC — Tomato Diseases & Disorders, https://hgic.clemson.edu/factsheet/tomato-diseases-disorders/, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "crop": "Tomato",
+    "disease": "Septoria leaf spot",
+    "is_healthy": false,
+    "cause": "Fungus Septoria lycopersici",
+    "symptoms": "Numerous small circular spots with dark borders and tan/grey centers; tiny black pycnidia in lesion centers; defoliation starting from lower leaves.",
+    "chemical_treatment": "Protectant fungicides such as chlorothalonil, mancozeb, or copper on a preventive schedule (follow the product label).",
+    "organic_treatment": "Fixed copper fungicides; rely heavily on rotation, mulching, and sanitation because organic efficacy is limited once established.",
+    "immediate_action": "Remove infected lower leaves; stake plants; stop overhead irrigation.",
+    "prevention": "2–3 year rotation away from tomato, debris removal, mulch to reduce splash, and weed control of solanaceous weeds.",
+    "severity_guidance": "If spots coalesce and lower half of the plant defoliates before fruit ripens, increase spray frequency within label limits and remove the worst foliage.",
+    "sources": [
+      "NC State Extension — Septoria Leaf Spot of Tomato, https://content.ces.ncsu.edu/septoria-leaf-spot-of-tomato, accessed 2026-10-11",
+      "Clemson HGIC — Tomato Diseases & Disorders, https://hgic.clemson.edu/factsheet/tomato-diseases-disorders/, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "crop": "Tomato",
+    "disease": "Two-spotted spider mite",
+    "is_healthy": false,
+    "cause": "Arachnid pest Tetranychus urticae (not a pathogen)",
+    "symptoms": "Fine stippling on leaves progressing to bronzing; fine webbing on undersides; mites visible with a hand lens.",
+    "chemical_treatment": "Use a labeled miticide for twospotted spider mite on tomato; rotate modes of action and do not spray preventively without scouting (follow the product label).",
+    "organic_treatment": "Insecticidal soap, horticultural oil, or neem products labeled for mites; ensure thorough underside coverage.",
+    "immediate_action": "Scout leaf undersides; spot-treat hotspots; avoid broad-spectrum insecticides that kill mite predators.",
+    "prevention": "Reduce plant stress and dust; conserve beneficials; quarantine new transplants.",
+    "severity_guidance": "Bronzing plus heavy webbing across much of the canopy needs prompt miticide coverage; light stippling can often be managed with spot treatments first.",
+    "sources": [
+      "Michigan State University Extension — Diagnosing Mite Problems in Tomatoes, https://www.canr.msu.edu/news/diagnosing_mite_problems_in_tomatoes, accessed 2026-10-11",
+      "Texas A&M AgriLife Extension Entomology — Twospotted Spider Mite Management Guide for Horticulture Crops, https://extensionentomology.tamu.edu/wp-content/uploads/2025/03/twospotted-spider-mite-management-for-horticulture-crops-1.pdf, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Target_Spot": {
+    "crop": "Tomato",
+    "disease": "Target spot",
+    "is_healthy": false,
+    "cause": "Fungus Corynespora cassiicola",
+    "symptoms": "Leaf spots that enlarge with concentric rings resembling a target; can be confused with early blight; severe cases cause blighting and leaf drop.",
+    "chemical_treatment": "Fungicides labeled for tomato target spot / foliar diseases; rotate FRAC codes and follow regional vegetable production guides (follow the product label).",
+    "organic_treatment": "Copper fungicides where labeled; improve airflow and reduce leaf wetness.",
+    "immediate_action": "Remove severely affected leaves; avoid working plants when wet.",
+    "prevention": "Crop rotation, sanitation of debris, staking, and avoid dense canopies in humid weather.",
+    "severity_guidance": "When lesions coalesce and mid-canopy leaves drop quickly, treat as high foliar-disease pressure and tighten spray intervals within label limits.",
+    "sources": [
+      "University of Kentucky — Foliar Diseases of Tomato (Early Blight, Septoria, Target Spot), https://plantpathology.ca.uky.edu/files/ppfs-vg-25.pdf, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "crop": "Tomato",
+    "disease": "Tomato yellow leaf curl virus (TYLCV)",
+    "is_healthy": false,
+    "cause": "Begomovirus transmitted by sweetpotato whitefly (Bemisia tabaci)",
+    "symptoms": "Upward leaf curling, yellow leaf margins, stunting, shortened internodes, and reduced fruit set — worse with early infection.",
+    "chemical_treatment": "No curative spray for the virus; manage whiteflies with labeled insecticides rotated by mode of action, prioritizing early-season protection (follow the product label).",
+    "organic_treatment": "Insecticidal soaps, oils, or neem products labeled for whiteflies on undersides of leaves; use row covers on young plants where practical.",
+    "immediate_action": "Rogue infected plants when incidence is still low; control whiteflies on remaining plants; destroy crop residue after harvest.",
+    "prevention": "TYLCV-tolerant cultivars, virus-free transplants, reflective mulch, weed host management, and avoid planting next to old infected fields.",
+    "severity_guidance": "Early-season infection with many whiteflies is high impact — replace plants if fruit set has failed and pressure remains high.",
+    "sources": [
+      "NC State Extension — Tomato Yellow Leaf Curl Virus, https://content.ces.ncsu.edu/tomato-yellow-leaf-curl-virus, accessed 2026-10-11",
+      "UC IPM — Tomato Yellow Leaf Curl, https://ipm.ucanr.edu/agriculture/tomato/tomato-yellow-leaf-curl/, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "crop": "Tomato",
+    "disease": "Tomato mosaic virus (ToMV) / related tobamoviruses",
+    "is_healthy": false,
+    "cause": "Tobamovirus (Tomato mosaic virus / Tobacco mosaic virus complex); spreads mechanically via sap, seed, and contaminated tools",
+    "symptoms": "Mosaic mottling of light and dark green on leaves, leaf distortion, stunting; fruit may show uneven color or deformation.",
+    "chemical_treatment": "None needed for the virus itself — no effective curative chemical; focus on sanitation and resistant cultivars.",
+    "organic_treatment": "None curative; use hygiene (milk or bleach tool dips as recommended by extension) and resistant varieties.",
+    "immediate_action": "Remove and destroy infected plants including roots; do not compost; wash hands and disinfect tools before touching healthy plants.",
+    "prevention": "Certified seed, resistant cultivars (TMV/ToMV codes), weed control, and avoid tobacco products when handling plants.",
+    "severity_guidance": "Any confirmed mosaic spread in a block is high risk because of mechanical transmission — rogue promptly and sanitize thoroughly.",
+    "sources": [
+      "Utah State University Extension — Tomato and Tobacco Mosaic Virus, https://extension.usu.edu/planthealth/ipm/notes_ag/veg-TMV-ToMV, accessed 2026-10-11",
+      "University of Kentucky — Managing Tobamoviruses in Greenhouse Production, https://plantpathology.ca.uky.edu/files/ppfs-gh-08.pdf, accessed 2026-10-11"
+    ],
+    "last_reviewed": "2026-10-11",
+    "reviewed_by": "Babar"
+  },
+  "Tomato___healthy": {
+    "crop": "Tomato",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; plant shows normal growth.",
+    "symptoms": "Even green foliage without spots, mold, mosaic, curling, or stippling; normal flowering and fruit set.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; continue cultural best practices.",
+    "immediate_action": "Continue weekly scouting of lower leaves and leaf undersides.",
+    "prevention": "Good airflow, drip irrigation, rotation, and resistant cultivars matched to local disease pressure.",
+    "severity_guidance": "No disease action required.",
+    "sources": [
+      "Clemson HGIC — Tomato Diseases & Disorders, https://hgic.clemson.edu/factsheet/tomato-diseases-disorders/, accessed 2026-10-11"
     ],
     "last_reviewed": "2026-10-11",
     "reviewed_by": "Babar"
