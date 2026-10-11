@@ -1,1 +1,151 @@
 filename,label,source,url,licence,notes
+plantdoc_apple_scab_001.jpg,Apple___Apple_scab,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple Scab Leaf
+plantdoc_apple_scab_002.jpg,Apple___Apple_scab,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple Scab Leaf
+plantdoc_apple_scab_003.jpg,Apple___Apple_scab,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple Scab Leaf
+plantdoc_apple_scab_004.jpg,Apple___Apple_scab,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple Scab Leaf
+plantdoc_apple_scab_005.jpg,Apple___Apple_scab,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple Scab Leaf
+plantdoc_pepper_bacterial_spot_001.jpg,Pepper___bell_Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf spot
+plantdoc_pepper_bacterial_spot_002.jpg,Pepper___bell_Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf spot
+plantdoc_pepper_bacterial_spot_003.jpg,Pepper___bell_Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf spot
+plantdoc_pepper_bacterial_spot_004.jpg,Pepper___bell_Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf spot
+plantdoc_pepper_bacterial_spot_005.jpg,Pepper___bell_Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf spot
+plantdoc_potato_late_blight_001.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_002.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_003.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_004.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_005.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_tomato_early_blight_001.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_002.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_003.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_004.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_005.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_late_blight_001.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_002.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_003.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_004.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_005.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_bacterial_spot_001.jpg,Tomato___Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf bacterial spot
+plantdoc_tomato_bacterial_spot_002.jpg,Tomato___Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf bacterial spot
+plantdoc_tomato_bacterial_spot_003.jpg,Tomato___Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf bacterial spot
+plantdoc_tomato_bacterial_spot_004.jpg,Tomato___Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf bacterial spot
+plantdoc_tomato_bacterial_spot_005.jpg,Tomato___Bacterial_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf bacterial spot
+plantdoc_tomato_septoria_001.jpg,Tomato___Septoria_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Septoria leaf spot
+plantdoc_tomato_septoria_002.jpg,Tomato___Septoria_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Septoria leaf spot
+plantdoc_tomato_septoria_003.jpg,Tomato___Septoria_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Septoria leaf spot
+plantdoc_tomato_septoria_004.jpg,Tomato___Septoria_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Septoria leaf spot
+plantdoc_tomato_septoria_005.jpg,Tomato___Septoria_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Septoria leaf spot
+plantdoc_tomato_healthy_001.jpg,Tomato___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf
+plantdoc_tomato_healthy_002.jpg,Tomato___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf
+plantdoc_tomato_healthy_003.jpg,Tomato___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf
+plantdoc_tomato_healthy_004.jpg,Tomato___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf
+plantdoc_tomato_healthy_005.jpg,Tomato___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf
+plantdoc_potato_early_blight_001.jpg,Potato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf early blight
+plantdoc_potato_early_blight_002.jpg,Potato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf early blight
+plantdoc_potato_early_blight_003.jpg,Potato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf early blight
+plantdoc_potato_early_blight_004.jpg,Potato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf early blight
+plantdoc_potato_early_blight_005.jpg,Potato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf early blight
+plantdoc_corn_common_rust_001.jpg,Corn___Common_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn rust leaf
+plantdoc_corn_common_rust_002.jpg,Corn___Common_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn rust leaf
+plantdoc_corn_common_rust_003.jpg,Corn___Common_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn rust leaf
+plantdoc_corn_common_rust_004.jpg,Corn___Common_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn rust leaf
+plantdoc_corn_common_rust_005.jpg,Corn___Common_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn rust leaf
+plantdoc_tomato_leaf_mold_001.jpg,Tomato___Leaf_Mold,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato mold leaf
+plantdoc_tomato_leaf_mold_002.jpg,Tomato___Leaf_Mold,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato mold leaf
+plantdoc_tomato_leaf_mold_003.jpg,Tomato___Leaf_Mold,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato mold leaf
+plantdoc_tomato_leaf_mold_004.jpg,Tomato___Leaf_Mold,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato mold leaf
+plantdoc_tomato_leaf_mold_005.jpg,Tomato___Leaf_Mold,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato mold leaf
+plantdoc_tomato_mosaic_001.jpg,Tomato___Tomato_mosaic_virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf mosaic virus
+plantdoc_tomato_mosaic_002.jpg,Tomato___Tomato_mosaic_virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf mosaic virus
+plantdoc_tomato_mosaic_003.jpg,Tomato___Tomato_mosaic_virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf mosaic virus
+plantdoc_tomato_mosaic_004.jpg,Tomato___Tomato_mosaic_virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf mosaic virus
+plantdoc_tomato_mosaic_005.jpg,Tomato___Tomato_mosaic_virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf mosaic virus
+plantdoc_tomato_ylcv_001.jpg,Tomato___Tomato_Yellow_Leaf_Curl_Virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf yellow virus
+plantdoc_tomato_ylcv_002.jpg,Tomato___Tomato_Yellow_Leaf_Curl_Virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf yellow virus
+plantdoc_tomato_ylcv_003.jpg,Tomato___Tomato_Yellow_Leaf_Curl_Virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf yellow virus
+plantdoc_tomato_ylcv_004.jpg,Tomato___Tomato_Yellow_Leaf_Curl_Virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf yellow virus
+plantdoc_tomato_ylcv_005.jpg,Tomato___Tomato_Yellow_Leaf_Curl_Virus,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf yellow virus
+plantdoc_grape_black_rot_001.jpg,Grape___Black_rot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf black rot
+plantdoc_grape_black_rot_002.jpg,Grape___Black_rot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf black rot
+plantdoc_grape_black_rot_003.jpg,Grape___Black_rot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf black rot
+plantdoc_grape_black_rot_004.jpg,Grape___Black_rot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf black rot
+plantdoc_grape_black_rot_005.jpg,Grape___Black_rot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf black rot
+plantdoc_grape_healthy_001.jpg,Grape___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf
+plantdoc_grape_healthy_002.jpg,Grape___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf
+plantdoc_grape_healthy_003.jpg,Grape___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf
+plantdoc_grape_healthy_004.jpg,Grape___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf
+plantdoc_grape_healthy_005.jpg,Grape___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from grape leaf
+plantdoc_apple_rust_001.jpg,Apple___Cedar_apple_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple rust leaf
+plantdoc_apple_rust_002.jpg,Apple___Cedar_apple_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple rust leaf
+plantdoc_apple_rust_003.jpg,Apple___Cedar_apple_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple rust leaf
+plantdoc_apple_rust_004.jpg,Apple___Cedar_apple_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple rust leaf
+plantdoc_apple_rust_005.jpg,Apple___Cedar_apple_rust,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple rust leaf
+plantdoc_apple_healthy_001.jpg,Apple___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple leaf
+plantdoc_apple_healthy_002.jpg,Apple___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple leaf
+plantdoc_apple_healthy_003.jpg,Apple___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple leaf
+plantdoc_apple_healthy_004.jpg,Apple___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple leaf
+plantdoc_apple_healthy_005.jpg,Apple___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Apple leaf
+plantdoc_pepper_healthy_001.jpg,Pepper___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf
+plantdoc_pepper_healthy_002.jpg,Pepper___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf
+plantdoc_pepper_healthy_003.jpg,Pepper___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf
+plantdoc_pepper_healthy_004.jpg,Pepper___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf
+plantdoc_pepper_healthy_005.jpg,Pepper___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Bell_pepper leaf
+plantdoc_corn_gray_leaf_spot_001.jpg,Corn___Cercospora_leaf_spot Gray_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn Gray leaf spot
+plantdoc_corn_gray_leaf_spot_002.jpg,Corn___Cercospora_leaf_spot Gray_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn Gray leaf spot
+plantdoc_corn_gray_leaf_spot_003.jpg,Corn___Cercospora_leaf_spot Gray_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn Gray leaf spot
+plantdoc_corn_gray_leaf_spot_004.jpg,Corn___Cercospora_leaf_spot Gray_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn Gray leaf spot
+plantdoc_corn_gray_leaf_spot_005.jpg,Corn___Cercospora_leaf_spot Gray_leaf_spot,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn Gray leaf spot
+plantdoc_corn_leaf_blight_001.jpg,Corn___Northern_Leaf_Blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn leaf blight
+plantdoc_corn_leaf_blight_002.jpg,Corn___Northern_Leaf_Blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn leaf blight
+plantdoc_corn_leaf_blight_003.jpg,Corn___Northern_Leaf_Blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn leaf blight
+plantdoc_corn_leaf_blight_004.jpg,Corn___Northern_Leaf_Blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn leaf blight
+plantdoc_corn_leaf_blight_005.jpg,Corn___Northern_Leaf_Blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Corn leaf blight
+plantdoc_squash_powdery_mildew_001.jpg,Squash___Powdery_mildew,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Squash Powdery mildew leaf
+plantdoc_squash_powdery_mildew_002.jpg,Squash___Powdery_mildew,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Squash Powdery mildew leaf
+plantdoc_squash_powdery_mildew_003.jpg,Squash___Powdery_mildew,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Squash Powdery mildew leaf
+plantdoc_squash_powdery_mildew_004.jpg,Squash___Powdery_mildew,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Squash Powdery mildew leaf
+plantdoc_squash_powdery_mildew_005.jpg,Squash___Powdery_mildew,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Squash Powdery mildew leaf
+plantdoc_soybean_healthy_001.jpg,Soybean___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Soyabean leaf
+plantdoc_soybean_healthy_002.jpg,Soybean___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Soyabean leaf
+plantdoc_soybean_healthy_003.jpg,Soybean___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Soyabean leaf
+plantdoc_soybean_healthy_004.jpg,Soybean___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Soyabean leaf
+plantdoc_soybean_healthy_005.jpg,Soybean___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Soyabean leaf
+plantdoc_strawberry_healthy_001.jpg,Strawberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Strawberry leaf
+plantdoc_strawberry_healthy_002.jpg,Strawberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Strawberry leaf
+plantdoc_strawberry_healthy_003.jpg,Strawberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Strawberry leaf
+plantdoc_strawberry_healthy_004.jpg,Strawberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Strawberry leaf
+plantdoc_strawberry_healthy_005.jpg,Strawberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Strawberry leaf
+plantdoc_raspberry_healthy_001.jpg,Raspberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Raspberry leaf
+plantdoc_raspberry_healthy_002.jpg,Raspberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Raspberry leaf
+plantdoc_raspberry_healthy_003.jpg,Raspberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Raspberry leaf
+plantdoc_raspberry_healthy_004.jpg,Raspberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Raspberry leaf
+plantdoc_raspberry_healthy_005.jpg,Raspberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Raspberry leaf
+plantdoc_blueberry_healthy_001.jpg,Blueberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Blueberry leaf
+plantdoc_blueberry_healthy_002.jpg,Blueberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Blueberry leaf
+plantdoc_blueberry_healthy_003.jpg,Blueberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Blueberry leaf
+plantdoc_blueberry_healthy_004.jpg,Blueberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Blueberry leaf
+plantdoc_blueberry_healthy_005.jpg,Blueberry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Blueberry leaf
+plantdoc_cherry_healthy_001.jpg,Cherry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Cherry leaf
+plantdoc_cherry_healthy_002.jpg,Cherry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Cherry leaf
+plantdoc_cherry_healthy_003.jpg,Cherry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Cherry leaf
+plantdoc_cherry_healthy_004.jpg,Cherry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Cherry leaf
+plantdoc_cherry_healthy_005.jpg,Cherry___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Cherry leaf
+plantdoc_peach_healthy_001.jpg,Peach___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Peach leaf
+plantdoc_peach_healthy_002.jpg,Peach___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Peach leaf
+plantdoc_peach_healthy_003.jpg,Peach___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Peach leaf
+plantdoc_peach_healthy_004.jpg,Peach___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Peach leaf
+plantdoc_peach_healthy_005.jpg,Peach___healthy,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Peach leaf
+plantdoc_potato_late_blight_006.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_007.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_008.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_009.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_potato_late_blight_010.jpg,Potato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Potato leaf late blight
+plantdoc_tomato_early_blight_006.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_007.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_008.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_009.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_early_blight_010.jpg,Tomato___Early_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato Early blight leaf
+plantdoc_tomato_late_blight_006.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_007.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_late_blight_008.jpg,Tomato___Late_blight,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato leaf late blight
+plantdoc_tomato_spider_mites_001.jpg,Tomato___Spider_mites Two-spotted_spider_mite,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato two spotted spider mites leaf
+plantdoc_tomato_spider_mites_002.jpg,Tomato___Spider_mites Two-spotted_spider_mite,PlantDoc,https://github.com/pratikkayal/PlantDoc-Dataset,CC-BY-4.0,from Tomato two spotted spider mites leaf

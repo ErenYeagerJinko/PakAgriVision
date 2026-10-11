@@ -58,7 +58,7 @@ data/raw/field/
 ```
 Example:
 ```
-data/raw/field/Tomato___Early_blight/field_tomato_early_blight_001.jpg
+data/raw/field/Tomato___Early_blight/plantdoc_tomato_early_blight_001.jpg
 ```
 
 ### Metadata (`field_meta/field_labels.csv`)
@@ -66,7 +66,7 @@ Committed CSV with one row per image. Columns:
 
 | Column   | Meaning |
 |----------|---------|
-| filename | Basename only (e.g. `field_tomato_early_blight_001.jpg`) |
+| filename | Basename only, prefixed with the source (e.g. `plantdoc_tomato_early_blight_001.jpg`) |
 | label    | Exact PlantVillage class string from `splits/class_names.json` |
 | source   | `PlantDoc` / `iNaturalist` / `Wikimedia` / `own_photo` |
 | url      | Page or file URL; use `local` for own photos |
@@ -82,10 +82,14 @@ A second team member must double-check every label before the field split is
 finalized. Doubtful images are removed, not forced into a class.
 
 ### Google Drive link (zip of `data/raw/field/`)
-**TODO — Babar:** paste the shared Drive link here after the ≥150-image zip is uploaded.
+Current set: **150 images across 28 classes**, all from PlantDoc (66 MB zip).
 
 ```
-FIELD_IMAGES_DRIVE_URL=<paste-link-here>
+FIELD_IMAGES_DRIVE_URL=https://drive.google.com/file/d/1lNE3mqhb3yxPV_i5Sz3lptrWv-bkW9eo/view?usp=sharing
 ```
+
+To restore locally, download `field_images.zip` and extract it into `data/raw/field/`
+so that each class folder sits directly under it. File names must match
+`field_meta/field_labels.csv`.
 
 The zip itself is **not** committed.
