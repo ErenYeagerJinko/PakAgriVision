@@ -1,0 +1,10 @@
+\section{Data Verification \& Quality Assurance}
+\label{sec:cleaning}
+
+Prior to partitioning and training, raw data undergoes automated verification through \texttt{data\_scripts/}:
+\begin{itemize}
+    \item \textbf{File Integrity Verification:} Binary validation via Pillow (\texttt{PIL.Image.verify()}) to catch truncated JPEG files and corrupt headers.
+    \item \textbf{Dimension \& Channel Consistency:} Enforcing 3-channel RGB representation and discarding monochrome or non-standard color modes.
+    \item \textbf{Deduplication via Perceptual Hashing:} Computing Difference Hashes (dHash) and Average Hashes (aHash) with \texttt{imagehash} at a Hamming distance threshold $\le 2$ to identify near-identical image duplicates across partitions, preventing data leakage.
+\end{itemize}
+The output log and identified duplicates are archived into \texttt{splits/dedupe\_report.csv}.
