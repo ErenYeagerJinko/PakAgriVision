@@ -1,10 +1,1 @@
 filename,label,source,url,licence,notes
-field_tomato_001.jpg,Tomato___Bacterial_spot,own_photo,local,farm photo,"Taken on farm, clear leaf"
-field_tomato_002.jpg,Tomato___Early_blight,own_photo,local,farm photo,"Early signs on lower leaves"
-field_tomato_003.jpg,Tomato___healthy,own_photo,local,farm photo,"Healthy branch"
-field_pepper_001.jpg,Pepper___bell_Bacterial_spot,iNaturalist,https://inaturalist.org/observations/12345,CC-BY,"Garden plant"
-field_pepper_002.jpg,Pepper___healthy,iNaturalist,https://inaturalist.org/observations/67890,CC-BY,"Green pepper"
-field_potato_001.jpg,Potato___Early_blight,own_photo,local,farm photo,"Dark spots on leaf"
-field_potato_002.jpg,Potato___Late_blight,own_photo,local,farm photo,"White mold growth"
-field_apple_001.jpg,Apple___Apple_scab,PlantDoc,https://github.com/PlantDoc-Dataset,CC0,"Red apple with scabs"
-field_cherry_001.jpg,Cherry___healthy,Wikimedia,commons,public domain,"Cherries on branch"
