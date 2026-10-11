@@ -1,0 +1,12 @@
+\section{Dataset Partitioning \& Leakage Prevention}
+\label{sec:splits}
+
+\subsection{Stratified Partitioning Strategy}
+To guarantee reproducible benchmarking and statistical parity across all 38 categories, the dataset is partitioned using stratified random sampling with fixed seed ($42$):
+\begin{itemize}
+    \item \textbf{Training Set (70\%):} Reserved for parameter optimization and class weight calculation.
+    \item \textbf{Validation Set (15\%):} Dedicated to checkpoint selection, early stopping, and hyperparameter tuning.
+    \item \textbf{Test Set (15\%):} Kept strictly isolated until final model evaluation.
+\end{itemize}
+
+Splits are committed as deterministic manifest CSV files (\texttt{splits/train.csv}, \texttt{splits/val.csv}, \texttt{splits/test.csv}) containing relative filepaths, class strings, and zero-indexed integer targets referenced from \texttt{splits/class_names.json}.

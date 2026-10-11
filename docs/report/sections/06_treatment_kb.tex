@@ -1,0 +1,18 @@
+\section{Treatment Knowledge Base Architecture}
+\label{sec:kb}
+
+\subsection{Standardized JSON Schema}
+Beyond passive classification, PakAgriVision empowers actionable interventions. A curated knowledge base (\texttt{knowledge\_base/treatments.json}) maps each of the 38 disease classes to agronomically verified remedies.
+
+Integrity is validated against \texttt{knowledge\_base/schema.json}, requiring 13 essential fields for every entry:
+\begin{itemize}
+    \item \texttt{disease\_id}, \texttt{common\_name}, \texttt{scientific\_name}, \texttt{host\_crop}
+    \item \texttt{pathogen\_type} (fungal, bacterial, viral, healthy)
+    \item \texttt{symptoms} (structured list of visual cues)
+    \item \texttt{chemical\_treatments} (fungicides/bactericides, active ingredients, dosage rates)
+    \item \texttt{organic\_alternatives} (bio-fungicides, neem extract, copper formulations)
+    \item \texttt{preventative\_measures} (crop rotation, irrigation hygiene)
+    \item \texttt{urdu\_advisory} (localized guidance for regional farmers)
+    \item \texttt{sources} (academic and extension service references)
+\end{itemize}
+Citations and institutional origins (e.g., FAO, University Extension bulletins) are recorded in \texttt{knowledge\_base/SOURCES.md}.

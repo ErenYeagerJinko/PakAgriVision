@@ -1,0 +1,12 @@
+\section{Exploratory Data Analysis (EDA)}
+\label{sec:eda}
+
+\subsection{Class Distribution \& Imbalance}
+PlantVillage exhibits severe natural class imbalance across its 38 classes, ranging from over 5,000 images in populous classes (e.g., \textit{Soybean healthy}) down to fewer than 300 images in minority classes (e.g., \textit{Potato healthy}). 
+\begin{itemize}
+    \item Figure generation will be captured in \texttt{notebooks/01\_eda.ipynb} and exported to \texttt{reports/figures/class\_distribution.png}.
+    \item Class weights will be computed dynamically from the training split only to prevent validation leakage.
+\end{itemize}
+
+\subsection{Color and Feature Analysis}
+Color channel histograms and average HSV distributions are evaluated to verify that disease markers (chlorosis, necrosis, halo lesions) provide distinguishable visual signatures across disease classes.

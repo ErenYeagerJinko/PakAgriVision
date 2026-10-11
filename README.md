@@ -1,4 +1,4 @@
-﻿# PakAgriVision
+# PakAgriVision
 
 **Team Yeagerists++**
 - **Abdul Ahad** — 24L-3029
@@ -21,13 +21,21 @@ The project builds on the [PlantVillage Dataset](https://www.kaggle.com/datasets
 
 ## Directory Structure
 
-The repository follows the structure defined in `phase2_plan.html`. Key directories:
+The repository follows the structure defined for Deliverable 1 (Problem Definition & Data Foundations). Key directories:
 
 ```
 PakAgriVision/
 ├── README.md                  # This file — setup + how to reproduce
 ├── requirements.txt           # Pinned dependencies
 ├── .gitignore                # Git-ignored patterns (data/models/secrets)
+│
+├── data_scripts/              # Phase 2 scripts mandated by Deliverable 1 spec
+│   ├── README.md              # Purpose & mapping of data pipeline scripts
+│   ├── download_data.md       # Exact download commands
+│   ├── check_dataset.py       # A1: quality scan → dedupe_report.csv
+│   ├── make_splits.py         # A2: writes splits/*.csv + class_weights.json
+│   ├── make_field_splits.py   # B4: field_test / field_adapt
+│   └── validate_treatments.py # B3: checks treatments.json
 │
 ├── data/                      # NEVER commit large data/folders
 │   ├── README.md              # Dataset download info, version, licence
@@ -66,13 +74,7 @@ PakAgriVision/
 │       ├── splits.py          # Split logic
 │       └── quality.py         # Corrupt / duplicate detection
 │
-├── scripts/                   # One-off scripts
-│   ├── download_data.md       # Exact download commands
-│   ├── check_dataset.py       # A1: quality scan → dedupe_report.csv
-│   ├── make_splits.py         # A2: writes splits/*.csv + class_weights.json
-│   ├── make_field_splits.py   # B4: field_test / field_adapt
-│   └── validate_treatments.py # B3: checks treatments.json
-│
+
 ├── notebooks/                 # EDA notebook (outputs stripped)
 │   └── 01_eda.ipynb
 │
@@ -114,7 +116,7 @@ PakAgriVision/
 | Split CSVs, class weights, class names | `splits/`                  | Yes     |
 | Treatment JSON + sources             | `knowledge_base/`           | Yes     |
 | Reusable code                        | `src/`                      | Yes     |
-| One-off scripts                      | `scripts/`                  | Yes     |
+| One-off / data scripts              | `data_scripts/`             | Yes     |
 | Report figures (small PNG/PDF)       | `reports/figures/`          | Yes     |
 | Trained weights (.pth/.pt/.ckpt)     | `models/`                   | No      |
 | Compiled report/proposal PDFs        | `docs/…`                    | Yes     |
@@ -133,7 +135,7 @@ PakAgriVision/
 ### 2. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/PakAgriVision.git
+git clone https://github.com/ErenYeagerJinko/PakAgriVision.git
 cd PakAgriVision
 ```
 
@@ -156,23 +158,23 @@ pip install -r requirements.txt
 ```
 
 **Pinned dependencies** (from `requirements.txt`):
-```
-torch
-torchvision
-numpy
-pandas
-scikit-learn
-matplotlib
-seaborn
-pillow
-imagehash
-tqdm
-pyyaml
-jsonschema
-jupyter
-pytest
-nbstripout
-kaggle
+```text
+torch==2.14.1
+torchvision==0.29.1
+numpy==2.5.4
+pandas==3.0.6
+scikit-learn==1.9.1
+matplotlib==3.11.2
+seaborn==0.13.2
+pillow==12.3.0
+imagehash==4.3.2
+tqdm==4.70.1
+pyyaml==6.0.3
+jsonschema==4.26.0
+jupyter==1.1.1
+pytest==9.1.1
+nbstripout==0.9.1
+kaggle==2.2.4
 ```
 
 > **Windows note**: If the DataLoader hangs, use `num_workers=0`.
@@ -210,7 +212,7 @@ jupyter notebook notebooks/01_eda.ipynb
 ### 8. Validate the treatment knowledge base
 
 ```bash
-python scripts/validate_treatments.py
+python data_scripts/validate_treatments.py
 ```
 
 ### 9. Run the tests
@@ -230,7 +232,11 @@ pdflatex main.tex
 
 ### 11. Launch the Streamlit app (Phase 5)
 
+> **Note:** Streamlit is reserved for Phase 5 (Interactive Application Deployment) and is not required for Deliverable 1.
+
 ```bash
+# Optional (Phase 5 only):
+# pip install streamlit
 streamlit run app/
 ```
 
