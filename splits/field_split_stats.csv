@@ -1,0 +1,30 @@
+label,label_idx,total,field_test,field_adapt
+Apple___Apple_scab,0,5,3,2
+Apple___Cedar_apple_rust,2,5,3,2
+Apple___healthy,3,5,3,2
+Blueberry___healthy,4,5,3,2
+Cherry___healthy,5,5,3,2
+Corn___Cercospora_leaf_spot Gray_leaf_spot,7,5,3,2
+Corn___Common_rust,8,5,3,2
+Corn___Northern_Leaf_Blight,9,5,3,2
+Grape___Black_rot,11,5,3,2
+Grape___healthy,14,5,3,2
+Peach___healthy,17,5,3,2
+Pepper___bell_Bacterial_spot,18,5,3,2
+Pepper___healthy,19,5,3,2
+Potato___Early_blight,20,5,3,2
+Potato___Late_blight,21,10,7,3
+Raspberry___healthy,23,5,3,2
+Soybean___healthy,24,5,3,2
+Squash___Powdery_mildew,25,5,3,2
+Strawberry___healthy,26,5,3,2
+Tomato___Bacterial_spot,28,5,3,2
+Tomato___Early_blight,29,10,7,3
+Tomato___Late_blight,30,8,5,3
+Tomato___Leaf_Mold,31,5,3,2
+Tomato___Septoria_leaf_spot,32,5,3,2
+Tomato___Spider_mites Two-spotted_spider_mite,33,2,1,1
+Tomato___Tomato_Yellow_Leaf_Curl_Virus,35,5,3,2
+Tomato___Tomato_mosaic_virus,36,5,3,2
+Tomato___healthy,37,5,3,2
+TOTAL,,150,92,58

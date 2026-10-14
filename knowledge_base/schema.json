@@ -1,27 +1,43 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Treatment Knowledge Base Schema",
+  "$id": "https://pakagrivision.local/knowledge_base/treatment-entry.schema.json",
+  "title": "Treatment Knowledge Base Entry",
+  "description": "Schema for one disease/crop treatment record. Top-level keys in treatments.json must be PlantVillage class names from splits/class_names.json (plus an optional top-level disclaimer string).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["crop", "disease", "is_healthy", "cause", "symptoms", "chemical_treatment", "organic_treatment", "immediate_action", "prevention", "severity_guidance", "sources", "last_reviewed", "reviewed_by"],
+  "required": [
+    "crop",
+    "disease",
+    "is_healthy",
+    "cause",
+    "symptoms",
+    "chemical_treatment",
+    "organic_treatment",
+    "immediate_action",
+    "prevention",
+    "severity_guidance",
+    "sources",
+    "last_reviewed",
+    "reviewed_by"
+  ],
   "properties": {
-    "crop": {"type": "string"},
-    "disease": {"type": "string"},
+    "crop": {"type": "string", "minLength": 1},
+    "disease": {"type": "string", "minLength": 1},
     "is_healthy": {"type": "boolean"},
-    "cause": {"type": "string"},
-    "symptoms": {"type": "string"},
-    "chemical_treatment": {"type": "string"},
-    "organic_treatment": {"type": "string"},
-    "immediate_action": {"type": "string"},
-    "prevention": {"type": "string"},
-    "severity_guidance": {"type": "string"},
+    "cause": {"type": "string", "minLength": 1},
+    "symptoms": {"type": "string", "minLength": 1},
+    "chemical_treatment": {"type": "string", "minLength": 1},
+    "organic_treatment": {"type": "string", "minLength": 1},
+    "immediate_action": {"type": "string", "minLength": 1},
+    "prevention": {"type": "string", "minLength": 1},
+    "severity_guidance": {"type": "string", "minLength": 1},
     "sources": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": {"type": "string", "minLength": 1},
       "minItems": 1,
       "uniqueItems": true
     },
     "last_reviewed": {"type": "string", "format": "date"},
-    "reviewed_by": {"type": "string"}
+    "reviewed_by": {"type": "string", "minLength": 1}
   }
 }

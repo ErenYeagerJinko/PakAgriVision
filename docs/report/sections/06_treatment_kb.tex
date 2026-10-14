@@ -1,18 +1,58 @@
-\section{Treatment Knowledge Base Architecture}
+\section{Treatment Knowledge Base}
 \label{sec:kb}
 
-\subsection{Standardized JSON Schema}
-Beyond passive classification, PakAgriVision empowers actionable interventions. A curated knowledge base (\texttt{knowledge\_base/treatments.json}) maps each of the 38 disease classes to agronomically verified remedies.
+A prediction alone does not tell a farmer what to do next, so each of the 38 PlantVillage classes is linked to a short, sourced treatment record in \texttt{knowledge\_base/treatments.json}. The app will look up the predicted class and display that record.
 
-Integrity is validated against \texttt{knowledge\_base/schema.json}, requiring 13 essential fields for every entry:
+\subsection{Schema}
+\texttt{treatments.json} is a single JSON object. Its keys are the exact class strings from \texttt{splits/class\_names.json}, plus one top-level \texttt{disclaimer} string. Every entry is validated against \texttt{knowledge\_base/schema.json} (JSON Schema draft-07), which requires the following 13 fields and rejects any others:
 \begin{itemize}
-    \item \texttt{disease\_id}, \texttt{common\_name}, \texttt{scientific\_name}, \texttt{host\_crop}
-    \item \texttt{pathogen\_type} (fungal, bacterial, viral, healthy)
-    \item \texttt{symptoms} (structured list of visual cues)
-    \item \texttt{chemical\_treatments} (fungicides/bactericides, active ingredients, dosage rates)
-    \item \texttt{organic\_alternatives} (bio-fungicides, neem extract, copper formulations)
-    \item \texttt{preventative\_measures} (crop rotation, irrigation hygiene)
-    \item \texttt{urdu\_advisory} (localized guidance for regional farmers)
-    \item \texttt{sources} (academic and extension service references)
+    \item \texttt{crop}, \texttt{disease}, \texttt{is\_healthy} (boolean), \texttt{cause}, \texttt{symptoms};
+    \item \texttt{chemical\_treatment}, \texttt{organic\_treatment}, \texttt{immediate\_action}, \texttt{prevention}, \texttt{severity\_guidance};
+    \item \texttt{sources} (non-empty list of unique citation strings), \texttt{last\_reviewed} (date), \texttt{reviewed\_by}.
 \end{itemize}
-Citations and institutional origins (e.g., FAO, University Extension bulletins) are recorded in \texttt{knowledge\_base/SOURCES.md}.
+Healthy classes use the same fields, with \texttt{chemical\_treatment} set to ``None needed.'' and routine scouting and prevention advice instead of treatment.
+
+\subsection{Validation}
+\texttt{data\_scripts/validate\_treatments.py} checks that:
+\begin{itemize}
+    \item every entry passes the schema, and every text field and source string is non-empty;
+    \item every key is a valid class name (no unknown or misspelled classes);
+    \item the top-level disclaimer is present;
+    \item healthy classes do not recommend a chemical treatment (reported as a warning).
+\end{itemize}
+It also prints a per-crop summary and the list of classes still missing. Run with \texttt{--require-complete}, it fails unless all 38 classes are present; this is the check for final submission.
+
+\subsection{Example Entry}
+Table~\ref{tab:kb_example} shows the entry for \texttt{Tomato\_\_\_Early\_blight}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Knowledge base entry for \texttt{Tomato\_\_\_Early\_blight}.}
+\label{tab:kb_example}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.22\linewidth}>{\raggedright\arraybackslash}p{0.70\linewidth}}
+\toprule
+\textbf{Field} & \textbf{Value} \\
+\midrule
+\texttt{cause} & Fungus \textit{Alternaria solani} (now also classified as \textit{A.\ linariae}) \\
+\texttt{symptoms} & Dark concentric-ringed spots on older leaves, yellowing around spots; can progress up the canopy and affect stems/fruit. \\
+\texttt{chemical\_treatment} & Protectant fungicides such as chlorothalonil or mancozeb (azoxystrobin is another option), applied every 7--10 days to protect new growth; do not rely on strobilurins alone because resistance has been reported (follow the product label). \\
+\texttt{organic\_treatment} & Fixed copper (copper hydroxide or copper sulfate) or \textit{Bacillus subtilis} products labeled for organic use. \\
+\texttt{immediate\_action} & Remove infected plant material from the field; avoid overhead watering. \\
+\texttt{prevention} & Rotate away from tomato for 2--3 years; use pathogen-free seed/transplants and resistant or tolerant varieties; stake or trellis for airflow; mulch and prune the lowest leaves to reduce soil splash. \\
+\texttt{severity\_guidance} & When lesions merge and lower leaves drop, disease is severe: keep protectant sprays on schedule within label limits and remove infected debris. \\
+\texttt{sources} & Connecticut Agricultural Experiment Station, \textit{Early Blight of Tomato} (2012); NC State Extension, \textit{Early Blight of Tomato}. \\
+\texttt{last\_reviewed} & 2026-10-12 (Babar) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sources}
+Every entry cites at least one university extension or plant-protection fact sheet, and all citations are listed with URLs and access dates in \texttt{knowledge\_base/SOURCES.md}. Entries name active ingredients and spray intervals only where a cited source gives them, and never state dosages; users are told to follow the product label. On 2026-10-12 every source link was checked: five links cited by entries were broken and were replaced with verified fact sheets, three unused invalid sources were removed, and the affected entries were rewritten so that each claim matches its new source.
+
+\subsection{Status and Limitations}
+\begin{itemize}
+    \item \textbf{Coverage:} 15 of 38 entries are complete (Tomato 10, Potato 3, Pepper 2; Babar). The remaining 23 are assigned to Abdul Ahad (Apple, Corn, Grape, Blueberry, Cherry; 15) and M.~Anas (Orange, Peach, Raspberry, Soybean, Squash, Strawberry; 8).
+    \item \textbf{Not region-specific:} the sources are mostly US and Pacific extension services. Product availability and registrations in Pakistan may differ, and no entry has yet been reviewed by a local agronomist.
+    \item \textbf{Disclaimer:} the file carries the disclaimer ``Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.'', which the app will show with every recommendation.
+\end{itemize}
