@@ -7,12 +7,20 @@ To prepare leaf images for convolutional feature extraction while mitigating sho
 All images are standardized to $224 \times 224$ pixels in 3-channel RGB format, matching the canonical receptive field of transfer-learning backbones (ResNet50 / EfficientNet-B0). Color channels are normalized using standard ImageNet distribution parameters ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$), aligning the input tensors with the pretrained weight manifold.
 
 \subsection{Training Augmentation Pipeline}
-Because PlantVillage images feature predominantly centered leaves on plain backgrounds, models are prone to overfitting background cues. The training transform pipeline applies stochastic spatial and photometric perturbations:
+Because PlantVillage images feature predominantly centered leaves on plain backgrounds, models are prone to overfitting background cues. The training transform pipeline applies stochastic spatial and photometric perturbations (visualized in Figure~\ref{fig:aug_examples}):
 \begin{itemize}
     \item \textbf{Random Resized Cropping:} Randomly scales image crops between 60\% and 100\% before resizing to $224 \times 224$, forcing the network to identify focal disease lesions rather than full leaf outlines.
     \item \textbf{Geometric Flips and Rotations:} Horizontal flips ($p=0.5$), vertical flips ($p=0.5$), and random rotations up to $\pm 30^{\circ}$ reflect arbitrary leaf orientations encountered during field photography.
     \item \textbf{Color Jitter:} Stochastic perturbation of brightness ($\pm 30\%$), contrast ($\pm 30\%$), saturation ($\pm 30\%$), and hue ($\pm 5\%$) emulates fluctuating field sunlight, cloud cover, and mobile sensor white-balancing.
 \end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{../../reports/figures/aug_examples.png}
+    \caption{Data augmentation pipeline sanity check displaying the original synthetic diseased/healthy leaves alongside seven stochastic perturbations (scale cropping, flips, rotations, and color jitter) across representative classes.}
+    \label{fig:aug_examples}
+\end{figure}
+
 
 \subsection{Deterministic Evaluation Pipeline}
 To ensure benchmark stability and zero evaluation data contamination:
