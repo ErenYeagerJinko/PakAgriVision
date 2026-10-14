@@ -8,4 +8,5 @@
 | 2026-10-11 | Babar | With 5 images per class, an exact 2/3 test split would leave classes with no adapt images. | Split each class at ~1/3 adapt with at least one image in each split, giving 92 test / 58 adapt; documented in the report. | |
 | 2026-10-12 | Babar | A link check of `knowledge_base/SOURCES.md` found 5 broken links cited by KB entries and 3 invalid unused sources; some entry text was not backed by any working source. | Replaced the broken links with verified extension fact sheets, removed the invalid sources, and rewrote the affected entries to match their sources. | |
 | 2026-10-14 | Anas | Perceptual hashing with naive pairwise comparisons would scale quadratically across 54k images. | Partitioned pHash comparisons by class and applied Union-Find connected component grouping to keep runtime tractable and cluster duplicate leaves into discrete group IDs. | |
+| 2026-10-14 | Anas | Windows multiprocessing DataLoader deadlocks with default num_workers > 0 without freeze_support. | Configured safe default num_workers=0 with pinned memory fallback and worker_init_fn seed preservation; transform benchmark reached ~226 img/sec. | |
 
