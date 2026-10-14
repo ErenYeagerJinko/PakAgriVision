@@ -1,0 +1,25 @@
+\section{Preprocessing \& Data Augmentation}
+\label{sec:preprocessing}
+
+To prepare leaf images for convolutional feature extraction while mitigating shortcut learning from lab-environment artifacts, we establish a standardized two-tier pipeline in \texttt{src/data/transforms.py} and \texttt{src/data/dataset.py}.
+
+\subsection{Input Resolution and Normalisation}
+All images are standardized to $224 \times 224$ pixels in 3-channel RGB format, matching the canonical receptive field of transfer-learning backbones (ResNet50 / EfficientNet-B0). Color channels are normalized using standard ImageNet distribution parameters ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$), aligning the input tensors with the pretrained weight manifold.
+
+\subsection{Training Augmentation Pipeline}
+Because PlantVillage images feature predominantly centered leaves on plain backgrounds, models are prone to overfitting background cues. The training transform pipeline applies stochastic spatial and photometric perturbations:
+\begin{itemize}
+    \item \textbf{Random Resized Cropping:} Randomly scales image crops between 60\% and 100\% before resizing to $224 \times 224$, forcing the network to identify focal disease lesions rather than full leaf outlines.
+    \item \textbf{Geometric Flips and Rotations:} Horizontal flips ($p=0.5$), vertical flips ($p=0.5$), and random rotations up to $\pm 30^{\circ}$ reflect arbitrary leaf orientations encountered during field photography.
+    \item \textbf{Color Jitter:} Stochastic perturbation of brightness ($\pm 30\%$), contrast ($\pm 30\%$), saturation ($\pm 30\%$), and hue ($\pm 5\%$) emulates fluctuating field sunlight, cloud cover, and mobile sensor white-balancing.
+\end{itemize}
+
+\subsection{Deterministic Evaluation Pipeline}
+To ensure benchmark stability and zero evaluation data contamination:
+\begin{itemize}
+    \item Validation, test, and field robustness datasets strictly utilize the deterministic evaluation pipeline: bilinear resizing to $256 \times 256$ pixels, followed by a deterministic $224 \times 224$ center crop and standard normalisation.
+    \item The specialized \texttt{FieldDataset} class inherits this guarantee, enforcing identical evaluation transforms on out-of-domain field photographs.
+\end{itemize}
+
+\subsection{DataLoader Architecture}
+PyTorch \texttt{DataLoader} factories in \texttt{get\_dataloaders()} supply batched tensors ($B=32$, shape $B \times 3 \times 224 \times 224$, \texttt{float32}) alongside discrete integer targets ($B \times 1$, \texttt{int64}). Deterministic worker initialization (\texttt{seed\_worker}) preserves random generator state across distributed training threads, and multi-worker execution defaults safely to \texttt{num\_workers=0} on Windows platforms to prevent process deadlock.
