@@ -1,12 +1,26 @@
 \section{Dataset Partitioning \& Leakage Prevention}
 \label{sec:splits}
 
-\subsection{Stratified Partitioning Strategy}
-To guarantee reproducible benchmarking and statistical parity across all 38 categories, the dataset is partitioned using stratified random sampling with fixed seed ($42$):
+\subsection{Stratified Group-Aware Partitioning}
+To guarantee reproducible benchmarking and statistical parity across all 38 categories while strictly preventing data leakage, partitioning is performed using stratified group-aware sampling with a fixed random seed ($42$) in \texttt{src/data/splits.py} and \texttt{data\_scripts/make\_splits.py}:
 \begin{itemize}
-    \item \textbf{Training Set (70\%):} Reserved for parameter optimization and class weight calculation.
-    \item \textbf{Validation Set (15\%):} Dedicated to checkpoint selection, early stopping, and hyperparameter tuning.
-    \item \textbf{Test Set (15\%):} Kept strictly isolated until final model evaluation.
+    \item \textbf{Training Partition (70\%):} Reserved exclusively for model weight optimization and class-weight computation.
+    \item \textbf{Validation Partition (15\%):} Dedicated to hyperparameter tuning, learning rate scheduling, and early stopping checkpoint selection.
+    \item \textbf{Test Partition (15\%):} Held out under strict isolation for final benchmark evaluation.
 \end{itemize}
 
-Splits are committed as deterministic manifest CSV files (\texttt{splits/train.csv}, \texttt{splits/val.csv}, \texttt{splits/test.csv}) containing relative filepaths, class strings, and zero-indexed integer targets referenced from \texttt{splits/class_names.json}.
+\subsection{Group-Aware Leakage Prevention}
+Standard naive random splitting exposes models to shortcut learning when near-duplicate shots of a single diseased leaf appear in both training and test partitions. Our pipeline resolves this by treating the cluster identifier (\texttt{group\_id}) derived from perceptual hashing as an atomic unit: all images belonging to the same cluster are constrained to the same partition.
+
+The resulting partitions are serialized into deterministic manifest files:
+\begin{itemize}
+    \item \texttt{splits/train.csv}, \texttt{splits/val.csv}, \texttt{splits/test.csv} containing columns \texttt{path}, \texttt{label}, and \texttt{label\_idx}.
+    \item All relative filepaths reference \texttt{splits/class\_names.json} (integer indices $0$ to $37$).
+\end{itemize}
+
+\subsection{Balanced Class Weight Formulation}
+To mitigate severe class imbalance across the 38 PlantVillage disease classes without introducing synthetic data bias, cost-sensitive class weights $w_c$ are computed \textbf{strictly from the training partition only}:
+\begin{equation}
+    w_c = \frac{N_{\text{train}}}{K \times n_c}
+\end{equation}
+where $N_{\text{train}}$ is the total number of training images, $K = 38$ is the total class count, and $n_c$ denotes the sample frequency of class $c$ in the training split. These weights are exported to \texttt{splits/class\_weights.json} ordered by \texttt{label\_idx} and are directly loaded into the cross-entropy loss function during Phase~3.
