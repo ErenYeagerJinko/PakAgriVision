@@ -23,3 +23,12 @@ Numbered citations used in `treatments.json`. Every disease entry must cite at l
 19. Alabama Cooperative Extension System — Bacterial Spot in Peppers and Tomatoes (E. Sikora, 2020), https://www.aces.edu/blog/topics/crop-production/bacterial-spot-in-peppers-and-tomatoes/, accessed 2026-10-12
 20. University of Wyoming Cooperative Extension — Potato Late Blight (B-1032, Franc, Brown & Kerr, 1996), https://www.wyoextension.org/agpubs/pubs/B1032.pdf, accessed 2026-10-12
 21. Pacific Pests & Pathogens — Potato late blight (265), https://apps.lucidcentral.org/ppp/text/web_full/entities/potato_late_blight_265.htm, accessed 2026-10-12
+22. UC IPM — Citrus: Huanglongbing and Asian Citrus Psyllid, https://ipm.ucanr.edu/agriculture/citrus/asian-citrus-psyllid-and-huanglongbing-disease/, accessed 2026-10-14
+23. Penn State Extension — Bacterial Spot of Peach, https://extension.psu.edu/bacterial-spot-of-peach, accessed 2026-10-14
+24. University of Minnesota Extension — Raspberries: Disease Management, https://extension.umn.edu/fruit/growing-raspberries-home-garden, accessed 2026-10-14
+25. Iowa State University Extension — Soybean Diseases and Management, https://crops.extension.iastate.edu/soybean-diseases, accessed 2026-10-14
+26. Cornell Cooperative Extension — Powdery Mildew of Cucurbits, https://vegetablemdonline.ppath.cornell.edu/factsheets/Cucurbits_PM.htm, accessed 2026-10-14
+27. UC IPM — Cucurbits: Powdery Mildew, https://ipm.ucanr.edu/agriculture/cucurbits/powdery-mildew/, accessed 2026-10-14
+28. NC State Extension — Leaf Scorch of Strawberry, https://content.ces.ncsu.edu/leaf-scorch-of-strawberry, accessed 2026-10-14
+29. University of Illinois Extension — Strawberry Leaf Scorch, https://extension.illinois.edu/plant-diseases/strawberry-leaf-scorch, accessed 2026-10-14
+
