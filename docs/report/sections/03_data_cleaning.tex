@@ -1,10 +1,13 @@
 \section{Data Verification \& Quality Assurance}
 \label{sec:cleaning}
 
-Prior to partitioning and training, raw data undergoes automated verification through \texttt{data\_scripts/}:
+Prior to partitioning and model training, raw image data undergoes automated quality verification and deduplication implemented in \texttt{src/data/quality.py} and executed via \texttt{data\_scripts/check_dataset.py}:
 \begin{itemize}
-    \item \textbf{File Integrity Verification:} Binary validation via Pillow (\texttt{PIL.Image.verify()}) to catch truncated JPEG files and corrupt headers.
-    \item \textbf{Dimension \& Channel Consistency:} Enforcing 3-channel RGB representation and discarding monochrome or non-standard color modes.
-    \item \textbf{Deduplication via Perceptual Hashing:} Computing Difference Hashes (dHash) and Average Hashes (aHash) with \texttt{imagehash} at a Hamming distance threshold $\le 2$ to identify near-identical image duplicates across partitions, preventing data leakage.
+    \item \textbf{File Integrity Verification:} Binary validation via Pillow (\texttt{PIL.Image.verify()}) detects truncated JPEG files and corrupt headers. Files passing verification are subsequently reopened and verified to ensure full 3-channel RGB mode consistency, discarding broken or zero-dimension images.
+    \item \textbf{Exact Duplicate Detection:} 128-bit MD5 cryptographic checksums are computed over raw file bytes. Exact duplicate byte copies are clustered into unified duplicate sets.
+    \item \textbf{Near-Duplicate Detection via Perceptual Hashing:} PlantVillage contains repeated photographs of identical physical leaves under marginal lighting, scale, or orientation shifts. We compute 64-bit perceptual hashes (pHash) on RGB tensors using \texttt{imagehash}. Pairs within the same disease class with a Hamming distance $\le 4$ are linked as near-duplicates.
+    \item \textbf{Cross-Class Label Noise Detection:} Identical or perceptual duplicates detected across differing class labels are flagged as severe label noise for manual exclusion or auditing.
+    \item \textbf{Connected Component Grouping (Leakage Prevention):} A disjoint-set (Union-Find) algorithm clusters all exact and near-duplicates into unified group identifiers (\texttt{group\_id}). In the partitioning phase (Section~\ref{sec:splits}), \texttt{StratifiedGroupKFold} uses these identifiers to guarantee that all variations of a single leaf remain strictly quarantined within the same split partition.
 \end{itemize}
-The output log and identified duplicates are archived into \texttt{splits/dedupe\_report.csv}.
+
+The execution output and cluster manifests are deterministically recorded into \texttt{splits/dedupe\_report.csv}.
