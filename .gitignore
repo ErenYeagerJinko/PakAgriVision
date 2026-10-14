@@ -1,3 +1,6 @@
+# ----------- Project Proposal (Not needed for Github) ----------
+proposal.pdf
+
 # ---------- Data (too big for GitHub; link in data/README.md) ----------
 data/*
 !data/README.md
