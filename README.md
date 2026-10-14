@@ -52,6 +52,7 @@ PakAgriVision/
 │   ├── test.csv               # path,label,label_idx (15% test)
 │   ├── field_test.csv         # Field test split (~2/3)
 │   ├── field_adapt.csv        # Field adaptation split (~1/3)
+│   ├── field_split_stats.csv  # Per-class field split counts
 │   ├── class_weights.json     # From TRAIN split only
 │   └── dedupe_report.csv      # Duplicate groups found
 │
@@ -215,13 +216,27 @@ jupyter notebook notebooks/01_eda.ipynb
 python data_scripts/validate_treatments.py
 ```
 
-### 9. Run the tests
+### 9. Build the field splits
+
+```bash
+python data_scripts/make_field_splits.py
+```
+
+Reads `field_meta/field_labels.csv` and writes `splits/field_test.csv` (~2/3),
+`splits/field_adapt.csv` (~1/3) and `splits/field_split_stats.csv`, stratified by
+class with seed 42. The committed CSVs are the fixed split; re-run only if the
+labels change.
+
+> **Rule:** `field_test.csv` is never used for training, tuning or threshold
+> selection. Only `field_adapt.csv` may be used for the fine-tuning mitigation.
+
+### 10. Run the tests
 
 ```bash
 pytest -q
 ```
 
-### 10. Compile the LaTeX report
+### 11. Compile the LaTeX report
 
 ```bash
 # From the docs/report/ directory
@@ -230,7 +245,7 @@ pdflatex main.tex
 # or use overleaf/xelatex as preferred
 ```
 
-### 11. Launch the Streamlit app (Phase 5)
+### 12. Launch the Streamlit app (Phase 5)
 
 > **Note:** Streamlit is reserved for Phase 5 (Interactive Application Deployment) and is not required for Deliverable 1.
 
