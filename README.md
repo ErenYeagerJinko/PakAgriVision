@@ -32,10 +32,12 @@ PakAgriVision/
 ├── data_scripts/              # Phase 2 scripts mandated by Deliverable 1 spec
 │   ├── README.md              # Purpose & mapping of data pipeline scripts
 │   ├── download_data.md       # Exact download commands
+│   ├── clean_and_cap_dataset.py # A1: dedupe, quality filter & 1,000/class cap
 │   ├── check_dataset.py       # A1: quality scan → dedupe_report.csv
 │   ├── make_splits.py         # A2: writes splits/*.csv + class_weights.json
 │   ├── make_field_splits.py   # B4: field_test / field_adapt
-│   └── validate_treatments.py # B3: checks treatments.json
+│   ├── validate_treatments.py # B3: checks treatments.json
+│   └── visualize_augmentations.py # A4: augmentation sanity check
 │
 ├── data/                      # NEVER commit large data/folders
 │   ├── README.md              # Dataset download info, version, licence
