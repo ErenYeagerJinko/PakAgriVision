@@ -8,15 +8,16 @@ In computer vision workflows, missing data corresponds to corrupted bitstreams, 
 \begin{itemize}
     \item \textbf{Binary Integrity Verification:} Every image file is parsed via Pillow (\texttt{PIL.Image.verify()}) to detect truncated JPEG bitstreams, malformed compression chunks, and unreadable headers.
     \item \textbf{Channel and Mode Verification:} Verified images are immediately reopened and decoded to ensure standard 3-channel RGB format consistency. Files exhibiting missing color channels (e.g., unintended single-channel grayscale or 4-channel RGBA buffers) are flagged and standardized or excluded.
-    \item \textbf{Result:} All 383 PlantVillage and 150 PlantDoc field images passed binary verification with zero unreadable or missing-byte files.
+    \item \textbf{Result:} Across the 54,688 raw candidate images scanned, all 54,688 files passed structural and RGB binary verification with zero unreadable or missing-byte files. The 150 PlantDoc field images similarly passed full binary integrity verification.
 \end{itemize}
 
 \subsection{Duplicate Removal and Near-Duplicate Quarantine}
 PlantVillage contains repeated photographs of identical physical leaves captured under marginal lighting, scale, or orientation shifts. Unchecked random splitting of such duplicates causes severe data leakage between training and testing sets, artificially inflating benchmark accuracy:
 \begin{itemize}
-    \item \textbf{Exact Duplicate Elimination:} Cryptographic 128-bit MD5 hashes are computed over all raw file byte streams to identify exact bit-for-bit duplicate copies.
-    \item \textbf{Near-Duplicate Detection (Perceptual Hashing):} We compute 64-bit discrete cosine transform perceptual hashes (\texttt{imagehash.phash}) across all RGB images. Pairs within the same crop-disease class exhibiting a Hamming distance $\le 4$ are linked as near-duplicate observations of the same underlying physical specimen.
-    \item \textbf{Disjoint-Set (Union-Find) Quarantine:} A disjoint-set clustering algorithm aggregates linked duplicates into discrete group identifiers (\texttt{group\_id}). In the dataset partitioning phase (Section~\ref{sec:splits}), group-aware splitting guarantees that all exact and near-duplicate instances of a single leaf remain strictly confined to the same partition, preventing train-to-test leakage.
+    \item \textbf{Exact Duplicate Elimination:} Cryptographic 128-bit MD5 hashes were computed over all raw file byte streams. Exactly 808 exact bit-for-bit duplicate copies were identified and purged.
+    \item \textbf{Near-Duplicate Detection (Perceptual Hashing):} We computed 64-bit discrete cosine transform perceptual hashes (\texttt{imagehash.phash}) across all RGB images. Pairs within the same crop-disease class exhibiting a Hamming distance $\le 4$ were identified as near-duplicate observations of the same underlying physical specimen (1,376 near-duplicate copies identified and clustered).
+    \item \textbf{Disjoint-Set (Union-Find) Quarantine:} A disjoint-set clustering algorithm aggregated linked duplicates into discrete group identifiers (\texttt{group\_id}). In the dataset partitioning phase (Section~\ref{sec:splits}), group-aware splitting guarantees that all exact and near-duplicate instances of a single leaf remain strictly confined to the same partition, preventing train-to-test leakage.
+    \item \textbf{Clean Retention Summary:} To eliminate duplicate bias and enforce class balance, all duplicate copies and excess images beyond the 1,000-per-class threshold were pruned, yielding 31,694 verified clean unique leaf images.
 \end{itemize}
 
 \subsection{Outlier and Anomaly Management}

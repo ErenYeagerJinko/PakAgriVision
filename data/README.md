@@ -15,7 +15,7 @@ PlantVillage Dataset
 - **Expected Folder Layout**: `data/raw/plantvillage/color/` (only `color/` used
   for training; other subfolders `grayscale`, `segmented` are ignored)
 - **Class Count**: 38 classes (see `splits/class_names.json`)
-- **Image Count**: ~54,300 images in `color/` folder (original count)
+- **Image Count**: ~54,300 images in `color/` folder (raw source); **31,694 clean unique images** following deduplication and 1,000-per-class balancing.
 - **Download Command**:
   ```
   kaggle datasets download -d abdallahalidev/plantvillage-dataset -p data/raw --unzip

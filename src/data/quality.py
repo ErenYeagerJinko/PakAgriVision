@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import imagehash
+import numpy as np
 from PIL import Image
 
 logger = logging.getLogger(__name__)
@@ -197,26 +198,32 @@ class QualityChecker:
                     uf.union(first, other.path)
 
         # 3. Near-duplicates via pHash within each class
-        # Convert hex pHash string back to imagehash.ImageHash for fast hamming distance
-        phash_objects: Dict[str, imagehash.ImageHash] = {
-            r.path: imagehash.hex_to_hash(r.phash) for r in valid_records
-        }
-
         records_by_class: Dict[str, List[ImageRecord]] = {}
         for r in valid_records:
             records_by_class.setdefault(r.label, []).append(r)
 
         for label, class_records in records_by_class.items():
             n = len(class_records)
-            for i in range(n):
-                r1 = class_records[i]
-                h1 = phash_objects[r1.path]
-                for j in range(i + 1, n):
-                    r2 = class_records[j]
-                    h2 = phash_objects[r2.path]
-                    distance = h1 - h2
-                    if distance <= self.phash_threshold:
-                        uf.union(r1.path, r2.path)
+            if n <= 1:
+                continue
+            try:
+                # Fast vectorized hamming distance with NumPy
+                hashes = np.array([int(r.phash, 16) for r in class_records], dtype=np.uint64)
+                diff = np.bitwise_count(np.bitwise_xor(hashes[:, None], hashes[None, :]))
+                row_idx, col_idx = np.where(np.triu(diff <= self.phash_threshold, k=1))
+                for i, j in zip(row_idx, col_idx):
+                    uf.union(class_records[i].path, class_records[j].path)
+            except Exception:
+                # Fallback to imagehash standard comparison
+                phash_objects = {r.path: imagehash.hex_to_hash(r.phash) for r in class_records}
+                for i in range(n):
+                    r1 = class_records[i]
+                    h1 = phash_objects[r1.path]
+                    for j in range(i + 1, n):
+                        r2 = class_records[j]
+                        h2 = phash_objects[r2.path]
+                        if (h1 - h2) <= self.phash_threshold:
+                            uf.union(r1.path, r2.path)
 
         # 4. Cross-class duplicates check
         # Check if identical MD5 or very close pHash spans across differing labels
