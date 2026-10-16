@@ -4,8 +4,9 @@
 \subsection{PlantVillage Benchmark Dataset}
 The primary baseline training dataset is the public PlantVillage benchmark~\cite{plantvillage}, obtained via the Kaggle API (\texttt{abdallahalidev/plantvillage-dataset}).
 \begin{itemize}
-    \item \textbf{Total Scale:} 54,303 color images across 14 distinct crop species and 38 distinct crop-disease pairings.
-    \item \textbf{Input Resolution:} Standardized 256$\times$256 pixels in RGB color format.
+    \item \textbf{Initial Benchmark Scale:} 54,303 raw color images across 14 distinct crop species and 38 distinct crop-disease pairings.
+    \item \textbf{Quality Curation \& Balance:} Following file integrity verification and perceptual deduplication (Section~\ref{sec:cleaning}), classes were capped at a maximum of 1,000 clean, unique samples to mitigate extreme class imbalance (e.g., Orange Huanglongbing previously having 5,507 samples vs. Potato healthy having 152), yielding a balanced curated baseline of \textbf{31,694 verified clean images}.
+    \item \textbf{Input Resolution:} Standardized $256\times256$ pixels in RGB color format (1:1 square aspect ratio).
     \item \textbf{License \& Integrity:} CC0 Public Domain / Open Educational License.
 \end{itemize}
 
