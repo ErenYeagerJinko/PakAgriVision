@@ -1,13 +1,37 @@
 \section{Problem Statement \& Objectives}
 \label{sec:problem}
 
-\subsection{Agricultural Context in Pakistan}
-Agriculture forms the backbone of Pakistan's economy, employing over 37\% of the labor force and contributing roughly 23\% of GDP. However, smallholder farmers experience substantial post-harvest and crop yield losses (often between 20\% to 40\%) due to preventable fungal, bacterial, and viral foliar diseases in staple crops including tomato, potato, apple, and corn. Traditional diagnosis relies on infrequent visits from agricultural extension officers, leading to late or erroneous pesticide interventions.
+\subsection{Agricultural Context and Real-World Pain Point}
+Agriculture forms the backbone of Pakistan's economy, employing over 37\% of the national labor force and contributing roughly 23\% to the Gross Domestic Product (GDP). However, smallholder farmers experience substantial post-harvest and crop yield losses (frequently between 20\% to 40\%) due to preventable fungal, bacterial, and viral foliar diseases in staple cash crops, including tomato, potato, apple, grape, and corn. Traditional agricultural diagnosis relies on sparse, infrequent visits from government agricultural extension officers. Consequently, smallholders routinely misdiagnose diseases or apply inappropriate chemical treatments after the infection has advanced beyond the point of chemical control, resulting in catastrophic financial loss and environmental degradation from pesticide overuse.
 
-\subsection{Project Vision: PakAgriVision}
-PakAgriVision is an accessible, web-based diagnostic application that bridges this gap. When a farmer or field worker uploads a smartphone image of a symptomatic leaf, the system provides:
+\subsection{Target Audience and User Personas}
+PakAgriVision is specifically engineered for two core user groups in the Pakistani agricultural ecosystem:
 \begin{enumerate}
-    \item \textbf{Disease Classification:} Identification across 38 crop-condition classes with top-1 and top-3 confidence scores.
-    \item \textbf{Visual Interpretability (Grad-CAM):} Heatmap overlays identifying the specific anatomical regions of the leaf informing the classification.
-    \item \textbf{Actionable Treatment Engine:} Structured, bilingual (English and Urdu) advisory covering chemical controls, organic alternatives, dosage recommendations, and preventative farming practices.
+    \item \textbf{Smallholder Farmers:} Rural growers with limited access to professional plant pathologists who require immediate, reliable disease diagnosis and clear, culturally accessible agronomic treatment advice directly on entry-level mobile devices.
+    \item \textbf{Field Extension Officers and Agronomists:} Agricultural field agents monitoring localized disease outbreaks across districts who need rapid secondary verification, visual explainability to build farmer trust, and structured chemical/organic treatment guidelines.
+\end{enumerate}
+
+\subsection{AI Justification: Deep Learning vs. Rule-Based Programming}
+A central architectural question is why modern Deep Learning is necessary for crop disease diagnosis rather than traditional rule-based image processing algorithms:
+\begin{itemize}
+    \item \textbf{Failure of Traditional Rule-Based Algorithms:} Conventional computer vision relies on deterministic heuristics, such as hardcoded color thresholding in HSV/LAB space, Otsu binarization, or Canny edge filtering to segment lesions. These techniques fail entirely in agricultural settings because plant diseases do not follow fixed rules:
+    \begin{itemize}
+        \item Foliar lesions present continuous biological variations: necrotic centers, concentric rings, chlorotic yellow halos, and irregular margins that overlap with healthy tissue.
+        \item Lighting conditions in rural photography fluctuate constantly (direct harsh sunlight, cloud shadows, variable camera white-balance), which breaks fixed color-filtering thresholds.
+        \item Handcrafted feature descriptors (e.g., SIFT, SURF, Haralick textures) cannot disentangle complex biological pathology from leaf venation, leaf tear damage, or ambient dust.
+    \end{itemize}
+    \item \textbf{Necessity of Deep Convolutional Neural Networks (CNNs):} Deep convolutional architectures (such as fine-tuned ResNet50 and EfficientNet-B0) bypass hand-engineered rules by automatically learning hierarchical visual representations directly from data:
+    \begin{itemize}
+        \item \textit{Shallow layers} capture foundational edge primitives, color gradients, and microscopic texture patterns.
+        \item \textit{Deep semantic layers} compose these primitives into invariant disease concepts (e.g., concentric rings characteristic of \textit{Alternaria solani} vs. water-soaked margins of \textit{Phytophthora infestans}).
+        \item Pretrained ImageNet representations provide robust transfer-learning inductive bias, enabling high diagnostic generalization across 38 distinct disease classes even on compact, specialized datasets.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Project Vision and Deliverables}
+PakAgriVision bridges the diagnosis-to-action gap. When a user uploads a smartphone photograph of a symptomatic leaf, the pipeline delivers:
+\begin{enumerate}
+    \item \textbf{Multi-Class Disease Classification:} Diagnostic prediction across 38 crop-disease categories with top-1 and top-3 confidence metrics and uncertainty thresholds ($<70\%$).
+    \item \textbf{Visual Explainability (Grad-CAM):} Gradient-weighted Class Activation Mapping that highlights the exact anatomical leaf regions dictating the network's prediction.
+    \item \textbf{Actionable Treatment Engine:} Structured, verified guidance covering chemical fungicides, organic alternatives, immediate cultural actions, and prevention practices.
 \end{enumerate}
