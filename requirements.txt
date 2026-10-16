@@ -1,16 +1,21 @@
-torch==2.14.1
-torchvision==0.29.1
-numpy==2.5.4
-pandas==3.0.6
-scikit-learn==1.9.1
-matplotlib==3.11.2
-seaborn==0.13.2
-pillow==12.3.0
-imagehash==4.3.2
-tqdm==4.70.1
-pyyaml==6.0.3
-jsonschema==4.26.0
-jupyter==1.1.1
-pytest==9.1.1
-nbstripout==0.9.1
-kaggle==2.2.4
+# PakAgriVision Core Dependencies (Deliverables 1 & 2)
+# Deep Learning & Computer Vision
+torch>=2.0.0
+torchvision>=0.15.0
+pillow>=10.0.0
+imagehash>=4.3.0
+
+# Scientific Computing & Data Processing
+numpy>=2.0.0
+pandas>=2.2.0
+
+# Visualization & EDA
+matplotlib>=3.8.0
+
+# Schema & Treatment KB Validation
+jsonschema>=4.20.0
+
+# Testing & Development Hygiene
+pytest>=8.0.0
+jupyter>=1.0.0
+nbstripout>=0.7.0
