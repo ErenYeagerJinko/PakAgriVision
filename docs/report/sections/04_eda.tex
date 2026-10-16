@@ -4,7 +4,7 @@
 Exploratory analysis was conducted in \texttt{notebooks/01\_eda.ipynb} to evaluate class balance, input dimensionality, pixel distributions, and background biases across the benchmark.
 
 \subsection{Class Distribution and Imbalance}
-The dataset comprises 38 crop-disease classes across 14 plant species. To reflect realistic agricultural distributions while preventing validation leakage, the training split preserves natural class frequency variations.
+The curated dataset comprises 38 crop-disease classes across 14 plant species totaling 31,694 images. Prior to curation, the raw dataset exhibited extreme imbalance (a 36.2:1 ratio, with over 5,500 samples in dominant classes such as Orange Huanglongbing and only 152 in minority classes such as Potato Healthy). Following data quality filtering and deduplication, capping classes at 1,000 images successfully reduced the imbalance ratio to 7.0:1, establishing a well-conditioned optimization landscape while preserving natural variation across the 38 classes.
 
 \begin{figure}[htbp]
     \centering

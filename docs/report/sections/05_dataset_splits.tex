@@ -4,10 +4,28 @@
 \subsection{Stratified Group-Aware Partitioning}
 To guarantee reproducible benchmarking and statistical parity across all 38 categories while strictly preventing data leakage, partitioning is performed using stratified group-aware sampling with a fixed random seed ($42$) in \texttt{src/data/splits.py} and \texttt{data\_scripts/make\_splits.py}:
 \begin{itemize}
-    \item \textbf{Training Partition (70\%):} Reserved exclusively for model weight optimization and class-weight computation.
-    \item \textbf{Validation Partition (15\%):} Dedicated to hyperparameter tuning, learning rate scheduling, and early stopping checkpoint selection.
-    \item \textbf{Test Partition (15\%):} Held out under strict isolation for final benchmark evaluation.
+    \item \textbf{Training Partition (70.0\%):} 22,179 images reserved exclusively for model weight optimization and class-weight computation.
+    \item \textbf{Validation Partition (15.0\%):} 4,747 images dedicated to hyperparameter tuning, learning rate scheduling, and early stopping checkpoint selection.
+    \item \textbf{Test Partition (15.0\%):} 4,768 images held out under strict isolation for final benchmark evaluation.
 \end{itemize}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Curated PlantVillage Benchmark Partition Summary (all 38 classes represented).}
+\label{tab:pv_splits}
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Split Partition} & \textbf{Image Count} & \textbf{Percentage} & \textbf{Classes Represented} & \textbf{Manifest File} \\
+\midrule
+\textbf{Train} & 22,179 & 70.0\% & 38 / 38 & \texttt{splits/train.csv} \\
+\textbf{Validation} & 4,747 & 15.0\% & 38 / 38 & \texttt{splits/val.csv} \\
+\textbf{Test} & 4,768 & 15.0\% & 38 / 38 & \texttt{splits/test.csv} \\
+\midrule
+\textbf{Total Curated} & \textbf{31,694} & \textbf{100.0\%} & \textbf{38 / 38} & \texttt{splits/dedupe\_report.csv} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Group-Aware Leakage Prevention}
 Standard naive random splitting exposes models to shortcut learning when near-duplicate shots of a single diseased leaf appear in both training and test partitions. Our pipeline resolves this by treating the cluster identifier (\texttt{group\_id}) derived from perceptual hashing as an atomic unit: all images belonging to the same cluster are constrained to the same partition.
@@ -15,7 +33,7 @@ Standard naive random splitting exposes models to shortcut learning when near-du
 The resulting partitions are serialized into deterministic manifest files:
 \begin{itemize}
     \item \texttt{splits/train.csv}, \texttt{splits/val.csv}, \texttt{splits/test.csv} containing columns \texttt{path}, \texttt{label}, and \texttt{label\_idx}.
-    \item All relative filepaths reference \texttt{splits/class\_names.json} (integer indices $0$ to $37$).
+    \item All relative filepaths reference \texttt{splits/class\_names.json} (integer indices $0$ to $37$). Zero file overlap exists between partitions.
 \end{itemize}
 
 \subsection{Balanced Class Weight Formulation}
