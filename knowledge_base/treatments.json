@@ -406,5 +406,270 @@
     ],
     "last_reviewed": "2026-10-14",
     "reviewed_by": "Anas"
+  },
+  "Apple___Apple_scab": {
+    "crop": "Apple",
+    "disease": "Apple scab",
+    "is_healthy": false,
+    "cause": "Fungus Venturia inaequalis",
+    "symptoms": "Olive-green to velvety dark brown lesions on leaves and fruit, leaf distortion and premature defoliation, corky scabbed lesions on mature apples.",
+    "chemical_treatment": "Protectant fungicides such as captan or mancozeb applied preventively from green tip through petal fall, or systemic DMI/QoI fungicides alternated by FRAC mode of action (follow product label).",
+    "organic_treatment": "Liquid lime sulfur, wettable sulfur, or fixed copper sprays applied during pre-bloom dormant to pink stages; prioritize leaf litter sanitation.",
+    "immediate_action": "Rake, shred, or flail-mow fallen apple leaves in autumn or apply urea spray to accelerate leaf decomposition and exhaust overwintering ascospores.",
+    "prevention": "Plant scab-resistant cultivars (e.g., Liberty, Enterprise, GoldRush); prune canopies annually for rapid airflow and sun drying; space trees properly.",
+    "severity_guidance": "If primary infections exceed 10% foliar coverage during petal fall, maintain tight 7-day spray intervals to protect developing fruitlets.",
+    "sources": [
+      "Cornell Cooperative Extension \u2014 Apple Scab (Venturia inaequalis), https://ecommons.cornell.edu/handle/1813/43074, accessed 2026-10-15",
+      "Penn State Extension \u2014 Apple Scab, https://extension.psu.edu/apple-scab, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Apple___Black_rot": {
+    "crop": "Apple",
+    "disease": "Black rot (Frogeye leaf spot)",
+    "is_healthy": false,
+    "cause": "Fungus Botryosphaeria obtusa",
+    "symptoms": "Small purple leaf spots that enlarge into circular lesions with tan centers and dark borders ('frogeye' spot); firm brown concentric rot on fruit with tiny black pycnidia; sunken branch cankers.",
+    "chemical_treatment": "Captan, thiophanate-methyl, or strobilurin-based fungicides included in the post-bloom cover spray schedule (follow product label).",
+    "organic_treatment": "Copper formulations applied during early season; aggressive sanitation to excise mummified fruit and dead wood.",
+    "immediate_action": "Prune out dead shoots, fire blight strikes, and cankered limbs at least 15 cm below infected tissue; remove all mummified fruit from the orchard.",
+    "prevention": "Maintain orchard sanitation, prevent mechanical trunk and limb wounds, control fire blight promptly, and ensure balanced tree nutrition to reduce stress.",
+    "severity_guidance": "Presence of limb cankers near fruiting spurs indicates high inoculum pressure; excise cankers during winter pruning and apply protectant sprays before warm rain events.",
+    "sources": [
+      "University of Kentucky Extension \u2014 Apple Black Rot, https://plantpathology.ca.uky.edu/files/ppfs-fr-t-13.pdf, accessed 2026-10-15",
+      "Penn State Extension \u2014 Fruit Diseases: Apple Black Rot, https://extension.psu.edu/apple-disease-black-rot, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Apple___Cedar_apple_rust": {
+    "crop": "Apple",
+    "disease": "Cedar apple rust",
+    "is_healthy": false,
+    "cause": "Fungus Gymnosporangium juniperi-virginianae (requires Juniperus virginiana alternate host)",
+    "symptoms": "Bright yellow-orange circular leaf lesions that exude orange droplets, later developing raised tubular aecia (cluster cups) on the leaf underside; distorted fruit spots.",
+    "chemical_treatment": "Myclobutanil, propiconazole, or mancozeb applied preventively between pink bud and petal fall when cedar galls are gelatinizing (follow product label).",
+    "organic_treatment": "Sulfur or copper sprays applied prior to rainfall events during ascospore dispersal; cultural eradication of nearby galls.",
+    "immediate_action": "Inspect surrounding perimeter for eastern red cedar trees and prune out brown galls or gelatinous orange spore horns in early spring.",
+    "prevention": "Select rust-resistant apple cultivars; eradicate eastern red cedar and ornamental junipers within 1 to 2 miles of commercial orchards where feasible.",
+    "severity_guidance": "Severe foliar infection causing premature leaf drop weakens flower bud development for next year's crop; ensure timely fungicide coverage during rainy spring periods.",
+    "sources": [
+      "University of Minnesota Extension \u2014 Cedar Apple Rust, https://extension.umn.edu/plant-diseases/cedar-apple-rust, accessed 2026-10-15",
+      "NC State Extension \u2014 Cedar Apple Rust, https://content.ces.ncsu.edu/cedar-apple-rust-1, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Apple___healthy": {
+    "crop": "Apple",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; tree exhibits normal vegetative development.",
+    "symptoms": "Uniform dark green foliage without spots, necrosis, curling, or powdery sporulation; robust shoot growth and fruit set.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; maintain standard orchard sanitation and balanced tree nutrition.",
+    "immediate_action": "Continue routine scouting for early signs of scab, mites, and codling moth larvae.",
+    "prevention": "Annual dormant pruning to open canopy for sunlight and air drying, balanced fertilization based on soil tests, and proper irrigation management.",
+    "severity_guidance": "No disease action required; maintain routine seasonal pest scouting.",
+    "sources": [
+      "Penn State Extension \u2014 Apple Tree Management and Pruning, https://extension.psu.edu/pruning-apple-trees, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Blueberry___healthy": {
+    "crop": "Blueberry",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; bush exhibits normal vegetative vigor and berry development.",
+    "symptoms": "Glossy green leaves free of necrotic spots, stem cankers, or interveinal chlorosis; firm, clean canes.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; maintain pine bark or sawdust mulch and acidic soil conditions.",
+    "immediate_action": "Routine monitoring of canes and foliage for blueberry scorch virus, mummy berry, or Japanese beetles.",
+    "prevention": "Maintain soil pH between 4.5 and 5.2, ensure consistent drip irrigation, replenish acidic organic mulch annually, and prune old non-productive canes.",
+    "severity_guidance": "No disease action required; check leaf tissue nutrients annually.",
+    "sources": [
+      "Michigan State University Extension \u2014 Blueberry Growth and Disease Scouting, https://www.canr.msu.edu/blueberries/, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Cherry___healthy": {
+    "crop": "Cherry",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; tree foliage and shoots exhibit normal physiological development.",
+    "symptoms": "Uniform vibrant green leaves without shot-hole perforations, powdery patches, or bacterial gummosis on twigs.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; maintain good sanitation and canopy aeration.",
+    "immediate_action": "Continue weekly scouting for early signs of cherry leaf spot, brown rot blossom blight, or cherry fruit fly.",
+    "prevention": "Prune canopies to improve airflow and rapid leaf drying, avoid overhead irrigation, and remove wild Prunus species near the orchard border.",
+    "severity_guidance": "No disease action required; keep regular inspection after humid warm spells.",
+    "sources": [
+      "Pacific Northwest Plant Disease Management Handbook \u2014 Cherry (Prunus spp.), https://pnwhandbooks.org/plantdisease/host-disease/cherry-prunus-spp, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Cherry___Powdery_mildew": {
+    "crop": "Cherry",
+    "disease": "Powdery mildew",
+    "is_healthy": false,
+    "cause": "Fungus Podosphaera clandestina",
+    "symptoms": "Circular patches of white powdery fungal mycelium on leaves and green fruit; leaves curl upward and become distorted; fruit develops sunken, deformed blemished patches.",
+    "chemical_treatment": "Demethylation inhibitors (DMI), quinone outside inhibitors (QoI), or succinate dehydrogenase inhibitors (SDHI) applied starting at shuck fall (follow product label).",
+    "organic_treatment": "Wettable sulfur, potassium bicarbonate, or horticultural narrow-range oils applied preventively on expanding tender leaves.",
+    "immediate_action": "Prune out water sprouts and succulent canopy growth that trap moisture and serve as primary infection reservoirs.",
+    "prevention": "Open tree canopies via proper summer and dormant pruning to increase light penetration and air movement; avoid excess nitrogen fertilization.",
+    "severity_guidance": "If powdery colonies appear on green fruit before straw-color stage, intensify fungicide protectant applications immediately to prevent crop loss.",
+    "sources": [
+      "Washington State University Extension \u2014 Cherry Powdery Mildew, http://treefruit.wsu.edu/crop-protection/disease-management/cherry-powdery-mildew/, accessed 2026-10-15",
+      "UC IPM \u2014 Cherry Powdery Mildew, https://ipm.ucanr.edu/agriculture/cherry/powdery-mildew/, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Corn___Cercospora_leaf_spot Gray_leaf_spot": {
+    "crop": "Corn",
+    "disease": "Gray leaf spot (Cercospora leaf spot)",
+    "is_healthy": false,
+    "cause": "Fungus Cercospora zeae-maydis",
+    "symptoms": "Small tan spots with yellow halos that elongate into narrow rectangular lesions strictly bounded by leaf veins; lesions become grayish-brown with fungal sporulation.",
+    "chemical_treatment": "Foliar fungicides combining triazole and strobilurin modes of action (e.g., azoxystrobin + propiconazole) applied between VT (tasseling) and R2 (blister) stages if threshold is reached (follow product label).",
+    "organic_treatment": "Crop residue management, deep tillage in high-debris fields where conservation tillage is not critical, and bio-fungicides applied at early whorl.",
+    "immediate_action": "Scout third leaf below ear leaf at tasseling; if lesions are present on 50% of plants in susceptible hybrids, schedule a fungicide application.",
+    "prevention": "Plant corn hybrids with high genetic tolerance or resistance; rotate with non-host crops (soybeans, small grains) for at least 1-2 years; manage surface crop residue.",
+    "severity_guidance": "Lesions progressing to the ear leaf or above before or during silking lead to significant yield reduction and stalk rot; timely chemical protection is critical.",
+    "sources": [
+      "Purdue Extension \u2014 Gray Leaf Spot of Corn, https://www.extension.purdue.edu/extmedia/bp/bp-04-w.pdf, accessed 2026-10-15",
+      "Iowa State University Extension \u2014 Corn Diseases: Gray Leaf Spot, https://crops.extension.iastate.edu/cropnews/2021/07/gray-leaf-spot-corn, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Corn___Common_rust": {
+    "crop": "Corn",
+    "disease": "Common rust",
+    "is_healthy": false,
+    "cause": "Fungus Puccinia sorghi",
+    "symptoms": "Oval to elongate cinnamon-brown powdery pustules (uredinia) scattered across both upper and lower leaf surfaces; pustules rupture the leaf epidermis and turn dark brown to black late in the season.",
+    "chemical_treatment": "Triazole, strobilurin, or premix foliar fungicides applied when rust pustules appear on upper leaves before blister stage (follow product label).",
+    "organic_treatment": "Sulfur or biological control agents (e.g., Bacillus amyloliquefaciens); rely primarily on planting resistant cultivars.",
+    "immediate_action": "Scout sweet corn or seed corn inbreds early; apply fungicides if pustules cover >5% of leaves prior to silking under cool, humid weather.",
+    "prevention": "Plant resistant field corn hybrids containing Rp resistance genes; plant early in the season to evade southern spore storm arrivals.",
+    "severity_guidance": "Commercial dent corn rarely requires treatment unless infection strikes early on susceptible inbred lines during extended cool humid periods.",
+    "sources": [
+      "University of Illinois Extension \u2014 Common Rust of Corn, https://cropwatch.unl.edu/plantdisease/corn/common-rust, accessed 2026-10-15",
+      "University of Wisconsin Extension \u2014 Corn Rust Diseases, https://cropprotectionnetwork.org/publications/common-rust-of-corn, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Corn___Northern_Leaf_Blight": {
+    "crop": "Corn",
+    "disease": "Northern corn leaf blight (NCLB)",
+    "is_healthy": false,
+    "cause": "Fungus Setosphaeria turcica (anamorph Exserohilum turcicum)",
+    "symptoms": "Large elongated cigar-shaped grayish-green to tan lesions (2.5 to 15 cm long) on leaves; under moist conditions, dark olive-brown spores form inside the lesion centers.",
+    "chemical_treatment": "QoI, DMI, or SDHI fungicides (e.g., pyraclostrobin, fluxapyroxad, or tebuconazole) applied from V12 to R2 if disease reaches the ear leaf (follow product label).",
+    "organic_treatment": "Bio-fungicides applied at early vegetative stages; comprehensive field residue shredding and burial to reduce overwintering conidia.",
+    "immediate_action": "Scout fields before silking; if lesions are detected on leaves beneath the ear on 50% of surveyed plants, treat before full tasseling.",
+    "prevention": "Select corn hybrids with specific Ht resistance genes and multigenic background tolerance; practice 2-year crop rotation; till infected residues.",
+    "severity_guidance": "Extensive blighting of the ear leaf and upper canopy before milk stage (R3) drastically impairs grain fill and promotes premature plant death.",
+    "sources": [
+      "Iowa State University Extension \u2014 Northern Corn Leaf Blight, https://crops.extension.iastate.edu/cropnews/2020/07/northern-corn-leaf-blight, accessed 2026-10-15",
+      "Purdue Extension \u2014 Northern Corn Leaf Blight, https://www.extension.purdue.edu/extmedia/BP/BP-84-W.pdf, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Corn___healthy": {
+    "crop": "Corn",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; corn displays normal vegetative and reproductive vigor.",
+    "symptoms": "Broad, robust arching green leaves free of chlorotic striping, rust pustules, or elliptical blighted lesions; clean stalk and husk tissue.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; maintain balanced soil nutrition and weed management.",
+    "immediate_action": "Continue weekly scouting during critical reproductive windows (V10 through R3) for foliar disease onset or insect pests.",
+    "prevention": "Soil testing to ensure appropriate nitrogen and potassium balance; optimal planting population and seed depth; weed and insect integrated pest management.",
+    "severity_guidance": "No intervention needed; continue scouting through dent stage.",
+    "sources": [
+      "Purdue Extension \u2014 Corn Growth and Development, https://www.agry.purdue.edu/ext/corn/pubs/agry9101.pdf, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Grape___Black_rot": {
+    "crop": "Grape",
+    "disease": "Black rot",
+    "is_healthy": false,
+    "cause": "Fungus Guignardia bidwellii (anamorph Phyllosticta ampelicida)",
+    "symptoms": "Small circular tan-to-reddish leaf spots surrounded by a dark brown margin with tiny black pycnidia arranged in a ring; berries shrivel into hard, black, wrinkled mummies.",
+    "chemical_treatment": "Mancozeb, captan, or myclobutanil applied preventively starting at 1- to 3-inch shoot growth through 4 weeks post-bloom (follow product label).",
+    "organic_treatment": "Copper-based fungicides applied early in the season; aggressive winter pruning and destruction of mummified berries from the canopy and ground.",
+    "immediate_action": "Remove and destroy all mummified grape clusters and infected canes during dormancy or whenever spotted.",
+    "prevention": "Trellis and prune for full sunlight and rapid wind drying of the canopy; eliminate wild riverbank grapes near vineyards; cultivate beneath trellises to bury mummies.",
+    "severity_guidance": "Berry infection during bloom to pea-size stage causes total cluster mummification; strict protectant timing around bloom is mandatory.",
+    "sources": [
+      "Ohio State University Extension \u2014 Black Rot of Grape, https://ohioline.osu.edu/factsheet/plpath-fru-24, accessed 2026-10-15",
+      "Cornell Cooperative Extension \u2014 Grape Black Rot, https://grapesandwine.cals.cornell.edu/extension/fact-sheets/, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Grape___Esca_Black_Measles": {
+    "crop": "Grape",
+    "disease": "Esca (Black measles / grapevine trunk disease)",
+    "is_healthy": false,
+    "cause": "Fungal complex including Phaeomoniella chlamydospora, Phaeoacremonium minimum, and Fomitiporia mediterranea",
+    "symptoms": "Interveinal chlorosis and necrosis creating a characteristic 'tiger-stripe' pattern on leaves; dark purple or black spotting on berries ('measles'); internal wood reveals dark vascular streaking and spongy white heart rot.",
+    "chemical_treatment": "No curative chemical sprays exist; protect pruning wounds with wound sealants or fungicides containing thiophanate-methyl or pyraclostrobin (follow product label).",
+    "organic_treatment": "Trichoderma-based biocontrol agents applied directly to fresh pruning wounds to prevent spore colonization; surgical excision of infected cordons.",
+    "immediate_action": "Flag and map symptomatic vines in late summer; delay pruning until late winter (dormancy end) when wound healing is rapid.",
+    "prevention": "Avoid large pruning cuts where possible; sanitize pruning shears between vines with alcohol or bleach solution; rogue and burn dead or decaying vines.",
+    "severity_guidance": "Chronic vine decline reduces yield year over year; sudden collapse ('apoplexy') during hot dry spells is fatal to individual trunks, requiring retraining from ground suckers.",
+    "sources": [
+      "UC IPM \u2014 Grape: Esca (Black Measles), https://ipm.ucanr.edu/agriculture/grape/esca-black-measles/, accessed 2026-10-15",
+      "Penn State Extension \u2014 Grapevine Trunk Diseases, https://extension.psu.edu/grapevine-trunk-diseases, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Grape___Leaf_blight Isariopsis_Leaf_Spot": {
+    "crop": "Grape",
+    "disease": "Leaf blight (Isariopsis / Pseudocercospora cladosporioides)",
+    "is_healthy": false,
+    "cause": "Fungus Pseudocercospora cladosporioides (syn. Phaeoisariopsis cladosporioides)",
+    "symptoms": "Irregular reddish-brown to dark necrotic spots on leaves, often coalescing into larger blighted areas; severe premature defoliation of the canopy in late summer.",
+    "chemical_treatment": "Broad-spectrum protectant fungicides such as copper hydroxide, mancozeb, or strobilurins applied during post-bloom canopy management (follow product label).",
+    "organic_treatment": "Fixed copper formulations or sulfur sprays applied post-veraison; canopy hedging to maximize airflow.",
+    "immediate_action": "Prune and dispose of blighted foliage; avoid overhead irrigation; clean vine floor of premature fallen leaf litter.",
+    "prevention": "Maintain open canopy architecture with shoot thinning, leaf pulling in the fruit zone, and annual dormant pruning; destroy vineyard leaf litter.",
+    "severity_guidance": "Premature defoliation before harvest prevents adequate sugar accumulation and bud cold-hardiness; post-harvest sprays may be required if defoliation is extensive.",
+    "sources": [
+      "University of Florida IFAS \u2014 Grape Leaf Spot and Blight, https://edis.ifas.ufl.edu/publication/MG329, accessed 2026-10-15",
+      "Pacific Pests & Pathogens \u2014 Grapevine leaf spot (Phaeoisariopsis), https://apps.lucidcentral.org/ppp/text/web_full/entities/grapevine_leaf_spot_412.htm, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
+  },
+  "Grape___healthy": {
+    "crop": "Grape",
+    "disease": "Healthy",
+    "is_healthy": true,
+    "cause": "No pathogen; vine foliage and clusters demonstrate healthy physiological development.",
+    "symptoms": "Uniform green palmate leaves free of lesions, tiger-striping, or powdery coatings; healthy tendril and cluster formation.",
+    "chemical_treatment": "None needed.",
+    "organic_treatment": "None needed; continue routine trellis maintenance and vineyard weed control.",
+    "immediate_action": "Continue routine scouting for black rot, downy mildew, powdery mildew, and grape berry moth.",
+    "prevention": "Canopy management (leaf removal, shoot positioning), adequate drip irrigation, balanced potassium and nitrogen nutrition, and annual winter pruning.",
+    "severity_guidance": "No disease action required; inspect foliage weekly after rainfall events.",
+    "sources": [
+      "Cornell Cooperative Extension \u2014 Grape Canopy Management, https://grapesandwine.cals.cornell.edu/extension/, accessed 2026-10-15"
+    ],
+    "last_reviewed": "2026-10-15",
+    "reviewed_by": "Abdul Ahad"
   }
 }
