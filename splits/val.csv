@@ -1,0 +1,39 @@
+path,label,label_idx
+Apple___Apple_scab/023123cb-7b69-4c9f-a521-766d7c8543bb___FREC_Scab 3487.JPG,Apple___Apple_scab,0
+Apple___Black_rot/032cf235-07ff-478f-b347-d55c07835bc5___JR_FrgE.S 8778.JPG,Apple___Black_rot,1
+Apple___Cedar_apple_rust/09239528-a0a0-4a2d-af03-c5d5f7a27710___FREC_C.Rust 4024.JPG,Apple___Cedar_apple_rust,2
+Apple___healthy/00fca0da-2db3-481b-b98a-9b67bb7b105c___RS_HL 7708.JPG,Apple___healthy,3
+Blueberry___healthy/0137389a-9b78-4a94-afdb-c2b50861f89c___RS_HL 2347.JPG,Blueberry___healthy,4
+Cherry___Powdery_mildew/00705aa7-5ea2-4419-9440-8ba65e108eb9___FREC_Pwd.M 0267.JPG,Cherry___Powdery_mildew,6
+Cherry___healthy/002efba9-09b3-43de-93b7-5c2460185cde___JR_HL 9655.JPG,Cherry___healthy,5
+Corn___Cercospora_leaf_spot Gray_leaf_spot/05f92471-3cd4-441b-af21-1a02304d0b6c___RS_GLSp 7315.JPG,Corn___Cercospora_leaf_spot Gray_leaf_spot,7
+Corn___Common_rust/RS_Rust 1568.JPG,Corn___Common_rust,8
+Corn___Northern_Leaf_Blight/022817bd-6a93-4b0a-ac39-1cc4094128b1___RS_NLB 3476.JPG,Corn___Northern_Leaf_Blight,9
+Corn___healthy/02ab8d66-0385-43db-855a-ea5f8811ebd5___R.S_HL 7954 copy.jpg,Corn___healthy,10
+Grape___Black_rot/00cab05d-e87b-4cf6-87d8-284f3ec99626___FAM_B.Rot 3244.JPG,Grape___Black_rot,11
+Grape___Esca_Black_Measles/01c74b8d-1113-47c0-86a3-6ceea27853c0___FAM_B.Msls 4113.JPG,Grape___Esca_Black_Measles,12
+Grape___Leaf_blight Isariopsis_Leaf_Spot/00a962ad-573b-44b1-97ae-912a6bd6e0b0___FAM_L.Blight 1431.JPG,Grape___Leaf_blight Isariopsis_Leaf_Spot,13
+Grape___healthy/03492a0d-6ad7-42ec-a742-c2f1fa59499a___Mt.N.V_HL 6035.JPG,Grape___healthy,14
+Orange___Haunglongbing(Citrus_greening)/009d3d05-f588-4500-8b66-28b2e60a4e00___CREC_HLB 4541.JPG,Orange___Haunglongbing(Citrus_greening),15
+Peach___Bacterial_spot/00359c66-5d75-40ce-a5b7-6ef05959d2d2___Rut._Bact.S 1381.JPG,Peach___Bacterial_spot,16
+Peach___healthy/027b10e5-2d2e-4eb4-9457-7cb45ab2fd17___Rutg._HL 3710.JPG,Peach___healthy,17
+Pepper___bell_Bacterial_spot/00f2e69a-1e56-412d-8a79-fdce794a17e4___JR_B.Spot 3132.JPG,Pepper___bell_Bacterial_spot,18
+Pepper___healthy/0137d804-551d-4f78-88b4-d603056dd7e7___JR_HL 7719.JPG,Pepper___healthy,19
+Potato___Early_blight/00d8f10f-5038-4e0f-bb58-0b885ddc0cc5___RS_Early.B 8722.JPG,Potato___Early_blight,20
+Potato___Late_blight/00b1f292-23dd-44d4-aad3-c1ffb6a6ad5a___RS_LB 4479.JPG,Potato___Late_blight,21
+Potato___healthy/03da9931-e514-4cc7-b04a-8f474a133ce5___RS_HL 1830.JPG,Potato___healthy,22
+Raspberry___healthy/076d909d-cfca-47ce-a8d1-479bb77c4bab___Mary_HL 6294.JPG,Raspberry___healthy,23
+Soybean___healthy/00247bff-26dc-445a-8d11-0b2592787ec3___RS_HL 6869.JPG,Soybean___healthy,24
+Squash___Powdery_mildew/00e1748e-0870-4b07-ae4a-2eac687e3f54___MD_Powd.M 0402.JPG,Squash___Powdery_mildew,25
+Strawberry___Leaf_scorch/01647a51-6ee5-4686-8f60-26ebed68fe21___RS_L.Scorch 0130.JPG,Strawberry___Leaf_scorch,27
+Strawberry___healthy/01e591c9-e3e7-4edc-8211-13081f4d5e7a___RS_HL 1979.JPG,Strawberry___healthy,26
+Tomato___Bacterial_spot/00728f4d-83a0-49f1-87f8-374646fcda05___GCREC_Bact.Sp 6326.JPG,Tomato___Bacterial_spot,28
+Tomato___Early_blight/01861c93-ea8b-4820-aaa8-cc6003b3e75b___RS_Erly.B 7855.JPG,Tomato___Early_blight,29
+Tomato___Late_blight/005a2c1f-4e15-49e4-9e5c-61dc3ecf9708___RS_Late.B 5096.JPG,Tomato___Late_blight,30
+Tomato___Leaf_Mold/030ea180-4eb5-4f91-918e-56c7cfe2c001___Crnl_L.Mold 7076.JPG,Tomato___Leaf_Mold,31
+Tomato___Septoria_leaf_spot/01f54ad9-9c03-4ffd-86f4-829fc2939120___Matt.S_CG 0702.JPG,Tomato___Septoria_leaf_spot,32
+Tomato___Spider_mites Two-spotted_spider_mite/0100e504-f6bc-464a-a181-38262117f30a___Com.G_SpM_FL 1202.JPG,Tomato___Spider_mites Two-spotted_spider_mite,33
+Tomato___Target_Spot/0197df47-a9cb-4b6c-b72c-ac0e9af6d135___Com.G_TgS_FL 0779.JPG,Tomato___Target_Spot,34
+Tomato___Tomato_Yellow_Leaf_Curl_Virus/0068fe04-aa0c-4d92-8af0-f05c9d8db6eb___UF.GRC_YLCV_Lab 01755.JPG,Tomato___Tomato_Yellow_Leaf_Curl_Virus,35
+Tomato___Tomato_mosaic_virus/046a2559-23b4-4018-a3db-337347ceb391___PSU_CG 2321.JPG,Tomato___Tomato_mosaic_virus,36
+Tomato___healthy/01700b46-3800-46c6-ab81-09a5f50af525___RS_HL 0108.JPG,Tomato___healthy,37

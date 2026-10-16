@@ -81,15 +81,16 @@ the lab-vs-field comparison (documented in that file).
 A second team member must double-check every label before the field split is
 finalized. Doubtful images are removed, not forced into a class.
 
-### Google Drive link (zip of `data/raw/field/`)
-Current set: **150 images across 28 classes**, all from PlantDoc (66 MB zip).
+### Google Drive Link (Unified Dataset Archive)
+The unified dataset archive contains both the verified PlantVillage color images (all 38 classes) and the real-world field robustness images (28 classes).
 
 ```
-FIELD_IMAGES_DRIVE_URL=https://drive.google.com/file/d/1lNE3mqhb3yxPV_i5Sz3lptrWv-bkW9eo/view?usp=sharing
+DATASET_DRIVE_URL=https://drive.google.com/file/d/1RPiAn3v0peIaUa2tTB4-Ks2zePoDDVO4/view?usp=sharing
 ```
 
-To restore locally, download `field_images.zip` and extract it into `data/raw/field/`
-so that each class folder sits directly under it. File names must match
-`field_meta/field_labels.csv`.
+To restore locally:
+1. Download the archive from the link above.
+2. Extract the archive directly into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
+3. Class names and file mappings strictly match `splits/class_names.json` and `field_meta/field_labels.csv`.
 
-The zip itself is **not** committed.
+The zip archive itself is **not** committed to Git.
