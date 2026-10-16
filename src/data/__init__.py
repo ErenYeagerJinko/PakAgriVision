@@ -1,12 +1,5 @@
 """PakAgriVision data processing package."""
 
-from src.data.dataset import (
-    FieldDataset,
-    PlantDataset,
-    create_weighted_sampler,
-    get_dataloaders,
-    seed_worker,
-)
 from src.data.quality import (
     QualityChecker,
     compute_md5,
@@ -20,11 +13,22 @@ from src.data.splits import (
     get_class_mappings,
     load_class_names,
 )
-from src.data.transforms import (
-    denormalize_tensor,
-    get_eval_transforms,
-    get_train_transforms,
-)
+
+try:
+    from src.data.dataset import (
+        FieldDataset,
+        PlantDataset,
+        create_weighted_sampler,
+        get_dataloaders,
+        seed_worker,
+    )
+    from src.data.transforms import (
+        denormalize_tensor,
+        get_eval_transforms,
+        get_train_transforms,
+    )
+except ImportError:
+    pass
 
 __all__ = [
     "QualityChecker",
