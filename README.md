@@ -160,22 +160,17 @@ pip install -r requirements.txt
 
 **Pinned dependencies** (from `requirements.txt`):
 ```text
-torch==2.14.1
-torchvision==0.29.1
-numpy==2.5.4
-pandas==3.0.6
-scikit-learn==1.9.1
-matplotlib==3.11.2
-seaborn==0.13.2
-pillow==12.3.0
-imagehash==4.3.2
-tqdm==4.70.1
-pyyaml==6.0.3
-jsonschema==4.26.0
-jupyter==1.1.1
-pytest==9.1.1
-nbstripout==0.9.1
-kaggle==2.2.4
+torch>=2.0.0
+torchvision>=0.15.0
+pillow>=10.0.0
+imagehash>=4.3.0
+numpy>=2.0.0
+pandas>=2.2.0
+matplotlib>=3.8.0
+jsonschema>=4.20.0
+pytest>=8.0.0
+jupyter>=1.0.0
+nbstripout>=0.7.0
 ```
 
 > **Windows note**: If the DataLoader hangs, use `num_workers=0`.
@@ -286,17 +281,14 @@ streamlit run app/
 
 ## Python / Environment Requirements
 
-- **PyTorch** (CPU or GPU install — check [pytorch.org](https://pytorch.org/) for the correct install command for your setup)
-- **torchvision** (comes with PyTorch)
-- **NumPy** & **Pandas** for data manipulation
-- **scikit-learn** for stratified splits and class weights
-- **Matplotlib** & **Seaborn** for EDA visualisations
-- **Pillow** for image handling
+- **PyTorch** & **torchvision** (CPU or GPU install — check [pytorch.org](https://pytorch.org/) for the correct install command for your setup)
+- **Pillow** for image loading and validation
 - **imagehash** for perceptual hashing (duplicate detection)
-- **tqdm** for progress bars
-- **PyYAML** for config file handling
+- **NumPy** & **Pandas** for numerical computing and stratified splits
+- **Matplotlib** for publication-quality EDA visualisations
 - **jsonschema** for treatment KB validation
-- **pytest** for unit tests
+- **pytest** for automated unit test suites
+- **jupyter** for exploratory data analysis
 - **nbstripout** to strip notebook outputs before committing
 
 All versions are pinned in `requirements.txt`. After `pip install -r requirements.txt`, run `pip freeze > requirements.txt` to capture the exact installed versions.

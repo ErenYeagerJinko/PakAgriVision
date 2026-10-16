@@ -17,7 +17,7 @@ To counter majority-class bias during optimization, balanced class weights $w_c$
 \begin{equation}
 w_c = \frac{N_{\text{train}}}{K \cdot n_c}
 \end{equation}
-where $N_{\text{train}}$ denotes total training samples, $K=38$ classes, and $n_c$ denotes the count of class $c$. The computed weights are saved in \texttt{splits/class_weights.json} and passed to the loss function.
+where $N_{\text{train}}$ denotes total training samples, $K=38$ classes, and $n_c$ denotes the count of class $c$. The computed weights are saved in \texttt{splits/class\_weights.json} and passed to the loss function.
 
 \subsection{Image Dimensions and Aspect Ratio Consistency}
 All leaf photographs were audited for input consistency. The resolution analysis confirms that raw inputs exhibit standardized $256 \times 256$ pixel resolution with uniform 1:1 square aspect ratios in RGB color mode, as visualized in Figure~\ref{fig:img_sizes}.
@@ -52,4 +52,4 @@ A critical finding of our exploratory analysis is the background disparity betwe
     \label{fig:lab_vs_field}
 \end{figure}
 
-This contrast validates the central motivation of our project: classifiers trained purely on lab images risk learning background artifacts (shortcut learning) rather than pathogen pathology, underscoring the necessity of our explainability pipeline (Grad-CAM) and robustness testing set (\texttt{splits/field_test.csv}).
+This contrast validates the central motivation of our project: classifiers trained purely on lab images risk learning background artifacts (shortcut learning) rather than pathogen pathology, underscoring the necessity of our explainability pipeline (Grad-CAM) and robustness testing set (\texttt{splits/field\_test.csv}).

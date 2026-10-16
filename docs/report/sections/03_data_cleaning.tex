@@ -1,7 +1,7 @@
 \section{Data Cleaning \& Verification Implementation}
 \label{sec:cleaning}
 
-A data-centric engineering approach is mandatory for real-world computer vision reliability. Prior to partitioning and model training, raw image data undergoes an automated verification and deduplication pipeline implemented in \texttt{src/data/quality.py} and executed via \texttt{data\_scripts/check_dataset.py}.
+A data-centric engineering approach is mandatory for real-world computer vision reliability. Prior to partitioning and model training, raw image data undergoes an automated verification and deduplication pipeline implemented in \texttt{src/data/quality.py} and executed via \texttt{data\_scripts/check\_dataset.py}.
 
 \subsection{Handling Missing and Corrupt Values}
 In computer vision workflows, missing data corresponds to corrupted bitstreams, incomplete downloads, zero-byte file allocations, or broken headers that cause silent runtime training crashes:
