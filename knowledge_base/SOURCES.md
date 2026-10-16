@@ -31,4 +31,28 @@ Numbered citations used in `treatments.json`. Every disease entry must cite at l
 27. UC IPM — Cucurbits: Powdery Mildew, https://ipm.ucanr.edu/agriculture/cucurbits/powdery-mildew/, accessed 2026-10-14
 28. NC State Extension — Leaf Scorch of Strawberry, https://content.ces.ncsu.edu/leaf-scorch-of-strawberry, accessed 2026-10-14
 29. University of Illinois Extension — Strawberry Leaf Scorch, https://extension.illinois.edu/plant-diseases/strawberry-leaf-scorch, accessed 2026-10-14
-
+30. Cornell Cooperative Extension — Apple Scab (Venturia inaequalis), https://ecommons.cornell.edu/handle/1813/43074, accessed 2026-10-15
+31. Penn State Extension — Apple Scab, https://extension.psu.edu/apple-scab, accessed 2026-10-15
+32. University of Kentucky Extension — Apple Black Rot, https://plantpathology.ca.uky.edu/files/ppfs-fr-t-13.pdf, accessed 2026-10-15
+33. Penn State Extension — Fruit Diseases: Apple Black Rot, https://extension.psu.edu/apple-disease-black-rot, accessed 2026-10-15
+34. University of Minnesota Extension — Cedar Apple Rust, https://extension.umn.edu/plant-diseases/cedar-apple-rust, accessed 2026-10-15
+35. NC State Extension — Cedar Apple Rust, https://content.ces.ncsu.edu/cedar-apple-rust-1, accessed 2026-10-15
+36. Penn State Extension — Apple Tree Management and Pruning, https://extension.psu.edu/pruning-apple-trees, accessed 2026-10-15
+37. Michigan State University Extension — Blueberry Growth and Disease Scouting, https://www.canr.msu.edu/blueberries/, accessed 2026-10-15
+38. Pacific Northwest Plant Disease Management Handbook — Cherry (Prunus spp.), https://pnwhandbooks.org/plantdisease/host-disease/cherry-prunus-spp, accessed 2026-10-15
+39. Washington State University Extension — Cherry Powdery Mildew, http://treefruit.wsu.edu/crop-protection/disease-management/cherry-powdery-mildew/, accessed 2026-10-15
+40. UC IPM — Cherry Powdery Mildew, https://ipm.ucanr.edu/agriculture/cherry/powdery-mildew/, accessed 2026-10-15
+41. Purdue Extension — Gray Leaf Spot of Corn, https://www.extension.purdue.edu/extmedia/bp/bp-04-w.pdf, accessed 2026-10-15
+42. Iowa State University Extension — Corn Diseases: Gray Leaf Spot, https://crops.extension.iastate.edu/cropnews/2021/07/gray-leaf-spot-corn, accessed 2026-10-15
+43. University of Illinois Extension — Common Rust of Corn, https://cropwatch.unl.edu/plantdisease/corn/common-rust, accessed 2026-10-15
+44. University of Wisconsin Extension — Corn Rust Diseases, https://cropprotectionnetwork.org/publications/common-rust-of-corn, accessed 2026-10-15
+45. Iowa State University Extension — Northern Corn Leaf Blight, https://crops.extension.iastate.edu/cropnews/2020/07/northern-corn-leaf-blight, accessed 2026-10-15
+46. Purdue Extension — Northern Corn Leaf Blight, https://www.extension.purdue.edu/extmedia/BP/BP-84-W.pdf, accessed 2026-10-15
+47. Purdue Extension — Corn Growth and Development, https://www.agry.purdue.edu/ext/corn/pubs/agry9101.pdf, accessed 2026-10-15
+48. Ohio State University Extension — Black Rot of Grape, https://ohioline.osu.edu/factsheet/plpath-fru-24, accessed 2026-10-15
+49. Cornell Cooperative Extension — Grape Black Rot, https://grapesandwine.cals.cornell.edu/extension/fact-sheets/, accessed 2026-10-15
+50. UC IPM — Grape: Esca (Black Measles), https://ipm.ucanr.edu/agriculture/grape/esca-black-measles/, accessed 2026-10-15
+51. Penn State Extension — Grapevine Trunk Diseases, https://extension.psu.edu/grapevine-trunk-diseases, accessed 2026-10-15
+52. University of Florida IFAS — Grape Leaf Spot and Blight, https://edis.ifas.ufl.edu/publication/MG329, accessed 2026-10-15
+53. Pacific Pests & Pathogens — Grapevine leaf spot (Phaeoisariopsis), https://apps.lucidcentral.org/ppp/text/web_full/entities/grapevine_leaf_spot_412.htm, accessed 2026-10-15
+54. Cornell Cooperative Extension — Grape Canopy Management, https://grapesandwine.cals.cornell.edu/extension/, accessed 2026-10-15
