@@ -4,41 +4,43 @@ This document provides the exact automated and manual commands for acquiring the
 
 ---
 
-## 1. PlantVillage Benchmark Dataset (~54k Images, 38 Classes)
+## 1. Primary Curated Dataset (~32k Images, 38 Classes) via Google Drive
 
-- **Source**: Kaggle `abdallahalidev/plantvillage-dataset`
-- **Citation**: Hughes, D.P., & Salathé, M. (2015). *An open access repository of images on plant health to enable the development of mobile disease diagnostics*. arXiv:1511.08060.
-- **Scale**: 54,303 color images across 14 crop species and 38 classes.
-- **Format**: 256×256 pixels, 3-channel RGB JPEG format.
+To ensure data-centric quality, reproducibility, and prevent training instability:
+- **Raw Benchmark Limitations**: The original raw PlantVillage dataset on Kaggle contained ~54,303 uncurated images with corrupted JPEG files, exact duplicate photographs, near-duplicate leaf shots, and an extreme 36:1 class imbalance ratio (e.g., Orange Huanglongbing having 5,507 images while Potato healthy had only 152).
+- **Curated Dataset Implementation**: All raw candidate files underwent binary integrity checking (`PIL.Image.verify()`), exact duplicate elimination via 128-bit MD5 hashes, near-duplicate clustering via 64-bit DCT perceptual hashes (`imagehash.phash`), and class capping at a ceiling of **1,000 clean images per class**.
+- **Final Scale**: **31,694 verified clean unique images (~32k images)** across 38 classes, plus 150 real-world field robustness images across 28 matching classes.
+- **We do NOT use raw Kaggle downloads anymore**: All team members and graders download the verified, pre-cleaned, and capped archive directly from Google Drive.
+
+### Primary Download Instructions: Pre-Packaged `data.zip`
+- **Google Drive Link**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk)
+- **Archive File**: `data.zip`
+- **Extraction Command**:
+  ```bash
+  # Extract directly into data/raw/
+  python -m zipfile -e data.zip data/raw/
+  ```
+- **Resulting Directory Layout**:
+  ```text
+  data/raw/
+  ├── plantvillage/
+  │   └── color/
+  │       ├── Apple___Apple_scab/
+  │       ├── ... (38 classes, max 1,000 images each)
+  └── field/
+      ├── Apple___Apple_scab/
+      └── ... (28 classes, 150 images total)
+  ```
+
+---
+
+## 2. Historical Raw Ingestion Sources (Reference Only)
+
+> **Note:** These options represent the raw initial benchmarks before deduplication, corrupt file pruning, and class capping. They are retained solely for data provenance documentation.
+
+- **Initial Raw Benchmark**: Kaggle `abdallahalidev/plantvillage-dataset` (~54k uncurated images).
+- **Historical Paper**: Hughes, D.P., & Salathé, M. (2015). *An open access repository of images on plant health to enable the development of mobile disease diagnostics*. arXiv:1511.08060.
 - **License**: CC0 Public Domain.
-
-### Option A: Kaggle API Download (Automated)
-Ensure your `kaggle.json` API token is installed in `~/.kaggle/` (`%USERPROFILE%\.kaggle\kaggle.json` on Windows):
-
-```bash
-# Download and unpack directly into data/raw/
-kaggle datasets download -d abdallahalidev/plantvillage-dataset -p data/raw --unzip
-```
-
-Ensure the target layout matches:
-```text
-data/raw/plantvillage/color/<PlantVillage_class_name>/<filename>.JPG
-```
-
-### Option B: Mendeley Direct Mirror (Fast HTTP)
-Download the official non-augmented color archive (~828 MB):
-```bash
-# Direct mirror link:
-curl -L -o data/raw/plant_village.zip "https://data.mendeley.com/public-files/datasets/tywbtsjrjv/files/d5652a28-c1d8-4b76-97f3-72fb80f94efc/file_downloaded"
-
-# Extract color images into data/raw/plantvillage/color/
-python -m zipfile -e data/raw/plant_village.zip data/raw/
-```
-
-### Option C: Hugging Face Mirror
-```bash
-curl -L -o data/raw/data.zip "https://huggingface.co/datasets/mohanty/PlantVillage/resolve/main/data.zip"
-```
 
 ---
 

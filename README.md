@@ -15,7 +15,7 @@ PakAgriVision is an AI-powered web application that detects plant diseases from 
 2. **Grad-CAM heatmap** highlighting the regions the model focused on
 3. **Actionable treatment recommendations** — specific fungicides, dosage, organic alternatives, and preventive measures tailored to the diagnosed disease
 
-The project builds on the [PlantVillage Dataset](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) (~54,000 labeled leaf images across 38 disease classes) and incorporates explainability and a treatment engine as key differentiators.
+The project originated from the PlantVillage dataset (~54,000 raw images across 38 classes). To address severe class imbalance, corrupt files, and redundant leaf captures present in the raw benchmark, we cleaned the dataset, eliminated duplicates and corrupted images, and capped each class at 1,000 clean images. This produced our curated, balanced dataset of **~32k images (31,694 images)** across all 38 classes. We no longer use Kaggle; the cleaned dataset and real-world field set are distributed directly as `data.zip` on Google Drive.
 
 ---
 
@@ -124,7 +124,7 @@ PakAgriVision/
 | Trained weights (.pth/.pt/.ckpt)     | `models/`                   | No      |
 | Compiled report/proposal PDFs        | `docs/…`                    | Yes     |
 | LaTeX junk (.aux .log .out …)        | beside the `.tex`           | No      |
-| Kaggle API key (.env, kaggle.json)   | `~/.kaggle/` / project root | **NEVER** |
+| Kaggle API key (no longer needed)    | Not used (dataset hosted on Drive) | N/A     |
 
 ---
 
@@ -177,19 +177,18 @@ nbstripout>=0.7.0
 
 > **Windows note**: If the DataLoader hangs, use `num_workers=0`.
 
-### 5. Download the dataset
+### 5. Download the Curated Dataset (`data.zip`)
 
-> You need a Kaggle API token to download PlantVillage automatically. If you don't have one:
+> **Dataset Curation & Kaggle Note:** Kaggle was used solely for the initial raw image intake (~54k images). We do **not** use raw Kaggle downloads for running or reproducing the project because the uncurated benchmark suffered from corrupted files, duplicate photographs, and severe class imbalance (over 5,500 images in dominant classes vs. 152 in minority classes). 
+> 
+> We ran our automated quality and deduplication pipeline (`src/data/quality.py`, `data_scripts/clean_and_cap_dataset.py`), pruned corrupted files, removed exact duplicates (MD5) and near-duplicates (pHash), and capped dominant classes at a maximum of 1,000 clean images per class. This yielded our balanced, high-integrity dataset of **~32k images (31,694 verified clean images)** across all 38 classes.
 
-1. Go to [Kaggle Account → Settings → Create New API Token](https://www.kaggle.com/settings/token)
-2. This creates `~/.kaggle/kaggle.json` (never commit this file — it's in `.gitignore`)
-3. Run the download command:
-
-```bash
-kaggle datasets download -d abdallahalidev/plantvillage-dataset -p data/raw --unzip
-```
-
-If Kaggle fails, manually download from the URL above and unzip into `data/raw/`.
+**Download our pre-packaged `data.zip` archive directly from Google Drive:**
+- **Google Drive Link**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk)
+- **Archive Contents**:
+  - `data/raw/plantvillage/color/`: 31,694 clean, balanced images across all 38 classes (max 1,000 images/class).
+  - `data/raw/field/`: 150 real-world field robustness images across 28 matching classes.
+- **Extraction**: Extract `data.zip` into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
 
 ### 6. Verify the dataset
 

@@ -28,13 +28,14 @@
 
     <h2>2. Dataset</h2>
 
-    <h3>PlantVillage Dataset (Kaggle)</h3>
+    <h3>Curated PlantVillage Benchmark (~32k Images, 38 Classes)</h3>
 
     <ul>
-        <li>~54,000 labeled leaf images</li>
-        <li>38 disease classes across multiple crop species (tomato, potato, pepper, apple, grape, corn, etc.)</li>
-        <li>Pre-split into train/validation/test sets</li>
-        <li>Clean, well-documented, and widely used as a benchmark</li>
+        <li>~32,000 clean, verified leaf images (31,694 images) across 38 crop disease classes</li>
+        <li>Initial ~54,000 raw benchmark pruned of corrupted files, exact duplicates, and near-duplicate photographs</li>
+        <li>Dominant classes capped at 1,000 images per class to prevent majority-class bias</li>
+        <li>Leakage-free, stratified train (70%) / validation (15%) / test (15%) partitions</li>
+        <li>Distributed directly via Google Drive archive (<code>data.zip</code>)</li>
     </ul>
 
     <p>

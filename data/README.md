@@ -1,27 +1,24 @@
-PlantVillage Dataset
-====================
+Curated PlantVillage Benchmark & Field Dataset
+==============================================
 
-- **Source**: Kaggle dataset `abdallahalidev/plantvillage-dataset`
-- **Kaggle URL**: https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset
-- **Original Paper**: Hughes, D.J., Salathé, M.: An open access repository of images
-  depicting plant diseases and healthy plant leaves to facilitate accurate
-  automated image-based plant disease diagnostics. arXiv:1511.08060 (2015)
-- **License**: The dataset images are in the public domain (CC0) or under
-  attribution requirements per the original paper. Check individual class folders
-  for details.
-- **Version Used**: Original images (not pre-augmented). Pre-augmented copies
-  (~87k images with their own train/valid split) are avoided because augmented
-  duplicates can leak across splits.
-- **Expected Folder Layout**: `data/raw/plantvillage/color/` (only `color/` used
-  for training; other subfolders `grayscale`, `segmented` are ignored)
+- **Provenance**: Derived from the public PlantVillage benchmark (Hughes & Salathé, 2015).
+  Kaggle was utilized solely for the initial raw data ingestion (~54k candidate images).
+- **Why Kaggle is No Longer Used**: Raw benchmark downloads contained corrupted JPEG bitstreams,
+  exact byte duplicate photos, near-duplicate captures of the same leaf under slight camera rotations,
+  and severe class imbalance (36:1 ratio, up to 5,507 images in dominant classes vs. 152 in minority classes).
+- **Curated Dataset Scale**: **31,694 clean unique images (~32k images)** across 38 classes.
+  Dominant classes are capped at a maximum ceiling of **1,000 images per class**, ensuring high data
+  quality and a balanced optimization landscape.
+- **License**: CC0 Public Domain / Open Educational License.
+- **Expected Folder Layout**:
+  - `data/raw/plantvillage/color/<class_name>/<filename>.JPG` (31,694 curated images)
+  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field robustness images)
 - **Class Count**: 38 classes (see `splits/class_names.json`)
-- **Image Count**: ~54,300 images in `color/` folder (raw source); **31,694 clean unique images** following deduplication and 1,000-per-class balancing.
-- **Download Command**:
+- **Primary Download**: Hosted directly via Google Drive as `data.zip`:
+  ```text
+  https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
   ```
-  kaggle datasets download -d abdallahalidev/plantvillage-dataset -p data/raw --unzip
-  ```
-  If Kaggle fails, download manually from the URL above and unzip into
-  `data/raw/`.
+  Extract directly into `data/raw/` to populate both `data/raw/plantvillage/color/` and `data/raw/field/`.
 
 ## Class Names (ordered)
 The ordered list of 38 class names is saved in `splits/class_names.json`. This
@@ -85,7 +82,7 @@ finalized. Doubtful images are removed, not forced into a class.
 The unified dataset archive contains both the verified PlantVillage color images (all 38 classes) and the real-world field robustness images (28 classes).
 
 ```
-DATASET_DRIVE_URL=https://drive.google.com/file/d/1RPiAn3v0peIaUa2tTB4-Ks2zePoDDVO4/view?usp=sharing
+DATASET_DRIVE_URL=https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
 ```
 
 To restore locally:
