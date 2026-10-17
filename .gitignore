@@ -62,6 +62,7 @@ mlruns/
 Thumbs.db
 .idea/
 .vscode/
+.html
 
 # ---------- Archives (datasets often arrive zipped) ----------
 *.zip
