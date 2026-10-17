@@ -1,11 +1,13 @@
 \section{Dataset Acquisition \& Provenance}
 \label{sec:dataset}
 
-\subsection{PlantVillage Benchmark Dataset}
-The primary baseline training dataset is the public PlantVillage benchmark~\cite{plantvillage}, obtained via the Kaggle API (\texttt{abdallahalidev/plantvillage-dataset}).
+\subsection{Curated Benchmark Dataset (\texorpdfstring{$\sim$}{~}32k Images, 38 Classes)}
+The primary baseline training dataset originated from the public PlantVillage benchmark~\cite{plantvillage}. While Kaggle (\texttt{abdallahalidev/plantvillage-dataset}) was initially accessed during exploratory data intake ($\sim$54,303 raw candidate images), raw Kaggle distribution was discontinued for model development because it contained corrupted JPEG bitstreams, exact duplicate photographs, near-duplicate captures of identical leaves under slight camera rotations, and severe class imbalance (up to a 36:1 ratio, with 5,507 samples in dominant classes vs.\ 152 in minority classes). 
+
+To enforce rigorous data-centric quality, the raw data underwent an automated cleaning and balancing pipeline:
 \begin{itemize}
-    \item \textbf{Initial Benchmark Scale:} 54,303 raw color images across 14 distinct crop species and 38 distinct crop-disease pairings.
-    \item \textbf{Quality Curation \& Balance:} Following file integrity verification and perceptual deduplication (Section~\ref{sec:cleaning}), classes were capped at a maximum of 1,000 clean, unique samples to mitigate extreme class imbalance (e.g., Orange Huanglongbing previously having 5,507 samples vs. Potato healthy having 152), yielding a balanced curated baseline of \textbf{31,694 verified clean images}.
+    \item \textbf{Curation \& Class Capping:} Following binary file integrity verification and perceptual deduplication (Section~\ref{sec:cleaning}), dominant classes were capped at a ceiling of 1,000 clean, unique samples. This successfully curbed extreme majority-class bias while preserving natural variation across all 38 classes, establishing a balanced curated baseline of \textbf{31,694 verified clean images} ($\sim$32k images).
+    \item \textbf{Distribution via Google Drive:} The unified curated dataset, including all 31,694 benchmark images and the 150 real-world field robustness images, is packaged as \texttt{data.zip} and hosted directly on Google Drive (\url{https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk}).
     \item \textbf{Input Resolution:} Standardized $256\times256$ pixels in RGB color format (1:1 square aspect ratio).
     \item \textbf{License \& Integrity:} CC0 Public Domain / Open Educational License.
 \end{itemize}
@@ -15,7 +17,7 @@ The primary baseline training dataset is the public PlantVillage benchmark~\cite
 PlantVillage images were captured under controlled lighting against plain backgrounds, so accuracy on its own test split overstates how a model will perform on leaves photographed in the field. To measure this gap, we assembled a separate field set of 150 images with real backgrounds (soil, other foliage, hands, sky).
 
 \paragraph{Source and licence.}
-All 150 images come from the PlantDoc dataset~\cite{plantdoc} (\url{https://github.com/pratikkayal/PlantDoc-Dataset}), released under CC-BY-4.0. Each image is recorded in \texttt{field\_meta/field\_labels.csv} with its filename, PlantVillage label, source, URL, licence and the original PlantDoc folder. The images themselves are not committed to Git; a zip of \texttt{data/raw/field/} is shared via the Google Drive link in \texttt{data/README.md}.
+All 150 images come from the PlantDoc dataset~\cite{plantdoc} (\url{https://github.com/pratikkayal/PlantDoc-Dataset}), released under CC-BY-4.0. Each image is recorded in \texttt{field\_meta/field\_labels.csv} with its filename, PlantVillage label, source, URL, licence and the original PlantDoc folder. The images themselves are not committed to Git; a pre-packaged archive (\texttt{data.zip}) containing both the curated PlantVillage benchmark and \texttt{data/raw/field/} is hosted on Google Drive (\url{https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk}) and documented in \texttt{data/README.md}.
 
 \paragraph{Selection rules.}
 We kept only images showing a clearly visible leaf on a real field background, and skipped blurry, watermarked or lab-style images. We aimed for five images per class. Three classes have more (Tomato early blight and Potato late blight 10, Tomato late blight 8) because they were used to make up the 150-image target, and Tomato spider mites has only 2 because PlantDoc contains only two usable images for it.
