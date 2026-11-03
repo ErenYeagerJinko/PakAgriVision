@@ -1,0 +1,40 @@
+# PakAgriVision Base Configuration (Deliverable 2 - Phase 3 & 4)
+model:
+  backbone: "resnet50" # resnet50 | efficientnet_b0
+  num_classes: 38
+  dropout: 0.3
+  pretrained: true
+
+data:
+  splits_dir: "splits"
+  train_split: "splits/train.csv"
+  val_split: "splits/val.csv"
+  test_split: "splits/test.csv"
+  field_test_split: "splits/field_test.csv"
+  img_size: 224
+  batch_size: 64
+  num_workers: 4
+  use_class_weights: true
+  subset_frac: 1.0
+
+training:
+  seed: 42
+  epochs: 15
+  warmup_epochs: 1
+  lr: 0.0003
+  weight_decay: 0.0001
+  optimizer: "adamw" # adamw | sgd
+  momentum: 0.9 # used if sgd
+  scheduler: "cosine"
+  label_smoothing: 0.0
+  mixed_precision: true
+  grad_clip_norm: 1.0
+  early_stopping_patience: 4
+  early_stopping_metric: "val_macro_f1"
+
+logging:
+  run_dir: "runs"
+  results_dir: "results"
+  reports_figures_dir: "reports/figures"
+  save_checkpoint_every_epoch: true
+
