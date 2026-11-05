@@ -66,6 +66,15 @@ Table~\ref{tab:parameter_counts} provides the exact parameter breakdown for our 
 \end{tabular}
 \end{table}
 
+\subsubsection{Hyperparameter Tuning Insights \& Comparative Analysis}
+The 13-trial grid yields several clear empirical conclusions:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Backbone Efficiency and Convergence (Stage A):} In the 4-epoch fine-tuning regime, \textbf{EfficientNet-B0} converged substantially faster than ResNet-50 ($\approx 290$\,s vs.\ $\approx 380$\,s per trial, a $24\%$ wall-clock speedup). At $\text{LR} = 1 \times 10^{-3}$, EfficientNet-B0 reached an accuracy of $96.42\%$ and Macro-F1 of $0.9622$, outperforming ResNet-50 ($96.08\%$). However, both architectures exhibited acute sensitivity to lower learning rates: dropping $\text{LR}$ to $1 \times 10^{-4}$ degraded ResNet-50 to $0.9199$ and caused EfficientNet-B0 to drop sharply to $0.8173$ due to sluggish adaptation of compound-scaled depthwise separable layers under short budgets.
+    \item \textbf{Regularization and Batch Dynamics (Stage B):} Among all regularization experiments, \textbf{Batch Size = 32 (Trial 9)} proved decisive, achieving the overall highest validation performance (\textbf{97.07\% Accuracy, 0.9694 Macro-F1}) and lowest validation loss ($0.0971$). The smaller mini-batch size provided twice as many stochastic gradient updates per epoch relative to batch size 64, significantly accelerating convergence on the 20\% stratified subset. Conversely, expanding the batch size to 128 (Trial 10) degraded performance to $0.9470$ Macro-F1.
+    \item \textbf{Label Smoothing and Class Weights:} Label smoothing ($\alpha = 0.10$, Trial 12) achieved strong validation accuracy ($96.74\%$) and Macro-F1 ($0.9663$), softening overconfident logits while preserving ranking discrimination. Training without class-weighted loss (Trial 13) resulted in a lower Macro-F1 ($0.9647$), empirically validating the necessity of inverse-frequency class weights for penalizing minority crop diseases.
+\end{enumerate}
+
+
 \subsection{Loss Function, Class Balancing \& Optimizer Strategy}
 \label{subsec:loss_optim}
 
@@ -131,12 +140,21 @@ To maximize GPU resource efficiency on free cloud accelerators, each tuning tria
 7 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.0 & $1\times 10^{-4}$ & 0.0 & Yes & 96.21\% & 0.9611 \\
 8 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.5 & $1\times 10^{-4}$ & 0.0 & Yes & 95.64\% & 0.9572 \\
 9 & B & ResNet-50 & $3\times 10^{-4}$ & 32 & 0.3 & $1\times 10^{-4}$ & 0.0 & Yes & \textbf{97.07\%} & \textbf{0.9694} \\
-10 & B & ResNet-50 & $3\times 10^{-4}$ & 128 & 0.3 & $1\times 10^{-4}$ & 0.0 & Yes & -- & -- \\
-11 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-2}$ & 0.0 & Yes & -- & -- \\
-12 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.1 & Yes & -- & -- \\
-13 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.0 & No & -- & -- \\
+10 & B & ResNet-50 & $3\times 10^{-4}$ & 128 & 0.3 & $1\times 10^{-4}$ & 0.0 & Yes & 94.94\% & 0.9470 \\
+11 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-2}$ & 0.0 & Yes & 95.91\% & 0.9602 \\
+12 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.1 & Yes & 96.74\% & 0.9663 \\
+13 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.0 & No & 96.42\% & 0.9647 \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
+
+\subsubsection{Hyperparameter Tuning Insights \& Comparative Analysis}
+The 13-trial grid yields several clear empirical conclusions:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Backbone Efficiency and Convergence (Stage A):} In the 4-epoch fine-tuning regime, \textbf{EfficientNet-B0} converged substantially faster than ResNet-50 ($\approx 290$\,s vs.\ $\approx 380$\,s per trial, a $24\%$ wall-clock speedup). At $\text{LR} = 1 \times 10^{-3}$, EfficientNet-B0 reached an accuracy of $96.42\%$ and Macro-F1 of $0.9622$, outperforming ResNet-50 ($96.08\%$). However, both architectures exhibited acute sensitivity to lower learning rates: dropping $\text{LR}$ to $1 \times 10^{-4}$ degraded ResNet-50 to $0.9199$ and caused EfficientNet-B0 to drop sharply to $0.8173$ due to sluggish adaptation of compound-scaled depthwise separable layers under short budgets.
+    \item \textbf{Regularization and Batch Dynamics (Stage B):} Among all regularization experiments, \textbf{Batch Size = 32 (Trial 9)} proved decisive, achieving the overall highest validation performance (\textbf{97.07\% Accuracy, 0.9694 Macro-F1}) and lowest validation loss ($0.0971$). The smaller mini-batch size provided twice as many stochastic gradient updates per epoch relative to batch size 64, significantly accelerating convergence on the 20\% stratified subset. Conversely, expanding the batch size to 128 (Trial 10) degraded performance to $0.9470$ Macro-F1.
+    \item \textbf{Label Smoothing and Class Weights:} Label smoothing ($\alpha = 0.10$, Trial 12) achieved strong validation accuracy ($96.74\%$) and Macro-F1 ($0.9663$), softening overconfident logits while preserving ranking discrimination. Training without class-weighted loss (Trial 13) resulted in a lower Macro-F1 ($0.9647$), empirically validating the necessity of inverse-frequency class weights for penalizing minority crop diseases.
+\end{enumerate}
+
 
