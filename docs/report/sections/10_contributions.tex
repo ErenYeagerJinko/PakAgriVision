@@ -5,9 +5,9 @@ In accordance with course deliverable requirements, Table~\ref{tab:contribution_
 
 \begin{table}[h]
 \centering
-\small
 \caption{\textbf{Verified Team Contribution and Module Ownership Table.}}
 \label{tab:contribution_table}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}p{2.8cm}p{2.6cm}p{8.5cm}r@{}}
 \toprule
 \textbf{Team Member} & \textbf{GitHub Handle} & \textbf{Owned Modules \& Technical Deliverables} & \textbf{Phase} \\
@@ -24,7 +24,8 @@ In accordance with course deliverable requirements, Table~\ref{tab:contribution_
 \textbf{Deliverable 2:} Evaluation metrics suite (\texttt{src/metrics.py}), CLI evaluation module (\texttt{src/evaluate.py}), metric tests (\texttt{tests/test\_metrics.py}), error analysis and confusion matrix extraction (\texttt{src/analysis/error\_analysis.py}), systematic Bias Check auditing (\texttt{src/analysis/bias\_check.py}). \newline
 \textbf{Deliverable 1:} Field robustness image collection ($\ge 150$ images), field metadata mapping (\texttt{field\_meta/}), treatment knowledge base curation and JSON schema validation (\texttt{knowledge\_base/}). & 1--4 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \subsection{Individual Development Hygiene}

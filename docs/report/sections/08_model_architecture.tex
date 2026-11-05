@@ -112,11 +112,11 @@ To justify every architectural and optimization choice on empirical evidence rat
 \subsubsection{Efficiency Protocol}
 To maximize GPU resource efficiency on free cloud accelerators, each tuning trial is trained on a **20\% stratified train subset** (\texttt{subset\_frac=0.20}, 4,437 images) for **4 epochs**, and evaluated on the full, uncompromised validation split (4,747 images) using Macro-F1. Table~\ref{tab:tuning_trials} displays the structured trials and records the completed Stage~A results.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\small
 \caption{\textbf{Systematic 13-Trial Hyperparameter Tuning Grid and Results.}}
 \label{tab:tuning_trials}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}cclccccccrr@{}}
 \toprule
 \textbf{ID} & \textbf{Stage} & \textbf{Backbone} & \textbf{LR} & \textbf{Batch} & \textbf{Drop} & \textbf{WD} & \textbf{Smooth} & \textbf{Weights} & \textbf{Val Acc} & \textbf{Val Macro-F1} \\
@@ -136,6 +136,7 @@ To maximize GPU resource efficiency on free cloud accelerators, each tuning tria
 12 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.1 & Yes & -- & -- \\
 13 & B & ResNet-50 & $3\times 10^{-4}$ & 64 & 0.3 & $1\times 10^{-4}$ & 0.0 & No & -- & -- \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 

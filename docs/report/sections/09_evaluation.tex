@@ -22,9 +22,9 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 
 \begin{table}[h]
 \centering
-\small
 \caption{\textbf{Baseline ResNet-50 Epoch Progression (15 Epochs on Full Curated Dataset).}}
 \label{tab:baseline_history}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}cccccccr@{}}
 \toprule
 \textbf{Epoch} & \textbf{Train Loss} & \textbf{Train Acc} & \textbf{Val Loss} & \textbf{Val Acc} & \textbf{Val Macro-F1} & \textbf{Learning Rate} & \textbf{Time} \\
@@ -46,7 +46,8 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 15 & \textbf{0.0057} & \textbf{99.81\%} & 0.0197 & 99.62\% & 0.9958 & $1.00 \times 10^{-6}$ & 230.6\,s \\
 \bottomrule
 \multicolumn{8}{l}{\footnotesize $^*$Epoch 1 represents the head-only warm-up phase with frozen backbone.}
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \subsubsection{Key Training Observations}
