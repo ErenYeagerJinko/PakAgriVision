@@ -21,13 +21,17 @@ The project originated from the PlantVillage dataset (~54,000 raw images across 
 
 ## Directory Structure
 
-The repository follows the structure defined for Deliverable 1 (Problem Definition & Data Foundations). Key directories:
+The repository follows the structure defined for Deliverable 1 and Deliverable 2. Key directories:
 
 ```
 PakAgriVision/
 ├── README.md                  # This file — setup + how to reproduce
 ├── requirements.txt           # Pinned dependencies
-├── .gitignore                # Git-ignored patterns (data/models/secrets)
+├── .gitignore                # Git-ignored patterns (data/models/runs/secrets)
+│
+├── configs/                   # Experiment YAML configurations (COMMITTED)
+│   ├── base.yaml              # Base hyperparameter definitions
+│   └── baseline.yaml          # Day 2 baseline configuration
 │
 ├── data_scripts/              # Phase 2 scripts mandated by Deliverable 1 spec
 │   ├── README.md              # Purpose & mapping of data pipeline scripts
@@ -39,15 +43,18 @@ PakAgriVision/
 │   ├── validate_treatments.py # B3: checks treatments.json
 │   └── visualize_augmentations.py # A4: augmentation sanity check
 │
+├── scripts/                   # Utility and download automation scripts
+│   └── download_weights.py    # Downloads & extracts baseline folder to runs/
+│
 ├── data/                      # NEVER commit large data/folders
 │   ├── README.md              # Dataset download info, version, licence
 │   ├── .gitkeep              # Keeps folder in git
 │   ├── raw/
-│   │   ├── plantvillage/     # PlantVillage images (color/ only; ~54k images; IGNORED)
+│   │   ├── plantvillage/     # PlantVillage images (color/ only; ~32k curated images; IGNORED)
 │   │   └── field/            # Real field images + field_labels.csv (IGNORED images)
 │   └── processed/            # Cached/resized tensors (IGNORED)
 │
-├── splits/                    # Small text files — COMMITSED (identical splits for all)
+├── splits/                    # Small text files — COMMITTED (identical splits for all)
 │   ├── class_names.json       # Ordered list of 38 class names → index
 │   ├── train.csv              # path,label,label_idx (70% train)
 │   ├── val.csv                # path,label,label_idx (15% val)
@@ -70,6 +77,11 @@ PakAgriVision/
 ├── src/                       # Reusable code
 │   ├── __init__.py
 │   ├── config.py              # Paths, seed=42, image size, ImageNet mean/std
+│   ├── losses.py              # Cross-entropy with class weights & label smoothing
+│   ├── optim.py               # AdamW / SGD + cosine warmup scheduler
+│   ├── models/                # Model architectures (ResNet-50 / EfficientNet-B0)
+│   │   ├── __init__.py
+│   │   └── classifier.py
 │   └── data/
 │       ├── __init__.py
 │       ├── dataset.py         # PlantDataset (torch Dataset)
@@ -77,33 +89,30 @@ PakAgriVision/
 │       ├── splits.py          # Split logic
 │       └── quality.py         # Corrupt / duplicate detection
 │
-
-├── notebooks/                 # EDA notebook (outputs stripped)
-│   └── 01_eda.ipynb
+├── runs/                      # Training checkpoints & full logs — IGNORED (hosted on Google Drive)
+│   └── baseline/              # best.pt, last.pt, history.csv, summary.json
+│
+├── results/                   # Lightweight metrics & curves — COMMITTED
+│   └── baseline/              # history.csv, summary.json, config.yaml
+│
+├── notebooks/                 # Notebooks & cloud guides
+│   ├── 01_eda.ipynb
+│   └── cloud_training_guide.md
 │
 ├── reports/                   # Figures used in LaTeX report (COMMITTED)
 │   └── figures/
-│       ├── eda_class_distribution.png
-│       ├── eda_sample_grid.png
-│       ├── eda_image_sizes.png
-│       ├── aug_examples.png
-│       └── field_vs_lab_examples.png
 │
-├── tests/                     # Anas's tests
-│   └── test_data.py
+├── tests/                     # Unit test suites
+│   ├── test_data.py
+│   ├── test_dataset.py
+│   ├── test_data_quality.py
+│   ├── test_splits.py
+│   ├── test_treatments.py
+│   └── test_model.py
 │
 ├── docs/                      # LaTeX reports (COMMITTED)
 │   ├── proposal/              # Proposal .tex + compiled .pdf
-│   │   ├── proposal.tex
-│   │   └── proposal.pdf
-│   └── report/
-│       ├── main.tex           # Main report LaTeX file
-│       ├── references.bib
-│       └── sections/
-│           └── 02_data.tex    # Phase 2 section (dataset, preprocessing, splits, field data, KB, challenges)
-│
-├── models/                    # Trained weights — IGNORED (hosted on Hugging Face later)
-│   └── .gitkeep
+│   └── report/                # Main report LaTeX file
 │
 └── app/                       # Streamlit app (Phase 5)
     └── .gitkeep
@@ -121,7 +130,8 @@ PakAgriVision/
 | Reusable code                        | `src/`                      | Yes     |
 | One-off / data scripts              | `data_scripts/`             | Yes     |
 | Report figures (small PNG/PDF)       | `reports/figures/`          | Yes     |
-| Trained weights (.pth/.pt/.ckpt)     | `models/`                   | No      |
+| Trained weights (.pt/.pth)           | `runs/`                     | No (Hosted on Google Drive) |
+| Metrics summaries & search tables    | `results/`                  | Yes     |
 | Compiled report/proposal PDFs        | `docs/…`                    | Yes     |
 | LaTeX junk (.aux .log .out …)        | beside the `.tex`           | No      |
 | Kaggle API key (no longer needed)    | Not used (dataset hosted on Drive) | N/A     |
@@ -132,7 +142,7 @@ PakAgriVision/
 
 ### 1. Prerequisites
 
-- **Python** 3.9 or 3.10 recommended
+- **Python** 3.9, 3.10, or 3.11+
 - **Git** for version control
 
 ### 2. Clone the repository
@@ -160,26 +170,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Pinned dependencies** (from `requirements.txt`):
-```text
-torch>=2.0.0
-torchvision>=0.15.0
-pillow>=10.0.0
-imagehash>=4.3.0
-numpy>=2.0.0
-pandas>=2.2.0
-matplotlib>=3.8.0
-jsonschema>=4.20.0
-pytest>=8.0.0
-jupyter>=1.0.0
-nbstripout>=0.7.0
-```
-
-> **Windows note**: If the DataLoader hangs, use `num_workers=0`.
-
 ### 5. Download the Curated Dataset (`data.zip`)
 
-> **Dataset Curation & Kaggle Note:** Kaggle was used solely for the initial raw image intake (~54k images). We do **not** use raw Kaggle downloads for running or reproducing the project because the uncurated benchmark suffered from corrupted files, duplicate photographs, and severe class imbalance (over 5,500 images in dominant classes vs. 152 in minority classes). 
+> **Dataset Curation & Kaggle Note:** Kaggle was used solely for the initial raw image intake (~54k images). We do **not** use raw Kaggle downloads for running or reproducing the project because the uncurated benchmark suffered from corrupted files, duplicate photographs, and severe class imbalance. 
 > 
 > We ran our automated quality and deduplication pipeline (`src/data/quality.py`, `data_scripts/clean_and_cap_dataset.py`), pruned corrupted files, removed exact duplicates (MD5) and near-duplicates (pHash), and capped dominant classes at a maximum of 1,000 clean images per class. This yielded our balanced, high-integrity dataset of **~32k images (31,694 verified clean images)** across all 38 classes.
 
@@ -190,118 +183,98 @@ nbstripout>=0.7.0
   - `data/raw/field/`: 150 real-world field robustness images across 28 matching classes.
 - **Extraction**: Extract `data.zip` into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
 
-### 6. Verify the dataset
+### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
+
+The complete baseline run artifacts (weights, checkpoints, metrics, and configs) are packaged directly as `baseline/` in Google Drive (never committed to Git):
+
+- **Google Drive Link**: [Download Baseline Artifacts Archive](https://drive.google.com/file/d/1RBab1_qShQGObGJtnefs0HlR-G-orM1g/view?usp=drive_link)
+- **Archive Contents**:
+  - `baseline/best.pt`: Winning ResNet-50 weights (~270 MB, 99.64% val accuracy)
+  - `baseline/last.pt`: Final epoch checkpoint (~270 MB)
+  - `baseline/history.csv`: Full epoch-by-epoch loss, accuracy, and F1 logs
+  - `baseline/summary.json` & `baseline/config.yaml`: Run summary & config snapshot
+- **Extraction**: Extract the downloaded archive directly into `runs/` so that `runs/baseline/` is populated.
+
+**To download and extract automatically:**
+```bash
+python scripts/download_weights.py
+```
+*(Or download manually from the link above and extract the zip archive directly into `runs/`).*
+
+---
+
+## Baseline Model Performance (ResNet-50)
+
+| Metric | Baseline Result |
+|---|---|
+| **Architecture** | ResNet-50 (ImageNet pretrained + Dropout 0.3 Head) |
+| **Best Val Accuracy** | **99.64%** (Epoch 14) |
+| **Best Val Macro-F1** | **0.9961** |
+| **Best Val Loss** | **0.0169** |
+| **Final Train Accuracy** | **99.81%** (Epoch 15) |
+| **Optimizer & Schedule** | AdamW (LR=3e-4, WD=1e-4) + Cosine Annealing (1 epoch warm-up) |
+| **Weights Location** | `runs/baseline/best.pt` |
+
+---
+
+### 7. Verify the dataset & environment
 
 ```bash
-# Check that data/ structure is correct
-git status --short   # data/ and models/ must NOT appear
+# Check that data/ and runs/ structures are correct and ignored
+git status --short   # data/ and runs/ must NOT appear
 
 # Verify class names
 python -c "import json; print(json.load(open('splits/class_names.json'))[:5])"
 ```
 
-### 7. Run the EDA notebook (optional)
+### 8. Run the EDA notebook (optional)
 
 ```bash
 jupyter notebook notebooks/01_eda.ipynb
 ```
 
-### 8. Validate the treatment knowledge base
+### 9. Validate the treatment knowledge base
 
 ```bash
 python data_scripts/validate_treatments.py
 ```
 
-### 9. Build the field splits
+### 10. Build the field splits
 
 ```bash
 python data_scripts/make_field_splits.py
 ```
 
-Reads `field_meta/field_labels.csv` and writes `splits/field_test.csv` (~2/3),
-`splits/field_adapt.csv` (~1/3) and `splits/field_split_stats.csv`, stratified by
-class with seed 42. The committed CSVs are the fixed split; re-run only if the
-labels change.
-
-> **Rule:** `field_test.csv` is never used for training, tuning or threshold
-> selection. Only `field_adapt.csv` may be used for the fine-tuning mitigation.
-
-### 10. Run the tests
+### 11. Run the test suite
 
 ```bash
-pytest -q
+pytest -v
 ```
 
-### 11. Compile the LaTeX report
+### 12. Compile the LaTeX report
 
 ```bash
 # From the docs/report/ directory
 cd docs/report
 pdflatex main.tex
-# or use overleaf/xelatex as preferred
-```
-
-### 12. Launch the Streamlit app (Phase 5)
-
-> **Note:** Streamlit is reserved for Phase 5 (Interactive Application Deployment) and is not required for Deliverable 1.
-
-```bash
-# Optional (Phase 5 only):
-# pip install streamlit
-streamlit run app/
 ```
 
 ---
 
 ## Team Contributions & Task Distribution
 
-| Member        | ID          | Primary Responsibilities                                                                 |
-|---------------|-------------|------------------------------------------------------------------------------------------|
-| **Abdul Ahad**   | 24L-3029   | L1: Repo setup, environment, README, .gitignore; L2: Download & verify PlantVillage; L4: Integration, final checklist, compile report |
-| **M. Anas**     | 24L-3004    | A1: Data quality checks (corrupt, duplicates, near-duplicates); A2: Stratified split + CSVs + class weights; A3: Dataset class, transforms, DataLoader; A4: Unit tests, augmentation visual sanity check |
-| **M. Babar Shahzad** | 24L-3047 | B1: Field-image collection (≥150) + labelling + licence tracking; B2: Class-name mapping; B3: Treatment KB schema + validation; B4: Field-set split + statistics |
-
----
-
-## Phase-by-Phase Status
-
-| Phase | Task                                                                                     | Status |
-|-------|------------------------------------------------------------------------------------------|--------|
-| 1     | Setup, dataset download, EDA                                                             | In progress |
-| 2     | Preprocessing, augmentation pipeline                                                     | Planned |
-| 3     | Baseline ResNet50 training                                                               | Planned |
-| 4     | Fine-tuning + hyperparameter search                                                    | Planned |
-| 5     | Grad-CAM integration                                                                     | Planned |
-| 6     | Treatment engine (JSON + UI cards)                                                       | Planned |
-| 7     | Robustness testing on field images                                                     | Planned |
-| 8     | Streamlit UI + deployment                                                                | Planned |
-| 9     | Evaluation, bias check, LaTeX report                                                     | Planned |
-| —     | Buffer for debugging                                                                     | Planned |
-
----
-
-## Python / Environment Requirements
-
-- **PyTorch** & **torchvision** (CPU or GPU install — check [pytorch.org](https://pytorch.org/) for the correct install command for your setup)
-- **Pillow** for image loading and validation
-- **imagehash** for perceptual hashing (duplicate detection)
-- **NumPy** & **Pandas** for numerical computing and stratified splits
-- **Matplotlib** for publication-quality EDA visualisations
-- **jsonschema** for treatment KB validation
-- **pytest** for automated unit test suites
-- **jupyter** for exploratory data analysis
-- **nbstripout** to strip notebook outputs before committing
-
-All versions are pinned in `requirements.txt`. After `pip install -r requirements.txt`, run `pip freeze > requirements.txt` to capture the exact installed versions.
+| Member | ID | Primary Responsibilities |
+|---|---|---|
+| **Abdul Ahad** | 24L-3029 | Deliverable 2 Leader: Model architectures (`src/models/`), loss (`src/losses.py`), optimizer (`src/optim.py`), experiment configs (`configs/`), baseline training, weights hosting, `scripts/download_weights.py`, README |
+| **M. Anas** | 24L-3004 | Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), training curve analysis |
+| **M. Babar Shahzad** | 24L-3047 | Evaluation metrics (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, bias check, test set evaluation |
 
 ---
 
 ## Key Project Goals (from index.html)
 
-1. **Classifier**: Fine-tuned ResNet50 / EfficientNet-B0 on PlantVillage (38 disease classes)
+1. **Classifier**: Fine-tuned ResNet-50 / EfficientNet-B0 on PlantVillage (38 disease classes)
 2. **Explainability**: Grad-CAM heatmaps integrated into Streamlit UI
 3. **Treatment Engine**: Curated JSON mapping each of 38 classes to chemical/organic treatment, immediate action, and prevention measures
 4. **Robustness Testing**: Lab vs. field image performance gap analysis (≥150 real field images)
-5. **Deployment**: Streamlit Community Cloud + model on Hugging Face Hub
-
----
+5. **Deployment**: Streamlit Community Cloud + model hosted on Google Drive
