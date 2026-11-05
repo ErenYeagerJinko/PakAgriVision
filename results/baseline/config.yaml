@@ -1,0 +1,34 @@
+data:
+  batch_size: 64
+  field_test_split: splits/field_test.csv
+  img_size: 224
+  num_workers: 2
+  splits_dir: splits
+  subset_frac: 1.0
+  test_split: splits/test.csv
+  train_split: splits/train.csv
+  use_class_weights: true
+  val_split: splits/val.csv
+logging:
+  reports_figures_dir: reports/figures
+  results_dir: results/baseline
+  run_dir: runs/baseline
+  save_checkpoint_every_epoch: true
+model:
+  backbone: resnet50
+  dropout: 0.3
+  num_classes: 38
+  pretrained: true
+training:
+  early_stopping_metric: val_macro_f1
+  early_stopping_patience: 4
+  epochs: 15
+  grad_clip_norm: 1.0
+  label_smoothing: 0.0
+  lr: 0.0003
+  mixed_precision: true
+  optimizer: adamw
+  scheduler: cosine
+  seed: 42
+  warmup_epochs: 1
+  weight_decay: 0.0001
