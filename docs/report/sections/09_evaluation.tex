@@ -57,6 +57,40 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
     \item \textbf{Generalization without Overfitting:} By Epoch~14, validation loss dropped to $0.0169$ with validation accuracy reaching \textbf{99.64\%} and macro-F1 achieving \textbf{0.9961}. The minimal gap between training accuracy ($99.79\%$) and validation accuracy ($99.64\%$) confirms that dropout ($p=0.3$) and weight decay ($10^{-4}$) successfully controlled overfitting.
 \end{enumerate}
 
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/loss_curves.png}
+    \caption{Cross-Entropy Loss}
+    \label{fig:loss_curve}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/accuracy_curves.png}
+    \caption{Top-1 Accuracy}
+    \label{fig:acc_curve}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/val_f1_curve.png}
+    \caption{Validation Macro-F1}
+    \label{fig:f1_curve}
+\end{subfigure}
+\caption{\textbf{Baseline ResNet-50 Training Dynamics across 15 Epochs.} Subfigure (a) illustrates rapid training and validation loss decay, subfigure (b) shows top-1 classification accuracy converging above 99.6\%, and subfigure (c) depicts continuous macro-F1 progression achieving 0.9961 at peak epoch 14.}
+\label{fig:training_curves}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/hparam_search.png}
+\caption{\textbf{Systematic 13-Trial Hyperparameter Tuning Results.} Validation Macro-F1 and Accuracy across Stage~A (Backbone $\times$ Learning Rate exploration) and Stage~B (Regularization, Batch Size, Weight Decay, and Loss adjustments). The red dashed horizontal line denotes the peak tuning score achieved by Batch Size 32 (Trial 9: 0.9694 Macro-F1).}
+\label{fig:hparam_search}
+\end{figure}
+
 \subsection{Evaluation Metrics \& Agricultural Justifications}
 \label{subsec:metric_justifications}
 
