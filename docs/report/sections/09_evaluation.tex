@@ -1,0 +1,99 @@
+\section{Training Results, Evaluation \& Bias Check}
+\label{sec:evaluation}
+
+This section details Phase~4 of Deliverable~2, presenting our validation protocol, baseline training convergence dynamics, metric justifications, held-out test evaluation framework, error analysis methodologies, and the systematic Bias Check.
+
+\subsection{Validation Strategy and Data Hygiene}
+\label{subsec:val_strategy}
+
+Our evaluation protocol strictly enforces the **70/15/15 stratified split** established during Phase~2:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Stratified Class Proportions:} Every disease and healthy category maintains identical class frequency distributions across the training ($22,179$ images), validation ($4,747$ images), and test ($4,768$ images) splits.
+    \item \textbf{Zero Overlap \& Data Leakage Prevention:} Deduplication via perceptual hashing (pHash) and exact MD5 matching guarantees that duplicate or near-duplicate leaf photographs cannot appear across separate partitions.
+    \item \textbf{Validation for Model Selection Only:} All hyperparameter tuning trials, learning rate adjustments, and early stopping decisions are computed exclusively on the validation split. 
+    \item \textbf{Held-Out Test Set Isolation:} The test split (\texttt{splits/test.csv}) and real-world field set (\texttt{splits/field\_test.csv}) are held out and evaluated strictly \textbf{once} on the finalized model architecture at the conclusion of training. Evaluating on the test split during tuning is strictly prohibited to avoid hyperparameter overfitting.
+    \item \textbf{Justification Against K-Fold Cross-Validation:} For a dataset of $\sim$32,000 high-resolution images, full 5-fold cross-validation would require $5 \times 15 = 75$ epochs of ResNet-50 training ($>4$ hours of compute). Given cloud GPU timeout quotas, a single fixed stratified 70/15/15 split provides high statistical stability while conserving compute budget.
+\end{itemize}
+
+\subsection{Baseline Training Dynamics \& Convergence Analysis}
+\label{subsec:baseline_results}
+
+The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$, weight decay $10^{-4}$, and class-weighted loss) was trained for 15 epochs on a cloud NVIDIA Tesla T4 GPU. Table~\ref{tab:baseline_history} details the epoch-by-epoch training and validation progression from \texttt{results/baseline/history.csv}.
+
+\begin{table}[h]
+\centering
+\caption{\textbf{Baseline ResNet-50 Epoch Progression (15 Epochs on Full Curated Dataset).}}
+\label{tab:baseline_history}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}cccccccr@{}}
+\toprule
+\textbf{Epoch} & \textbf{Train Loss} & \textbf{Train Acc} & \textbf{Val Loss} & \textbf{Val Acc} & \textbf{Val Macro-F1} & \textbf{Learning Rate} & \textbf{Time} \\
+\midrule
+1$^*$ & 3.5048 & 15.91\% & 3.3935 & 38.47\% & 0.3490 & $3.00 \times 10^{-4}$ & 208.3\,s \\
+2 & 0.4445 & 88.56\% & 0.2276 & 93.28\% & 0.9236 & $2.96 \times 10^{-4}$ & 233.3\,s \\
+3 & 0.1370 & 95.52\% & 0.1232 & 96.10\% & 0.9624 & $2.85 \times 10^{-4}$ & 227.4\,s \\
+4 & 0.0916 & 96.86\% & 0.0588 & 98.00\% & 0.9794 & $2.67 \times 10^{-4}$ & 230.3\,s \\
+5 & 0.0699 & 97.80\% & 0.0810 & 97.75\% & 0.9770 & $2.44 \times 10^{-4}$ & 234.0\,s \\
+6 & 0.0575 & 98.14\% & 0.0336 & 98.97\% & 0.9883 & $2.15 \times 10^{-4}$ & 234.7\,s \\
+7 & 0.0402 & 98.70\% & 0.0558 & 98.44\% & 0.9820 & $1.84 \times 10^{-4}$ & 229.7\,s \\
+8 & 0.0341 & 98.90\% & 0.0310 & 98.91\% & 0.9880 & $1.51 \times 10^{-4}$ & 232.6\,s \\
+9 & 0.0213 & 99.29\% & 0.0340 & 98.99\% & 0.9895 & $1.17 \times 10^{-4}$ & 233.0\,s \\
+10 & 0.0187 & 99.36\% & 0.0261 & 99.18\% & 0.9905 & $8.56 \times 10^{-5}$ & 230.5\,s \\
+11 & 0.0144 & 99.51\% & 0.0220 & 99.47\% & 0.9945 & $5.73 \times 10^{-5}$ & 230.7\,s \\
+12 & 0.0078 & 99.71\% & 0.0184 & 99.56\% & 0.9947 & $3.36 \times 10^{-5}$ & 229.3\,s \\
+13 & 0.0075 & 99.72\% & 0.0202 & 99.56\% & 0.9946 & $1.58 \times 10^{-5}$ & 230.2\,s \\
+\textbf{14} & 0.0070 & 99.79\% & \textbf{0.0169} & \textbf{99.64\%} & \textbf{0.9961} & $4.75 \times 10^{-6}$ & 225.0\,s \\
+15 & \textbf{0.0057} & \textbf{99.81\%} & 0.0197 & 99.62\% & 0.9958 & $1.00 \times 10^{-6}$ & 230.6\,s \\
+\bottomrule
+\multicolumn{8}{l}{\footnotesize $^*$Epoch 1 represents the head-only warm-up phase with frozen backbone.}
+\end{tabular}%
+}
+\end{table}
+
+\subsubsection{Key Training Observations}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Warmup Stabilization:} During Epoch~1, optimizing only the custom head brought validation accuracy from random chance ($1/38 \approx 2.63\%$) to $38.47\%$ with zero disruption to the underlying ImageNet feature representations.
+    \item \textbf{Rapid Feature Alignment:} Unfreezing the backbone in Epoch~2 immediately produced an accuracy jump to $93.28\%$ and a macro-F1 of $0.9236$, demonstrating strong transferability of pretrained residual filters to plant leaf textures.
+    \item \textbf{Generalization without Overfitting:} By Epoch~14, validation loss dropped to $0.0169$ with validation accuracy reaching \textbf{99.64\%} and macro-F1 achieving \textbf{0.9961}. The minimal gap between training accuracy ($99.79\%$) and validation accuracy ($99.64\%$) confirms that dropout ($p=0.3$) and weight decay ($10^{-4}$) successfully controlled overfitting.
+\end{enumerate}
+
+\subsection{Evaluation Metrics \& Agricultural Justifications}
+\label{subsec:metric_justifications}
+
+Evaluating agricultural disease models requires multi-dimensional performance assessment. Relying exclusively on raw accuracy can be dangerously misleading in agricultural decision support. We justify our core metrics below:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Macro-Averaged Precision, Recall, and F1-Score:} Macro metrics assign equal weight to every disease class regardless of sample support:
+    \begin{equation}
+        \text{Macro-F1} = \frac{1}{C}\sum_{c=1}^{C} \frac{2 \cdot P_c \cdot R_c}{P_c + R_c}
+    \end{equation}
+    In contrast to weighted or micro averages that mask errors on rare classes, macro-F1 guarantees that failure on an infrequent but devastating disease (such as \textit{Potato Early Blight} or \textit{Apple Cedar Rust}) directly degrades the overall benchmark.
+    \item \textbf{High-Recall Priority for Pathogen Detection:} In agricultural field diagnosis, the asymmetric cost of misclassification is severe:
+    \begin{itemize}
+        \item \textbf{False Negative (Low Recall):} The model misdiagnoses a diseased leaf as healthy or a benign condition. The farmer takes no action, leading to rapid pathogen spread, crop destruction, and severe financial loss.
+        \item \textbf{False Positive (Low Precision):} The model diagnoses disease on a healthy leaf. The farmer conducts an unnecessary spray application, incurring chemical costs but avoiding crop failure.
+    \end{itemize}
+    Recall is therefore prioritized to eliminate missed infections.
+    \item \textbf{Macro One-vs-Rest AUC-ROC:} Evaluates class separability across all continuous prediction thresholds using softmax probabilities, ensuring confidence scores are reliably ranked.
+    \item \textbf{Top-3 Accuracy:} Field leaf symptoms often display overlapping visual phenotypes (e.g., fungal leaf mold vs.\ early blight). Top-3 accuracy measures whether the true disease is captured in the system's differential diagnosis list presented to the farmer in Phase~5.
+\end{enumerate}
+
+\subsection{Error Analysis Methodology}
+\label{subsec:error_analysis}
+Upon final model selection on Day~5, Babar will execute \texttt{src/evaluate.py} to isolate failure modes:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Confusion Matrix Inspection:} Identifying the top-10 most confused class pairs (e.g., \textit{Corn Northern Leaf Blight} vs.\ \textit{Gray Leaf Spot}).
+    \item \textbf{Worst-Performing Classes:} Tabulating the 5 classes with the lowest validation F1 scores and determining their primary confusion partners.
+    \item \textbf{Qualitative Failure Grid:} Extracting a visual grid of $\ge 12$ misclassified images alongside model confidence scores to identify root visual causes (e.g., shadow occlusion, dual infection symptoms, or atypical leaf angles).
+\end{enumerate}
+
+\subsection{Bias Check Section}
+\label{subsec:bias_check}
+To ensure ethical and equitable AI deployment for farmers, our evaluation includes a dedicated **Bias Check**:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Class Imbalance Bias:} Calculating the Spearman rank correlation between training class size and final validation F1 score to verify that minority classes are not systematically neglected.
+    \item \textbf{Crop-Level Disparity:} Measuring performance grouped by crop genus (Tomato, Potato, Corn, Apple, Grape) to detect whether specific crops suffer from underrepresented feature diversity.
+    \item \textbf{Healthy vs.\ Diseased Bias:} Auditing the false-healthy rate (the proportion of diseased leaves incorrectly classified as healthy).
+    \item \textbf{Domain Shift (Lab vs.\ Field Gap):} Measuring the generalization gap between clean lab benchmark images and real-world outdoor field images from \texttt{splits/field\_test.csv}.
+\end{enumerate}
+

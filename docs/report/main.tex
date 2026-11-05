@@ -5,11 +5,22 @@
 \usepackage{graphicx}
 \usepackage{array}
 \usepackage{enumitem}
+\usepackage{url}
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{amsmath,amssymb}
 \usepackage{caption}
 \usepackage{subcaption}
+
+% Allow line breaks on all characters in URLs and paths
+\makeatletter
+\g@addto@macro\UrlBreaks{\do\/\do\-\do\_\do\.\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9}
+\makeatother
+
+\emergencystretch=2.5em
+\renewcommand{\_}{\textunderscore\allowbreak}
+
+\graphicspath{{../../reports/figures/}{reports/figures/}}
 
 \hypersetup{
     colorlinks=true,
@@ -23,7 +34,7 @@
 
 \title{
     \textbf{PakAgriVision: Crop Disease Detector}\\
-    \large Deliverable 1: Problem Definition \& Data Foundations\\
+    \large Deliverable 2: Model Architecture, Training \& Evaluation (Phase 3 \& 4)\\
     \normalsize Track A: Application Development
 }
 
@@ -42,9 +53,10 @@
 \maketitle
 
 \begin{abstract}
-PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. This report presents Deliverable~1, establishing the problem definition, raw data foundations from the PlantVillage benchmark ($\sim$54,000 images audited, deduplicated, and curated into 31,694 balanced images across 38 classes), local field image metadata collection, data validation and deduplication protocols, stratified leakage-free split strategies, and a complete 38-class treatment knowledge base.
+PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. Building upon Deliverable~1's curated dataset foundations ($\sim$32,000 balanced images across 38 classes and 38-class treatment knowledge base), this Deliverable~2 report presents the complete Phase~3 Model Architecture and Phase~4 Training and Evaluation pipeline. We implement a deep residual classifier (ResNet-50) featuring a custom regularization head ($p=0.30$ dropout and 38-class projection) and an explicit Grad-CAM explainability target layer. Training incorporates class-weighted cross-entropy with label smoothing, AdamW optimization, a two-stage progressive fine-tuning schedule (head-only warm-up followed by cosine annealing), and a structured 13-trial hyperparameter tuning protocol. The resulting baseline model achieves \textbf{99.64\% validation accuracy} and a \textbf{0.9961 macro-F1 score} with a validation loss of \textbf{0.0169}. We detail evaluation methodology across macro precision/recall, one-vs-rest AUC-ROC, top-3 metrics, error analysis, a comprehensive Bias Check auditing class-size disparities and lab-vs-field generalization gaps, and the complete individual contribution breakdown.
 \end{abstract}
 
+% Deliverable 1 Foundations (Retained for complete context)
 \input{sections/01_problem_statement.tex}
 \input{sections/02_dataset_acquisition.tex}
 \input{sections/03_data_cleaning.tex}
@@ -53,6 +65,10 @@ PakAgriVision is an AI-driven agricultural decision-support tool addressing late
 \input{sections/07_preprocessing_augmentation.tex}
 \input{sections/06_treatment_kb.tex}
 
+% Deliverable 2 Core Sections (Phase 3 & Phase 4)
+\input{sections/08_model_architecture.tex}
+\input{sections/09_evaluation.tex}
+\input{sections/10_contributions.tex}
 
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
@@ -61,10 +77,25 @@ Hughes, D.~P., \& Salath{\'e}, M. (2015).
 An open access repository of images on plant health to enable the development of mobile disease diagnostics.
 \emph{arXiv preprint arXiv:1511.08060}.
 
+\bibitem{resnet}
+He, K., Zhang, X., Ren, S., \& Sun, J. (2016).
+Deep residual learning for image recognition.
+\emph{Proceedings of the IEEE conference on computer vision and pattern recognition (CVPR)}, 770--778.
+
 \bibitem{gradcam}
 Selvaraju, R.~R., Cogswell, M., Das, A., Vedaldi, A., Parikh, D., \& Batra, D. (2017).
 Grad-CAM: Visual explanations from deep networks via gradient-based localization.
 \emph{IEEE ICCV}, 618--626.
+
+\bibitem{adamw}
+Loshchilov, I., \& Hutter, F. (2019).
+Decoupled weight decay regularization.
+\emph{International Conference on Learning Representations (ICLR)}.
+
+\bibitem{cosine_annealing}
+Loshchilov, I., \& Hutter, F. (2017).
+SGDR: Stochastic gradient descent with warm restarts.
+\emph{International Conference on Learning Representations (ICLR)}.
 
 \bibitem{plantdoc}
 Singh, D., Jain, N., Jain, P., Kayal, P., Kumawat, S., \& Batra, N. (2020).
@@ -73,3 +104,4 @@ In \emph{Proceedings of the 7th ACM IKDD CoDS and 25th COMAD}, 249--253.
 \end{thebibliography}
 
 \end{document}
+
