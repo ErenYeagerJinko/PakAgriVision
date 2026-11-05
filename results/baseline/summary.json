@@ -1,0 +1,13 @@
+{
+  "backbone": "resnet50",
+  "device": "cuda",
+  "total_epochs_trained": 15,
+  "best_epoch": 16,
+  "best_val_macro_f1": 0.99611,
+  "best_val_acc": 0.0,
+  "best_val_loss": Infinity,
+  "total_time_seconds": 0.0,
+  "early_stopped": false,
+  "checkpoint_best": "/content/PakAgriVision/runs/baseline/best.pt",
+  "checkpoint_last": "/content/PakAgriVision/runs/baseline/last.pt"
+}
