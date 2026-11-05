@@ -29,7 +29,7 @@ import torch
 import torch.nn as nn
 import yaml
 
-from src.config import DATA_DIR, ROOT, SEED, SPLITS_DIR
+from src.config import DATA_DIR, RAW_PV, ROOT, SEED, SPLITS_DIR
 from src.data.dataset import get_dataloaders
 from src.data.splits import load_class_names
 from src.engine import EarlyStopping, train_one_epoch, validate
@@ -243,6 +243,7 @@ def train(
         train_manifest=train_df,
         val_manifest=val_df,
         test_manifest=test_df,
+        root_dir=RAW_PV / "color",
         batch_size=batch_size,
         num_workers=num_workers,
         seed=seed,

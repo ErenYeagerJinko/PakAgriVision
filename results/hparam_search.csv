@@ -1,3 +1,5 @@
 trial_id,stage,backbone,lr,batch_size,dropout,weight_decay,label_smoothing,use_class_weights,best_epoch,val_loss,val_acc,val_macro_f1,time_seconds
 1,A,resnet50,0.001,64,0.3,0.0001,0.0,True,4,0.12062,0.96082,0.96046,387.5
 2,A,resnet50,0.0003,64,0.3,0.0001,0.0,True,4,0.11612,0.96124,0.96063,395.3
+3,A,resnet50,0.0001,64,0.3,0.0001,0.0,True,4,0.3104,0.9189,0.9199,367.4
+4,A,efficientnet_b0,0.001,64,0.3,0.0001,0.0,True,4,0.1074,0.9642,0.9622,297.1
