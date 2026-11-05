@@ -265,16 +265,17 @@ pdflatex main.tex
 
 | Member | ID | Primary Responsibilities |
 |---|---|---|
-| **Abdul Ahad** | 24L-3029 | Deliverable 2 Leader: Model architectures (`src/models/`), loss (`src/losses.py`), optimizer (`src/optim.py`), experiment configs (`configs/`), baseline training, weights hosting, `scripts/download_weights.py`, README |
+| **Abdul Ahad** | 24L-3029 | Model architectures (`src/models/`), loss (`src/losses.py`), optimizer (`src/optim.py`), experiment configs (`configs/`), baseline training, weights hosting, `scripts/download_weights.py`, README |
 | **M. Anas** | 24L-3004 | Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), training curve analysis |
 | **M. Babar Shahzad** | 24L-3047 | Evaluation metrics (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, bias check, test set evaluation |
 
 ---
 
-## Key Project Goals (from index.html)
+## Key Project Goals
 
 1. **Classifier**: Fine-tuned ResNet-50 / EfficientNet-B0 on PlantVillage (38 disease classes)
 2. **Explainability**: Grad-CAM heatmaps integrated into Streamlit UI
 3. **Treatment Engine**: Curated JSON mapping each of 38 classes to chemical/organic treatment, immediate action, and prevention measures
 4. **Robustness Testing**: Lab vs. field image performance gap analysis (≥150 real field images)
-5. **Deployment**: Streamlit Community Cloud + model hosted on Google Drive
+
+---
