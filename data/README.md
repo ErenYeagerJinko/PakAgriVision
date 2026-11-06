@@ -12,7 +12,7 @@ Curated PlantVillage Benchmark & Field Dataset
 - **License**: CC0 Public Domain / Open Educational License.
 - **Expected Folder Layout**:
   - `data/raw/plantvillage/color/<class_name>/<filename>.JPG` (31,694 curated images)
-  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field robustness images)
+  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field images; 148 listed in `field_meta/field_labels.csv` are used)
 - **Class Count**: 38 classes (see `splits/class_names.json`)
 - **Primary Download**: Hosted directly via Google Drive as `data.zip`:
   ```text
@@ -79,7 +79,7 @@ A second team member must double-check every label before the field split is
 finalized. Doubtful images are removed, not forced into a class.
 
 ### Google Drive Link (Unified Dataset Archive)
-The unified dataset archive contains both the verified PlantVillage color images (all 38 classes) and the real-world field robustness images (28 classes).
+The unified dataset archive contains both the verified PlantVillage color images (all 38 classes) and the real-world field robustness images (27 classes used).
 
 ```
 DATASET_DRIVE_URL=https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
