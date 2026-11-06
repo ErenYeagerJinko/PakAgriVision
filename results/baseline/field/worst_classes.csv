@@ -1,0 +1,11 @@
+label_idx,class_name,support,n_predicted,precision,recall,f1,auc,main_confused_as,n_confused_as,main_false_positive_from
+0,Apple___Apple_scab,3,0,0.0,0.0,0.0,0.77037,Strawberry___Leaf_scorch,3,
+2,Apple___Cedar_apple_rust,3,0,0.0,0.0,0.0,0.614815,Apple___Black_rot,1,
+4,Blueberry___healthy,3,1,0.0,0.0,0.0,0.607407,Strawberry___Leaf_scorch,2,Cherry___healthy
+5,Cherry___healthy,3,1,0.0,0.0,0.0,0.703704,Blueberry___healthy,1,Tomato___Tomato_Yellow_Leaf_Curl_Virus
+8,Corn___Common_rust,3,0,0.0,0.0,0.0,0.974074,Corn___Cercospora_leaf_spot Gray_leaf_spot,3,
+9,Corn___Northern_Leaf_Blight,3,0,0.0,0.0,0.0,0.944444,Corn___Cercospora_leaf_spot Gray_leaf_spot,2,
+14,Grape___healthy,3,0,0.0,0.0,0.0,0.9,Peach___healthy,2,
+17,Peach___healthy,3,2,0.0,0.0,0.0,0.433333,Strawberry___Leaf_scorch,2,Grape___healthy
+20,Potato___Early_blight,3,2,0.0,0.0,0.0,0.918519,Tomato___Early_blight,2,Grape___Black_rot
+21,Potato___Late_blight,7,0,0.0,0.0,0.0,0.749169,Tomato___Late_blight,4,

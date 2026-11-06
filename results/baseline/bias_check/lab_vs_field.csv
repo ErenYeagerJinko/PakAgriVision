@@ -1,0 +1,4 @@
+set,n_images,n_classes,accuracy,top3_accuracy,macro_f1,macro_auc_ovr
+"lab (test, all classes)",4768,38,0.997064,0.99979,0.996998,0.999995
+"lab (test, field classes only)",3304,27,0.996065,0.999697,0.996022,
+field,93,27,0.247312,0.462366,0.197042,0.800099
