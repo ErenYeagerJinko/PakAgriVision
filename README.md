@@ -180,7 +180,7 @@ pip install -r requirements.txt
 - **Google Drive Link**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk)
 - **Archive Contents**:
   - `data/raw/plantvillage/color/`: 31,694 clean, balanced images across all 38 classes (max 1,000 images/class).
-  - `data/raw/field/`: 150 real-world field images; 148 across 27 classes are used (two collage images were removed in label review).
+  - `data/raw/field/`: 150 real-world field images across 27 classes (11 invalid images were replaced in label review; see `field_meta/field_labels.csv`).
 - **Extraction**: Extract `data.zip` into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
 
 ### 6. Download Baseline Artifacts & Weights (`runs/baseline`)

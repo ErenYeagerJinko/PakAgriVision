@@ -20,10 +20,10 @@ Squash___Powdery_mildew,25,5,3,2
 Strawberry___healthy,26,5,3,2
 Tomato___Bacterial_spot,28,5,3,2
 Tomato___Early_blight,29,10,7,3
-Tomato___Late_blight,30,8,5,3
+Tomato___Late_blight,30,10,7,3
 Tomato___Leaf_Mold,31,5,3,2
 Tomato___Septoria_leaf_spot,32,5,3,2
 Tomato___Tomato_Yellow_Leaf_Curl_Virus,35,5,3,2
 Tomato___Tomato_mosaic_virus,36,5,3,2
 Tomato___healthy,37,5,3,2
-TOTAL,,148,91,57
+TOTAL,,150,93,57

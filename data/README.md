@@ -12,7 +12,7 @@ Curated PlantVillage Benchmark & Field Dataset
 - **License**: CC0 Public Domain / Open Educational License.
 - **Expected Folder Layout**:
   - `data/raw/plantvillage/color/<class_name>/<filename>.JPG` (31,694 curated images)
-  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field images; 148 listed in `field_meta/field_labels.csv` are used)
+  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field images listed in `field_meta/field_labels.csv`)
 - **Class Count**: 38 classes (see `splits/class_names.json`)
 - **Primary Download**: Hosted directly via Google Drive as `data.zip`:
   ```text
