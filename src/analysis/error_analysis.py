@@ -109,7 +109,7 @@ def plot_misclassified_grid(samples: pd.DataFrame, title: str, output_path: Path
     if not found:
         return 0
     rows = int(np.ceil(len(found) / cols))
-    fig, axes = plt.subplots(rows, cols, figsize=(3.2 * cols, 3.6 * rows), dpi=200)
+    fig, axes = plt.subplots(rows, cols, figsize=(3.2 * cols, 3.6 * rows), dpi=110)
     axes = np.atleast_1d(axes).ravel()
     for ax in axes:
         ax.axis("off")
