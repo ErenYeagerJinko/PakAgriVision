@@ -139,7 +139,7 @@ def plot_f1_vs_size(table: pd.DataFrame, rho: Optional[float], output_path: Path
     fig, ax = plt.subplots(figsize=(7, 5), dpi=200)
     colors = ["#2ca02c" if is_healthy(c) else "#1f77b4" for c in table["class_name"]]
     ax.scatter(table["train_count"], table["f1"], c=colors, s=30, edgecolor="white", linewidth=0.5)
-    for _, r in table.nsmallest(4, "f1").iterrows():
+    for _, r in table.nsmallest(2, "f1").iterrows():
         ax.annotate(r["class_name"].replace("___", ": ").replace("_", " "), (r["train_count"], r["f1"]),
                     fontsize=6, xytext=(4, -2), textcoords="offset points")
     rho_text = "n/a" if rho is None else f"{rho:.3f}"
@@ -180,9 +180,9 @@ def plot_lab_vs_field(table: pd.DataFrame, output_path: Path) -> None:
         ax.bar_label(bars, fmt="%.3f", fontsize=7, padding=2)
     ax.set_xticks(x + width * (len(table) - 1) / 2)
     ax.set_xticklabels(["Accuracy", "Top-3 accuracy", "Macro-F1"])
-    ax.set_ylim(0, 1.1)
+    ax.set_ylim(0, 1.3)
     ax.set_title("Lab vs field performance", fontsize=11, fontweight="bold")
-    ax.legend(fontsize=7, loc="lower left")
+    ax.legend(fontsize=7, loc="upper center", ncol=len(table))
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     fig.savefig(output_path)

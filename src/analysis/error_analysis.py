@@ -122,7 +122,7 @@ def plot_misclassified_grid(samples: pd.DataFrame, title: str, output_path: Path
         )
         ax.set_title("\n".join(textwrap.fill(line, 34) for line in caption.split("\n")), fontsize=7)
     fig.suptitle(title, fontsize=12, fontweight="bold")
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0, 1, 0.97))
     fig.savefig(output_path)
     plt.close(fig)
     return len(found)
