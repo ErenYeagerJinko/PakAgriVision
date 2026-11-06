@@ -62,21 +62,21 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 \centering
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/loss_curves.png}
+    \includegraphics[width=\textwidth]{loss_curves.png}
     \caption{Cross-Entropy Loss}
     \label{fig:loss_curve}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/accuracy_curves.png}
+    \includegraphics[width=\textwidth]{accuracy_curves.png}
     \caption{Top-1 Accuracy}
     \label{fig:acc_curve}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/val_f1_curve.png}
+    \includegraphics[width=\textwidth]{val_f1_curve.png}
     \caption{Validation Macro-F1}
     \label{fig:f1_curve}
 \end{subfigure}
@@ -86,7 +86,7 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{figures/hparam_search.png}
+\includegraphics[width=0.92\textwidth]{hparam_search.png}
 \caption{\textbf{Systematic 13-Trial Hyperparameter Tuning Results.} Validation Macro-F1 and Accuracy across Stage~A (Backbone $\times$ Learning Rate exploration) and Stage~B (Regularization, Batch Size, Weight Decay, and Loss adjustments). The red dashed horizontal line denotes the peak tuning score achieved by Batch Size 32 (Trial 9: 0.9694 Macro-F1).}
 \label{fig:hparam_search}
 \end{figure}
