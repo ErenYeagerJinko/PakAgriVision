@@ -176,12 +176,10 @@ pip install -r requirements.txt
 > 
 > We ran our automated quality and deduplication pipeline (`src/data/quality.py`, `data_scripts/clean_and_cap_dataset.py`), pruned corrupted files, removed exact duplicates (MD5) and near-duplicates (pHash), and capped dominant classes at a maximum of 1,000 clean images per class. This yielded our balanced, high-integrity dataset of **~32k images (31,694 verified clean images)** across all 38 classes.
 
-**Download our pre-packaged `data.zip` archive directly from Google Drive:**
-- **Google Drive Link**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk)
-- **Archive Contents**:
-  - `data/raw/plantvillage/color/`: 31,694 clean, balanced images across all 38 classes (max 1,000 images/class).
-  - `data/raw/field/`: 150 real-world field robustness images across 28 matching classes.
-- **Extraction**: Extract `data.zip` into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
+**Download both archives from Google Drive:**
+- **PlantVillage (curated)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). The archive's top-level folder is `color/`, so extract it into `data/raw/plantvillage/` to get `data/raw/plantvillage/color/<class>/`.
+- **Field set**: [Download field_images_v2.zip](https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing) (72 MB): 150 real-world PlantDoc images across 27 classes, exactly the images listed in `field_meta/field_labels.csv` (11 invalid images were replaced in label review). The top-level folder is `field/`, so extract it into `data/raw/` to get `data/raw/field/<class>/`.
+- **Check**: every path in `splits/val.csv`, `splits/test.csv` and `splits/field_test.csv` should then exist.
 
 ### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
 

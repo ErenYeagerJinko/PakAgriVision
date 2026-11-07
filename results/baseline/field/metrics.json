@@ -1,0 +1,84 @@
+{
+  "n_samples": 93,
+  "n_classes_present": 27,
+  "accuracy": 0.24731182795698925,
+  "macro_precision": 0.22037037037037038,
+  "macro_recall": 0.22045855379188714,
+  "macro_f1": 0.19704203156888578,
+  "weighted_precision": 0.22096774193548388,
+  "weighted_recall": 0.24731182795698925,
+  "weighted_f1": 0.20923791166345412,
+  "top3_accuracy": 0.46236559139784944,
+  "macro_auc_ovr": 0.8000988930360161,
+  "n_auc_classes": 27,
+  "split": "field",
+  "split_file": "splits/field_test.csv",
+  "limit": null,
+  "eval_seconds": 48.6,
+  "top_confused_pairs": [
+    {
+      "true_class": "Potato___Late_blight",
+      "predicted_class": "Tomato___Late_blight",
+      "count": 4,
+      "share_of_true_class": 0.5714285714285714
+    },
+    {
+      "true_class": "Apple___Apple_scab",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 3,
+      "share_of_true_class": 1.0
+    },
+    {
+      "true_class": "Tomato___Early_blight",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 3,
+      "share_of_true_class": 0.42857142857142855
+    },
+    {
+      "true_class": "Strawberry___healthy",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 3,
+      "share_of_true_class": 1.0
+    },
+    {
+      "true_class": "Soybean___healthy",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 3,
+      "share_of_true_class": 1.0
+    },
+    {
+      "true_class": "Corn___Common_rust",
+      "predicted_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "count": 3,
+      "share_of_true_class": 1.0
+    },
+    {
+      "true_class": "Tomato___Septoria_leaf_spot",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 2,
+      "share_of_true_class": 0.6666666666666666
+    },
+    {
+      "true_class": "Tomato___Bacterial_spot",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 2,
+      "share_of_true_class": 0.6666666666666666
+    },
+    {
+      "true_class": "Pepper___bell_Bacterial_spot",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 2,
+      "share_of_true_class": 0.6666666666666666
+    },
+    {
+      "true_class": "Peach___healthy",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "count": 2,
+      "share_of_true_class": 0.6666666666666666
+    }
+  ],
+  "checkpoint": "runs/baseline/best.pt",
+  "backbone": "resnet50",
+  "epoch": 14,
+  "best_val_macro_f1_at_training": 0.996108498299373
+}

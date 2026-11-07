@@ -1,0 +1,39 @@
+label_idx,class_name,support,n_predicted,precision,recall,f1,auc
+0,Apple___Apple_scab,93,94,0.989362,1.0,0.994652,1.0
+1,Apple___Black_rot,90,90,1.0,1.0,1.0,1.0
+2,Apple___Cedar_apple_rust,39,39,1.0,1.0,1.0,1.0
+3,Apple___healthy,150,150,1.0,1.0,1.0,1.0
+4,Blueberry___healthy,150,150,1.0,1.0,1.0,1.0
+5,Cherry___healthy,121,121,1.0,1.0,1.0,1.0
+6,Cherry___Powdery_mildew,150,150,1.0,1.0,1.0,1.0
+7,Corn___Cercospora_leaf_spot Gray_leaf_spot,75,83,0.891566,0.986667,0.936709,0.999435
+8,Corn___Common_rust,150,150,1.0,1.0,1.0,1.0
+9,Corn___Northern_Leaf_Blight,145,136,0.992647,0.931034,0.960854,0.999553
+10,Corn___healthy,150,151,0.993377,1.0,0.996678,1.0
+11,Grape___Black_rot,150,150,1.0,1.0,1.0,1.0
+12,Grape___Esca_Black_Measles,150,150,1.0,1.0,1.0,1.0
+13,Grape___Leaf_blight Isariopsis_Leaf_Spot,150,150,1.0,1.0,1.0,1.0
+14,Grape___healthy,61,61,1.0,1.0,1.0,1.0
+15,Orange___Haunglongbing(Citrus_greening),150,150,1.0,1.0,1.0,1.0
+16,Peach___Bacterial_spot,150,150,1.0,1.0,1.0,1.0
+17,Peach___healthy,52,52,1.0,1.0,1.0,1.0
+18,Pepper___bell_Bacterial_spot,147,147,1.0,1.0,1.0,1.0
+19,Pepper___healthy,150,150,1.0,1.0,1.0,1.0
+20,Potato___Early_blight,147,147,1.0,1.0,1.0,1.0
+21,Potato___Late_blight,148,148,1.0,1.0,1.0,1.0
+22,Potato___healthy,21,21,1.0,1.0,1.0,1.0
+23,Raspberry___healthy,49,49,1.0,1.0,1.0,1.0
+24,Soybean___healthy,150,150,1.0,1.0,1.0,1.0
+25,Squash___Powdery_mildew,150,150,1.0,1.0,1.0,1.0
+26,Strawberry___healthy,66,66,1.0,1.0,1.0,1.0
+27,Strawberry___Leaf_scorch,150,150,1.0,1.0,1.0,1.0
+28,Tomato___Bacterial_spot,150,151,0.993377,1.0,0.996678,0.999999
+29,Tomato___Early_blight,148,146,1.0,0.986486,0.993197,0.999999
+30,Tomato___Late_blight,150,151,0.986755,0.993333,0.990033,0.999991
+31,Tomato___Leaf_Mold,141,141,1.0,1.0,1.0,1.0
+32,Tomato___Septoria_leaf_spot,150,150,1.0,1.0,1.0,1.0
+33,Tomato___Spider_mites Two-spotted_spider_mite,150,148,1.0,0.986667,0.993289,0.999993
+34,Tomato___Target_Spot,150,152,0.986842,1.0,0.993377,0.99999
+35,Tomato___Tomato_Yellow_Leaf_Curl_Virus,150,149,1.0,0.993333,0.996656,1.0
+36,Tomato___Tomato_mosaic_virus,54,54,1.0,1.0,1.0,1.0
+37,Tomato___healthy,150,150,1.0,1.0,1.0,1.0

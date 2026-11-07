@@ -12,13 +12,17 @@ Curated PlantVillage Benchmark & Field Dataset
 - **License**: CC0 Public Domain / Open Educational License.
 - **Expected Folder Layout**:
   - `data/raw/plantvillage/color/<class_name>/<filename>.JPG` (31,694 curated images)
-  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field robustness images)
+  - `data/raw/field/<class_name>/<filename>.jpg` (150 real-world field images listed in `field_meta/field_labels.csv`)
 - **Class Count**: 38 classes (see `splits/class_names.json`)
-- **Primary Download**: Hosted directly via Google Drive as `data.zip`:
-  ```text
-  https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
-  ```
-  Extract directly into `data/raw/` to populate both `data/raw/plantvillage/color/` and `data/raw/field/`.
+- **Downloads** (Google Drive):
+  - PlantVillage `data.zip` (top-level folder `color/`): extract into `data/raw/plantvillage/`
+    ```text
+    https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
+    ```
+  - Field set `field_images_v2.zip` (top-level folder `field/`): extract into `data/raw/`
+    ```text
+    https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing
+    ```
 
 ## Class Names (ordered)
 The ordered list of 38 class names is saved in `splits/class_names.json`. This
@@ -78,16 +82,17 @@ the lab-vs-field comparison (documented in that file).
 A second team member must double-check every label before the field split is
 finalized. Doubtful images are removed, not forced into a class.
 
-### Google Drive Link (Unified Dataset Archive)
-The unified dataset archive contains both the verified PlantVillage color images (all 38 classes) and the real-world field robustness images (28 classes).
+### Google Drive Links
+The PlantVillage images and the field images are in two separate archives.
 
 ```
 DATASET_DRIVE_URL=https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk
+FIELD_IMAGES_DRIVE_URL=https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing
 ```
 
 To restore locally:
-1. Download the archive from the link above.
-2. Extract the archive directly into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
+1. Extract `data.zip` (top-level `color/`) into `data/raw/plantvillage/`.
+2. Extract `field_images_v2.zip` (top-level `field/`) into `data/raw/`.
 3. Class names and file mappings strictly match `splits/class_names.json` and `field_meta/field_labels.csv`.
 
 The zip archive itself is **not** committed to Git.

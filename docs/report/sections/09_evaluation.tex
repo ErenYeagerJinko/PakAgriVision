@@ -62,21 +62,21 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 \centering
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/loss_curves.png}
+    \includegraphics[width=\textwidth]{loss_curves.png}
     \caption{Cross-Entropy Loss}
     \label{fig:loss_curve}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/accuracy_curves.png}
+    \includegraphics[width=\textwidth]{accuracy_curves.png}
     \caption{Top-1 Accuracy}
     \label{fig:acc_curve}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/val_f1_curve.png}
+    \includegraphics[width=\textwidth]{val_f1_curve.png}
     \caption{Validation Macro-F1}
     \label{fig:f1_curve}
 \end{subfigure}
@@ -86,7 +86,7 @@ The baseline architecture (ResNet-50 with AdamW, $\text{LR} = 3 \times 10^{-4}$,
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{figures/hparam_search.png}
+\includegraphics[width=0.92\textwidth]{hparam_search.png}
 \caption{\textbf{Systematic 13-Trial Hyperparameter Tuning Results.} Validation Macro-F1 and Accuracy across Stage~A (Backbone $\times$ Learning Rate exploration) and Stage~B (Regularization, Batch Size, Weight Decay, and Loss adjustments). The red dashed horizontal line denotes the peak tuning score achieved by Batch Size 32 (Trial 9: 0.9694 Macro-F1).}
 \label{fig:hparam_search}
 \end{figure}
@@ -112,22 +112,181 @@ Evaluating agricultural disease models requires multi-dimensional performance as
     \item \textbf{Top-3 Accuracy:} Field leaf symptoms often display overlapping visual phenotypes (e.g., fungal leaf mold vs.\ early blight). Top-3 accuracy measures whether the true disease is captured in the system's differential diagnosis list presented to the farmer in Phase~5.
 \end{enumerate}
 
-\subsection{Error Analysis Methodology}
+\subsection{Test Results}
+\label{subsec:test_results}
+
+All results in this section come from \texttt{src/evaluate.py} run on the final model (\texttt{runs/baseline/best.pt}, epoch~14), using the deterministic evaluation transform only (resize 256, centre crop 224, ImageNet normalisation). The validation split was used for development; the test split was evaluated exactly once. Outputs are stored in \texttt{results/baseline/\{val,test,field\}/}. On the field set, macro scores are averaged over the 27 classes that are present, because averaging over absent classes would add meaningless zeros (\texttt{src/metrics.py}).
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Final model performance} (from \texttt{results/baseline/*/metrics.json}). Field macro scores cover the 27 classes present.}
+\label{tab:final_metrics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+\textbf{Split} & \textbf{Images} & \textbf{Accuracy} & \textbf{Top-3} & \textbf{Macro P} & \textbf{Macro R} & \textbf{Macro F1} & \textbf{Weighted F1} & \textbf{Macro AUC} \\
+\midrule
+Validation & 4,747 & 99.64\% & 100.00\% & 0.9956 & 0.9968 & 0.9961 & 0.9964 & $>$0.9999 \\
+\textbf{Test (once)} & \textbf{4,768} & \textbf{99.71\%} & \textbf{99.98\%} & \textbf{0.9974} & \textbf{0.9967} & \textbf{0.9970} & \textbf{0.9971} & $\boldsymbol{>}$\textbf{0.9999} \\
+Field (PlantDoc) & 93 & 24.73\% & 46.24\% & 0.2204 & 0.2205 & 0.1970 & 0.2092 & 0.8001 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+On the lab test split the model misclassifies 14 of 4,768 images (0.29\%); 25 of the 38 classes are classified perfectly, the lowest per-class F1 is 0.9595 (\textit{Corn Cercospora/Gray leaf spot}) and the lowest per-class AUC is 0.9999. Test scores are slightly higher than validation scores, which indicates that tuning on the validation split did not overfit it. Figure~\ref{fig:test_confusion} shows the confusion matrix, Figure~\ref{fig:test_roc} the one-vs-rest ROC curves and Figure~\ref{fig:test_f1} the per-class F1 scores.
+
+The field set tells a very different story: accuracy falls to 24.73\% and macro-F1 to 0.197. The correct class is still in the top three for 46\% of field images, and the macro AUC of 0.80 shows that the true class is usually ranked above most others even when it is not ranked first. This gap is analysed in Section~\ref{subsec:bias_check}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{test_confusion_matrix.png}
+\caption{\textbf{Test confusion matrix} (row-normalised). Almost all mass is on the diagonal; the only visible off-diagonal cells are between the two corn leaf-spot/blight classes.}
+\label{fig:test_confusion}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{test_roc_curves.png}
+    \caption{One-vs-rest ROC curves (38 classes).}
+    \label{fig:test_roc}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{test_per_class_f1.png}
+    \caption{Per-class F1, sorted.}
+    \label{fig:test_f1}
+\end{subfigure}
+\caption{\textbf{Test-split ROC curves and per-class F1.} The three lowest-AUC classes are highlighted in (a); all curves lie at the top-left corner.}
+\label{fig:test_roc_f1}
+\end{figure}
+
+\subsection{Error Analysis}
 \label{subsec:error_analysis}
-Upon final model selection on Day~5, Babar will execute \texttt{src/evaluate.py} to isolate failure modes:
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Confusion Matrix Inspection:} Identifying the top-10 most confused class pairs (e.g., \textit{Corn Northern Leaf Blight} vs.\ \textit{Gray Leaf Spot}).
-    \item \textbf{Worst-Performing Classes:} Tabulating the 5 classes with the lowest validation F1 scores and determining their primary confusion partners.
-    \item \textbf{Qualitative Failure Grid:} Extracting a visual grid of $\ge 12$ misclassified images alongside model confidence scores to identify root visual causes (e.g., shadow occlusion, dual infection symptoms, or atypical leaf angles).
-\end{enumerate}
 
-\subsection{Bias Check Section}
+\texttt{src/analysis/error\_analysis.py} extracts the most confused class pairs, the lowest-F1 classes with their main confusion partner, and a grid of misclassified images sorted by confidence (Figure~\ref{fig:test_errors}). Table~\ref{tab:confused_pairs} lists every confused pair on the test split. The explanations below are based on looking at the misclassified images, not on assumptions.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Confused class pairs on the test split} (from \texttt{results/baseline/test/top\_confused\_pairs.csv}). All 14 errors are listed.}
+\label{tab:confused_pairs}
+\small
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{True class} & \textbf{Predicted class} & \textbf{Count} \\
+\midrule
+Corn: Cercospora / Gray leaf spot & Corn: Northern Leaf Blight & 5 \\
+Corn: Northern Leaf Blight & Corn: Cercospora / Gray leaf spot & 1 \\
+Tomato: Late blight & Tomato: Early blight & 1 \\
+Tomato: Septoria leaf spot & Tomato: Early blight & 1 \\
+Potato: Late blight & Potato: Early blight & 1 \\
+Tomato: Bacterial spot & Tomato: Septoria leaf spot & 1 \\
+Tomato: Yellow Leaf Curl Virus & Tomato: Bacterial spot & 1 \\
+Tomato: Target Spot & Tomato: Spider mites & 1 \\
+Tomato: healthy & Blueberry: healthy & 1 \\
+Blueberry: healthy & Tomato: Late blight & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Corn Gray leaf spot vs.\ Northern Leaf Blight (6 of 14 test errors; 10 of 17 validation errors).} This is the only systematic confusion. In the misclassified images the leaves carry both small, vein-bounded rectangular lesions and longer tan blight streaks on the same leaf, so the image contains visual evidence for both diseases. Gray leaf spot is also one of the smaller diseased classes (352 training images, against up to 700), and it has the lowest test recall (0.934).
+    \item \textbf{Early vs.\ late blight on tomato and potato (2 errors).} The misclassified leaves show large, dark necrotic areas without the concentric rings that distinguish early blight, so the two blights look alike.
+    \item \textbf{Other tomato spot diseases (4 errors).} Each is confused with another tomato disease that also produces spots, yellowing or stippling: Septoria $\rightarrow$ Early blight, Bacterial spot $\rightarrow$ Septoria, Yellow Leaf Curl $\rightarrow$ Bacterial spot, and Target Spot $\rightarrow$ Spider mites.
+    \item \textbf{Label and background noise in the lab data (2 errors).} One ``Tomato healthy'' test image shows a red tomato fruit rather than a leaf, and one ``Blueberry healthy'' image has a black background instead of the grey background used for almost all PlantVillage images. Both are predicted as other classes. These images reflect noise in the dataset rather than a model fault.
+\end{enumerate}
+Only 4 of the 14 test errors have confidence $\geq 0.9$, so most lab errors are uncertain predictions, which the app can flag by also showing the top-3 alternatives.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{test_misclassified_grid.png}
+\caption{\textbf{All 14 misclassified test images}, highest confidence first, with true class, predicted class and confidence.}
+\label{fig:test_errors}
+\end{figure}
+
+\subsection{Bias Check}
 \label{subsec:bias_check}
-To ensure ethical and equitable AI deployment for farmers, our evaluation includes a dedicated **Bias Check**:
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Class Imbalance Bias:} Calculating the Spearman rank correlation between training class size and final validation F1 score to verify that minority classes are not systematically neglected.
-    \item \textbf{Crop-Level Disparity:} Measuring performance grouped by crop genus (Tomato, Potato, Corn, Apple, Grape) to detect whether specific crops suffer from underrepresented feature diversity.
-    \item \textbf{Healthy vs.\ Diseased Bias:} Auditing the false-healthy rate (the proportion of diseased leaves incorrectly classified as healthy).
-    \item \textbf{Domain Shift (Lab vs.\ Field Gap):} Measuring the generalization gap between clean lab benchmark images and real-world outdoor field images from \texttt{splits/field\_test.csv}.
-\end{enumerate}
 
+This project has no human subjects, so the Bias Check looks for performance differences across class size, crop, health status and image source. All numbers come from \texttt{src/analysis/bias\_check.py} (outputs in \texttt{results/baseline/bias\_check/}), using the test split as the lab reference.
+
+\paragraph{Class size.} After curation, training classes range from 99 to 700 images. The Spearman rank correlation between training-class size and test F1 is $\rho = -0.17$ ($p = 0.31$), so there is no evidence that smaller classes perform worse (Figure~\ref{fig:bias_size}). The class-weighted loss and the per-class cap applied during curation appear to have prevented a class-size effect on lab data.
+
+\paragraph{Crop.} Mean class F1 is 1.000 for 10 of the 14 crops. The lowest crop is Corn (mean F1 0.985, weakest class Gray leaf spot at 0.960), followed by Blueberry (0.993), Tomato (0.996) and Potato (0.998) (Figure~\ref{fig:bias_crop}). The corn gap comes entirely from the Gray leaf spot / Northern Leaf Blight confusion described above.
+
+\paragraph{Healthy vs.\ diseased.} The costly error for a farmer is a diseased leaf reported as healthy, because the crop would go untreated. On the test split no diseased image (0 of 3,490) was predicted as a healthy class, and only 1 of 1,278 healthy images (0.08\%) was predicted as a disease. On the field set the false-healthy rate is also low (1 of 63 diseased images, 1.6\%), but 19 of 30 healthy field leaves (63\%) are predicted as a disease. In the field the model errs towards false alarms rather than missed disease.
+
+\paragraph{Lab vs.\ field (image source).} Table~\ref{tab:lab_vs_field} compares the lab test split with the field set. To compare like with like, lab scores are also computed on only the 27 classes that appear in the field set; the gap remains essentially unchanged (Figure~\ref{fig:bias_field}). The field set contains only 93 test images (3--7 per class), so per-class field scores are noisy and 17 of the 27 classes have a field F1 of 0; the aggregate gap is, however, far too large to be explained by sample size.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Lab vs.\ field performance} (from \texttt{results/baseline/bias\_check/lab\_vs\_field.csv}).}
+\label{tab:lab_vs_field}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Set} & \textbf{Images} & \textbf{Classes} & \textbf{Accuracy} & \textbf{Top-3} & \textbf{Macro F1} \\
+\midrule
+Lab test, all classes & 4,768 & 38 & 99.71\% & 99.98\% & 0.9970 \\
+Lab test, field classes only & 3,304 & 27 & 99.61\% & 99.97\% & 0.9960 \\
+Field (PlantDoc) & 93 & 27 & 24.73\% & 46.24\% & 0.1970 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Inspecting the field errors shows two clear patterns. First, 30 of the 93 field images (32\%) are predicted as \textit{Strawberry Leaf scorch}, a class with no field images at all. These are mostly multi-leaf canopy or whole-plant scenes with cluttered backgrounds, and leaves with red, orange or purple colouring (e.g.\ red blueberry foliage, orange apple-scab leaves), which resemble the reddish, speckled single leaves of the leaf-scorch training images. Second, field errors are often confident: 37 of the 70 field errors have confidence $\geq 0.9$, so a confidence threshold alone would not catch them.
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{bias_f1_vs_train_size.png}
+    \caption{Test F1 vs.\ training images per class.}
+    \label{fig:bias_size}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{bias_per_crop.png}
+    \caption{Mean and weakest class F1 per crop (test).}
+    \label{fig:bias_crop}
+\end{subfigure}
+\caption{\textbf{Bias Check on the lab test split.}}
+\label{fig:bias_lab}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{bias_lab_vs_field.png}
+    \caption{Lab vs.\ field scores.}
+    \label{fig:bias_field}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{field_misclassified_grid.png}
+    \caption{Field errors, highest confidence first.}
+    \label{fig:field_errors}
+\end{subfigure}
+\caption{\textbf{Lab-to-field generalisation gap.}}
+\label{fig:bias_field_all}
+\end{figure}
+
+\paragraph{Sources of data bias.}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Lab backgrounds:} nearly all training images are single leaves on a uniform grey background, so the model has not learned to ignore soil, other leaves, hands or sky. This is the main cause of the field gap.
+    \item \textbf{Single source and capture setting:} all training images come from PlantVillage, and all field images from PlantDoc web images; neither represents photos taken by Pakistani farmers on their own phones.
+    \item \textbf{Class imbalance:} training classes still range from 99 to 700 images after curation, although no class-size effect was found on lab data.
+    \item \textbf{Closed set of 38 classes:} the model must choose one of 38 known classes, so an unknown disease, a crop it has never seen, or a non-leaf photo is always forced into one of them.
+    \item \textbf{Label noise:} the lab test split contains at least two mislabeled or atypical images (a tomato fruit labelled ``healthy'', a black-background blueberry leaf), and during field review we removed 11 composite, slide-style or fruit-only images and replaced them with 11 valid PlantDoc photos, chosen on image quality alone.
+\end{itemize}
+
+\paragraph{Mitigations applied vs.\ planned.}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Applied:} per-class cap during curation; class-weighted cross-entropy; augmentation simulating field capture (random resized crops, flips, rotation and colour jitter); a separate field test set that is never used for training or tuning; top-3 predictions so the app can show alternatives.
+    \item \textbf{Planned:} fine-tuning on the 57-image \texttt{field\_adapt} split and re-measuring on \texttt{field\_test}; background-replacement augmentation; collecting our own field photos in Pakistan; and an out-of-distribution check in the app, since high confidence alone is not reliable on field images.
+\end{itemize}

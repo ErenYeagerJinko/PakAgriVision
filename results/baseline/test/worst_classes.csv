@@ -1,0 +1,11 @@
+label_idx,class_name,support,n_predicted,precision,recall,f1,auc,main_confused_as,n_confused_as,main_false_positive_from
+7,Corn___Cercospora_leaf_spot Gray_leaf_spot,76,72,0.986111,0.934211,0.959459,0.999955,Corn___Northern_Leaf_Blight,5,Corn___Northern_Leaf_Blight
+9,Corn___Northern_Leaf_Blight,147,151,0.966887,0.993197,0.979866,0.999976,Corn___Cercospora_leaf_spot Gray_leaf_spot,1,Corn___Cercospora_leaf_spot Gray_leaf_spot
+4,Blueberry___healthy,150,150,0.993333,0.993333,0.993333,0.999999,Tomato___Late_blight,1,Tomato___healthy
+28,Tomato___Bacterial_spot,150,150,0.993333,0.993333,0.993333,0.999997,Tomato___Septoria_leaf_spot,1,Tomato___Tomato_Yellow_Leaf_Curl_Virus
+30,Tomato___Late_blight,150,150,0.993333,0.993333,0.993333,0.999991,Tomato___Early_blight,1,Blueberry___healthy
+32,Tomato___Septoria_leaf_spot,150,150,0.993333,0.993333,0.993333,0.999999,Tomato___Early_blight,1,Tomato___Bacterial_spot
+29,Tomato___Early_blight,149,151,0.986755,1.0,0.993333,1.0,,0,Tomato___Late_blight
+21,Potato___Late_blight,149,148,1.0,0.993289,0.996633,0.999996,Potato___Early_blight,1,
+34,Tomato___Target_Spot,150,149,1.0,0.993333,0.996656,1.0,Tomato___Spider_mites Two-spotted_spider_mite,1,
+35,Tomato___Tomato_Yellow_Leaf_Curl_Virus,150,149,1.0,0.993333,0.996656,1.0,Tomato___Bacterial_spot,1,

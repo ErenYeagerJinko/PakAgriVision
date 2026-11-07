@@ -1,0 +1,66 @@
+{
+  "n_samples": 4747,
+  "n_classes_present": 38,
+  "accuracy": 0.9964187908152518,
+  "macro_precision": 0.9956296596065638,
+  "macro_recall": 0.9967768676117132,
+  "macro_f1": 0.996108498299373,
+  "weighted_precision": 0.9966009558800296,
+  "weighted_recall": 0.9964187908152518,
+  "weighted_f1": 0.9964355221325538,
+  "top3_accuracy": 1.0,
+  "macro_auc_ovr": 0.9999726138336807,
+  "n_auc_classes": 38,
+  "split": "val",
+  "split_file": "splits/val.csv",
+  "limit": null,
+  "eval_seconds": 778.4,
+  "top_confused_pairs": [
+    {
+      "true_class": "Corn___Northern_Leaf_Blight",
+      "predicted_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "count": 9,
+      "share_of_true_class": 0.06206896551724138
+    },
+    {
+      "true_class": "Tomato___Spider_mites Two-spotted_spider_mite",
+      "predicted_class": "Tomato___Target_Spot",
+      "count": 2,
+      "share_of_true_class": 0.013333333333333334
+    },
+    {
+      "true_class": "Tomato___Early_blight",
+      "predicted_class": "Tomato___Late_blight",
+      "count": 2,
+      "share_of_true_class": 0.013513513513513514
+    },
+    {
+      "true_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+      "predicted_class": "Tomato___Bacterial_spot",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Tomato___Late_blight",
+      "predicted_class": "Apple___Apple_scab",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Corn___Northern_Leaf_Blight",
+      "predicted_class": "Corn___healthy",
+      "count": 1,
+      "share_of_true_class": 0.006896551724137931
+    },
+    {
+      "true_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "count": 1,
+      "share_of_true_class": 0.013333333333333334
+    }
+  ],
+  "checkpoint": "runs/baseline/best.pt",
+  "backbone": "resnet50",
+  "epoch": 14,
+  "best_val_macro_f1_at_training": 0.996108498299373
+}

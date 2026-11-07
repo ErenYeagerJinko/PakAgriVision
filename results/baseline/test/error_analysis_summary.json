@@ -1,0 +1,8 @@
+{
+  "split": "test",
+  "n_images": 4768,
+  "n_errors": 14,
+  "error_rate": 0.002936241610738255,
+  "n_high_confidence_errors": 4,
+  "n_grid_images": 14
+}
