@@ -1,0 +1,11 @@
+true_class,predicted_class,count,share_of_true_class
+Potato___Late_blight,Tomato___Late_blight,4,0.5714285714285714
+Apple___Apple_scab,Strawberry___Leaf_scorch,3,1.0
+Tomato___Early_blight,Strawberry___Leaf_scorch,3,0.42857142857142855
+Strawberry___healthy,Strawberry___Leaf_scorch,3,1.0
+Soybean___healthy,Strawberry___Leaf_scorch,3,1.0
+Corn___Common_rust,Corn___Cercospora_leaf_spot Gray_leaf_spot,3,1.0
+Tomato___Septoria_leaf_spot,Strawberry___Leaf_scorch,2,0.6666666666666666
+Tomato___Bacterial_spot,Strawberry___Leaf_scorch,2,0.6666666666666666
+Pepper___bell_Bacterial_spot,Strawberry___Leaf_scorch,2,0.6666666666666666
+Peach___healthy,Strawberry___Leaf_scorch,2,0.6666666666666666

@@ -1,0 +1,39 @@
+label_idx,class_name,train_count,support,f1,recall,precision
+0,Apple___Apple_scab,434,93,1.0,1.0,1.0
+1,Apple___Black_rot,423,92,1.0,1.0,1.0
+2,Apple___Cedar_apple_rust,185,41,1.0,1.0,1.0
+3,Apple___healthy,700,150,1.0,1.0,1.0
+4,Blueberry___healthy,700,150,0.993333,0.993333,0.993333
+5,Cherry___healthy,567,122,1.0,1.0,1.0
+6,Cherry___Powdery_mildew,700,150,1.0,1.0,1.0
+7,Corn___Cercospora_leaf_spot Gray_leaf_spot,352,76,0.959459,0.934211,0.986111
+8,Corn___Common_rust,700,150,1.0,1.0,1.0
+9,Corn___Northern_Leaf_Blight,679,147,0.979866,0.993197,0.966887
+10,Corn___healthy,700,150,1.0,1.0,1.0
+11,Grape___Black_rot,700,150,1.0,1.0,1.0
+12,Grape___Esca_Black_Measles,700,150,1.0,1.0,1.0
+13,Grape___Leaf_blight Isariopsis_Leaf_Spot,700,150,1.0,1.0,1.0
+14,Grape___healthy,287,63,1.0,1.0,1.0
+15,Orange___Haunglongbing(Citrus_greening),700,150,1.0,1.0,1.0
+16,Peach___Bacterial_spot,700,150,1.0,1.0,1.0
+17,Peach___healthy,244,54,1.0,1.0,1.0
+18,Pepper___bell_Bacterial_spot,688,148,1.0,1.0,1.0
+19,Pepper___healthy,700,150,1.0,1.0,1.0
+20,Potato___Early_blight,690,149,0.996656,1.0,0.993333
+21,Potato___Late_blight,691,149,0.996633,0.993289,1.0
+22,Potato___healthy,99,22,1.0,1.0,1.0
+23,Raspberry___healthy,228,50,1.0,1.0,1.0
+24,Soybean___healthy,700,150,1.0,1.0,1.0
+25,Squash___Powdery_mildew,700,150,1.0,1.0,1.0
+26,Strawberry___healthy,309,67,1.0,1.0,1.0
+27,Strawberry___Leaf_scorch,700,150,1.0,1.0,1.0
+28,Tomato___Bacterial_spot,700,150,0.993333,0.993333,0.993333
+29,Tomato___Early_blight,693,149,0.993333,1.0,0.986755
+30,Tomato___Late_blight,700,150,0.993333,0.993333,0.993333
+31,Tomato___Leaf_Mold,658,141,1.0,1.0,1.0
+32,Tomato___Septoria_leaf_spot,700,150,0.993333,0.993333,0.993333
+33,Tomato___Spider_mites Two-spotted_spider_mite,700,150,0.996678,1.0,0.993377
+34,Tomato___Target_Spot,700,150,0.996656,0.993333,1.0
+35,Tomato___Tomato_Yellow_Leaf_Curl_Virus,700,150,0.996656,0.993333,1.0
+36,Tomato___Tomato_mosaic_virus,252,55,1.0,1.0,1.0
+37,Tomato___healthy,700,150,0.996656,0.993333,1.0

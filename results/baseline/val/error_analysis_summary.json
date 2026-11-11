@@ -1,0 +1,8 @@
+{
+  "split": "val",
+  "n_images": 4747,
+  "n_errors": 17,
+  "error_rate": 0.003581209184748262,
+  "n_high_confidence_errors": 11,
+  "n_grid_images": 16
+}

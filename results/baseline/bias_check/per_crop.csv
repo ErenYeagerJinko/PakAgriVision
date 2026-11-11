@@ -1,0 +1,15 @@
+crop,n_images,accuracy,n_classes,mean_f1,min_f1,weakest_class
+Corn,523,0.988528,4,0.984831,0.959459,Corn___Cercospora_leaf_spot Gray_leaf_spot
+Blueberry,150,0.993333,1,0.993333,0.993333,Blueberry___healthy
+Tomato,1395,0.995699,10,0.995998,0.993333,Tomato___Bacterial_spot
+Potato,320,0.996875,3,0.997763,0.996633,Potato___Late_blight
+Grape,513,1.0,4,1.0,1.0,Grape___Black_rot
+Orange,150,1.0,1,1.0,1.0,Orange___Haunglongbing(Citrus_greening)
+Apple,376,1.0,4,1.0,1.0,Apple___Apple_scab
+Cherry,272,1.0,2,1.0,1.0,Cherry___healthy
+Pepper,298,1.0,2,1.0,1.0,Pepper___bell_Bacterial_spot
+Peach,204,1.0,2,1.0,1.0,Peach___Bacterial_spot
+Soybean,150,1.0,1,1.0,1.0,Soybean___healthy
+Raspberry,50,1.0,1,1.0,1.0,Raspberry___healthy
+Squash,150,1.0,1,1.0,1.0,Squash___Powdery_mildew
+Strawberry,217,1.0,2,1.0,1.0,Strawberry___healthy

@@ -1,6 +1,7 @@
 """Compile docs/report/main.tex to main.pdf using curl and online TeX engine."""
 
 import io
+import re
 import subprocess
 import tarfile
 from pathlib import Path
@@ -14,11 +15,11 @@ def compress_image_for_tex(src_path: Path) -> bytes:
 
     with Image.open(src_path) as img:
         img = img.convert("RGB")
-        max_dim = 1000
+        max_dim = 900
         if max(img.size) > max_dim:
             img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
         out = io.BytesIO()
-        img.save(out, format="JPEG", quality=75, optimize=True)
+        img.save(out, format="JPEG", quality=70, optimize=True)
         return out.getvalue()
 
 
@@ -34,12 +35,21 @@ def compile_latex():
 
         # Add sections
         sections_dir = report_dir / "sections"
+        tex_sources = [main_tex.read_text(encoding="utf-8")]
         for sec in sections_dir.glob("*.tex"):
             tar.add(sec, arcname=f"sections/{sec.name}")
+            tex_sources.append(sec.read_text(encoding="utf-8"))
 
-        # Add compressed figures into reports/figures/
+        # Add compressed figures into reports/figures/ (only those the report includes;
+        # the online engine rejects uploads larger than about 1.5 MB)
+        used_figures = {
+            Path(name).name
+            for name in re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", "\n".join(tex_sources))
+        }
         figures_dir = Path("reports/figures")
         for fig in figures_dir.glob("*"):
+            if fig.name not in used_figures:
+                continue
             if fig.is_file() and fig.suffix.lower() in (".png", ".jpg", ".jpeg", ".pdf"):
                 img_bytes = compress_image_for_tex(fig)
                 target_arc = f"reports/figures/{fig.name}"

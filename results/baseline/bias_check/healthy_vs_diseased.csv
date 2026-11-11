@@ -1,0 +1,3 @@
+group,n_images,accuracy,n_flipped_to_other_group,false_healthy_rate,false_disease_rate
+healthy,1278,0.998435,1,,0.000782
+diseased,3490,0.996562,0,0.0,

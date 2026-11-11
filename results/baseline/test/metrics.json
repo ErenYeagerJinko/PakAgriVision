@@ -1,0 +1,84 @@
+{
+  "n_samples": 4768,
+  "n_classes_present": 38,
+  "accuracy": 0.9970637583892618,
+  "macro_precision": 0.9973630959296697,
+  "macro_recall": 0.9966849928727556,
+  "macro_f1": 0.9969980186582521,
+  "weighted_precision": 0.9970882286126297,
+  "weighted_recall": 0.9970637583892618,
+  "weighted_f1": 0.9970558907693458,
+  "top3_accuracy": 0.9997902684563759,
+  "macro_auc_ovr": 0.9999953493837684,
+  "n_auc_classes": 38,
+  "split": "test",
+  "split_file": "splits/test.csv",
+  "limit": null,
+  "eval_seconds": 841.5,
+  "top_confused_pairs": [
+    {
+      "true_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "count": 5,
+      "share_of_true_class": 0.06578947368421052
+    },
+    {
+      "true_class": "Tomato___healthy",
+      "predicted_class": "Blueberry___healthy",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Tomato___Target_Spot",
+      "predicted_class": "Tomato___Spider_mites Two-spotted_spider_mite",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+      "predicted_class": "Tomato___Bacterial_spot",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Tomato___Late_blight",
+      "predicted_class": "Tomato___Early_blight",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Tomato___Bacterial_spot",
+      "predicted_class": "Tomato___Septoria_leaf_spot",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Potato___Late_blight",
+      "predicted_class": "Potato___Early_blight",
+      "count": 1,
+      "share_of_true_class": 0.006711409395973154
+    },
+    {
+      "true_class": "Tomato___Septoria_leaf_spot",
+      "predicted_class": "Tomato___Early_blight",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    },
+    {
+      "true_class": "Corn___Northern_Leaf_Blight",
+      "predicted_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "count": 1,
+      "share_of_true_class": 0.006802721088435374
+    },
+    {
+      "true_class": "Blueberry___healthy",
+      "predicted_class": "Tomato___Late_blight",
+      "count": 1,
+      "share_of_true_class": 0.006666666666666667
+    }
+  ],
+  "checkpoint": "runs/baseline/best.pt",
+  "backbone": "resnet50",
+  "epoch": 14,
+  "best_val_macro_f1_at_training": 0.996108498299373
+}
