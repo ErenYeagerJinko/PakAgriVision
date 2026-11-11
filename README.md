@@ -44,7 +44,9 @@ PakAgriVision/
 │   └── visualize_augmentations.py # A4: augmentation sanity check
 │
 ├── scripts/                   # Utility and download automation scripts
-│   └── download_weights.py    # Downloads & extracts baseline folder to runs/
+│   ├── download_weights.py    # Downloads & extracts baseline folder to runs/
+│   ├── download_data.py       # Downloads & extracts curated dataset to data/raw/
+│   └── download_field_images.py # Downloads & extracts field images to data/raw/field/
 │
 ├── data/                      # NEVER commit large data/folders
 │   ├── README.md              # Dataset download info, version, licence
@@ -180,6 +182,16 @@ pip install -r requirements.txt
 - **PlantVillage (curated)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). The archive's top-level folder is `color/`, so extract it into `data/raw/plantvillage/` to get `data/raw/plantvillage/color/<class>/`.
 - **Field set**: [Download field_images_v2.zip](https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing) (72 MB): 150 real-world PlantDoc images across 27 classes, exactly the images listed in `field_meta/field_labels.csv` (11 invalid images were replaced in label review). The top-level folder is `field/`, so extract it into `data/raw/` to get `data/raw/field/<class>/`.
 - **Check**: every path in `splits/val.csv`, `splits/test.csv` and `splits/field_test.csv` should then exist.
+
+**To download and extract automatically:**
+```bash
+# Download complete curated dataset (PlantVillage + Field images into data/raw/):
+python scripts/download_data.py
+
+# Or download and extract specifically the field robustness images into data/raw/field/:
+python scripts/download_field_images.py
+```
+*(Or download manually from the Google Drive link above and extract the zip archive directly into `data/raw/`).*
 
 ### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
 

@@ -91,6 +91,17 @@ FIELD_IMAGES_DRIVE_URL=https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6n
 ```
 
 To restore locally:
+1. Automated download (recommended):
+   ```bash
+   # Download both PlantVillage and field images:
+   python scripts/download_data.py
+
+   # Or download field images only:
+   python scripts/download_field_images.py
+   ```
+2. Or manual download:
+   - Download the archive from the link above.
+   - Extract the archive directly into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
 1. Extract `data.zip` (top-level `color/`) into `data/raw/plantvillage/`.
 2. Extract `field_images_v2.zip` (top-level `field/`) into `data/raw/`.
 3. Class names and file mappings strictly match `splits/class_names.json` and `field_meta/field_labels.csv`.
