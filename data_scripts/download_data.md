@@ -15,7 +15,15 @@ To ensure data-centric quality, reproducibility, and prevent training instabilit
 ### Primary Download Instructions: Pre-Packaged `data.zip`
 - **Google Drive Link**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk)
 - **Archive File**: `data.zip`
-- **Extraction Command**:
+- **Automated Download Script**:
+  ```bash
+  # Download complete dataset (PlantVillage + Field images) into data/raw/
+  python scripts/download_data.py
+
+  # Or download only field images into data/raw/field/
+  python scripts/download_field_images.py
+  ```
+- **Manual Extraction Command**:
   ```bash
   # Extract directly into data/raw/
   python -m zipfile -e data.zip data/raw/

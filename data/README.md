@@ -86,8 +86,17 @@ DATASET_DRIVE_URL=https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7M
 ```
 
 To restore locally:
-1. Download the archive from the link above.
-2. Extract the archive directly into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
+1. Automated download (recommended):
+   ```bash
+   # Download both PlantVillage and field images:
+   python scripts/download_data.py
+
+   # Or download field images only:
+   python scripts/download_field_images.py
+   ```
+2. Or manual download:
+   - Download the archive from the link above.
+   - Extract the archive directly into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
 3. Class names and file mappings strictly match `splits/class_names.json` and `field_meta/field_labels.csv`.
 
 The zip archive itself is **not** committed to Git.

@@ -44,7 +44,9 @@ PakAgriVision/
 │   └── visualize_augmentations.py # A4: augmentation sanity check
 │
 ├── scripts/                   # Utility and download automation scripts
-│   └── download_weights.py    # Downloads & extracts baseline folder to runs/
+│   ├── download_weights.py    # Downloads & extracts baseline folder to runs/
+│   ├── download_data.py       # Downloads & extracts curated dataset to data/raw/
+│   └── download_field_images.py # Downloads & extracts field images to data/raw/field/
 │
 ├── data/                      # NEVER commit large data/folders
 │   ├── README.md              # Dataset download info, version, licence
@@ -182,6 +184,16 @@ pip install -r requirements.txt
   - `data/raw/plantvillage/color/`: 31,694 clean, balanced images across all 38 classes (max 1,000 images/class).
   - `data/raw/field/`: 150 real-world field robustness images across 28 matching classes.
 - **Extraction**: Extract `data.zip` into `data/raw/` so that `data/raw/plantvillage/color/` and `data/raw/field/` are populated.
+
+**To download and extract automatically:**
+```bash
+# Download complete curated dataset (PlantVillage + Field images into data/raw/):
+python scripts/download_data.py
+
+# Or download and extract specifically the field robustness images into data/raw/field/:
+python scripts/download_field_images.py
+```
+*(Or download manually from the Google Drive link above and extract the zip archive directly into `data/raw/`).*
 
 ### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
 
