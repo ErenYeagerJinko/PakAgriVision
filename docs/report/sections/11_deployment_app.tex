@@ -1,0 +1,87 @@
+\section{Application Development \& Real-Time Deployment (Track A)}
+\label{sec:deployment}
+
+Phase~5 operationalizes the trained crop disease diagnosis models into an interactive, low-latency decision support system accessible to agronomists, extension workers, and smallholder farmers. The system is designed following modular software engineering principles, cleanly separating frontend user experience from backend inference execution, visual explainability, and agronomic knowledge retrieval.
+
+\subsection{Frontend UI Architecture \& User Experience}
+\label{subsec:frontend_ux}
+% Section 11.1 - Owned by Abdul Ahad (Leader)
+\textit{[Authored by Abdul Ahad: Details Streamlit multi-stage layout, dual-upload webcam support, confidence meters, differential top-3 probability bars, and opacity slider controls.]}
+
+\subsection{Real-Time Backend Inference Engine}
+\label{subsec:inference_engine}
+% Section 11.2 - Owned by M. Anas (24L-3004)
+The backend inference service is implemented in \texttt{src/inference.py} around the \texttt{InferenceEngine} class, engineered to satisfy strict responsiveness constraints on commodity edge hardware ($<300$\,ms latency on standard multi-core CPUs and $<100$\,ms on CUDA-enabled GPUs).
+
+\subsubsection{Model Ingestion and Device Management}
+To eliminate initialization latency on interactive web triggers, model loading decouples checkpoint weights from runtime evaluation loops. The engine automatically inspects local system capabilities, defaulting to \texttt{cuda:0} when an accelerator is present and safely falling back to CPU execution without manual configuration. In web deployment contexts (Streamlit), model instances are wrapped in \texttt{@st.cache\_resource}, ensuring that network architecture allocation and state dictionary mapping occur strictly once in the host process memory rather than repeating on successive user requests.
+
+\subsubsection{Input Ingestion, Sanitization, and Validation}
+In-field smartphone image uploads frequently feature diverse file formats, alpha channels, or transmission corruption. The preprocessing pipeline enforces strict data sanitization:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Type-Agnostic Ingestion:} The engine accepts filesystem paths, raw binary buffers (\texttt{bytes}), in-memory file streams (\texttt{io.BytesIO}), or pre-constructed \texttt{PIL.Image} instances.
+    \item \textbf{Channel Standardization:} RGBA, grayscale, and CMYK photographs are dynamically coerced to canonical 3-channel RGB:
+    \begin{equation}
+        \mathbf{I}_{\text{RGB}} = \operatorname{Convert}(\mathbf{I}_{\text{input}}, \text{mode}=\text{RGB})
+    \end{equation}
+    preventing runtime channel-dimension mismatches in convolutional filters.
+    \item \textbf{Deterministic Evaluation Transform:} Standardized transforms match the validation protocol: bilinear resize to $256 \times 256$, center cropping to $224 \times 224 \times 3$, normalization to $[0.0, 1.0]$, and standard ImageNet channel centering:
+    \begin{equation}
+        \hat{x}_{c, i, j} = \frac{x_{c, i, j} - \mu_c}{\sigma_c}, \quad \mu = [0.485, 0.456, 0.406], \quad \sigma = [0.229, 0.224, 0.225]
+    \end{equation}
+\end{enumerate}
+
+\subsubsection{Top-$k$ Probability and Differential Diagnosis Extraction}
+Given model output logits $\mathbf{z} \in \mathbb{R}^{38}$, class posterior probabilities are computed via the softmax operator:
+\begin{equation}
+    p_c = \frac{\exp(z_c)}{\sum_{j=1}^{38} \exp(z_j)}, \quad c \in \{1, \dots, 38\}
+\end{equation}
+Rather than emitting a single isolated label, the inference service extracts the top-$k$ ranked candidates ($k=3$ by default) alongside human-readable crop categories, specific pathology names, and a boolean health flag (\texttt{is\_healthy}). This differential diagnosis provides agronomists with secondary possibilities when disease phenotypes overlap visually (e.g., fungal leaf spots versus bacterial blights).
+
+\subsection{Explainable AI Pipeline: Grad-CAM Attribution}
+\label{subsec:gradcam_pipeline}
+% Section 11.3 - Owned by M. Anas (24L-3004)
+Deep neural network predictions in critical agronomic domains cannot rely on black-box heuristics. If a classifier makes a correct diagnosis by latching onto background soil, watermark tags, or fingers holding the leaf, it will fail catastrophically in unconstrained field deployments. To establish visual transparency and farmer trust, we implement a Gradient-weighted Class Activation Mapping (\textbf{Grad-CAM}) pipeline in \texttt{src/explainability/gradcam.py}.
+
+\subsubsection{Mathematical Formulation and Hook Architecture}
+Grad-CAM computes visual attribution by capturing spatial feature representations from the final convolutional layer of the backbone (the final bottleneck block of \texttt{layer4} in ResNet-50, yielding feature maps of spatial resolution $7 \times 7$ with 2048 channels). We register forward and backward PyTorch hooks to capture:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Forward Activation Maps:} $A^k \in \mathbb{R}^{U \times V}$, representing spatial features detected by the $k$-th convolutional filter (where $U=V=7, K=2048$).
+    \item \textbf{Backpropagated Gradients:} $\frac{\partial y^c}{\partial A^k}$, capturing the sensitivity of the un-normalized class logit score $y^c$ with respect to each activation element.
+\end{enumerate}
+
+Neuron importance weights $\alpha_k^c$ are computed by applying Global Average Pooling (GAP) across spatial dimensions $i$ and $j$:
+\begin{equation}
+    \alpha_k^c = \frac{1}{Z} \sum_{i=1}^{U} \sum_{j=1}^{V} \frac{\partial y^c}{\partial A_{i, j}^k}
+\end{equation}
+where $Z = U \cdot V$ is the spatial area of the feature map. The coarse localization map $L_{\text{Grad-CAM}}^c$ is synthesized by computing a linear combination of forward activation maps weighted by their importance, followed by a Rectified Linear Unit (ReLU):
+\begin{equation}
+    L_{\text{Grad-CAM}}^c = \operatorname{ReLU}\left( \sum_{k=1}^{K} \alpha_k^c A^k \right)
+\end{equation}
+The ReLU operator is essential: it filters out negative activations that contribute negatively to the target class, isolating only visual features that positively support the predicted disease.
+
+\subsubsection{Spatial Upsampling and Alpha Blending}
+Because raw convolutional feature maps have low spatial resolution ($7 \times 7$), the activation map is upsampled to the original input resolution ($224 \times 224$) via bilinear interpolation:
+\begin{equation}
+    H_{\text{raw}}(x, y) = \operatorname{BilinearInterpolate}(L_{\text{Grad-CAM}}^c, (224, 224))
+\end{equation}
+The interpolated map is min-max normalized to ensure pixel intensities strictly span $[0.0, 1.0]$:
+\begin{equation}
+    H(x, y) = \frac{H_{\text{raw}}(x, y) - \min(H_{\text{raw}})}{\max(H_{\text{raw}}) - \min(H_{\text{raw}}) + \epsilon}
+\end{equation}
+A colormap (such as \texttt{jet} or \texttt{turbo}) maps the normalized scalar intensities to an RGB color field $\mathbf{C}(x, y) \in [0, 255]^3$. The final visualization blends the colorized heatmap over the original leaf photograph $\mathbf{I}(x, y)$ using an adjustable alpha transparency factor $\alpha \in [0.0, 1.0]$:
+\begin{equation}
+    \mathbf{I}_{\text{overlay}}(x, y) = (1 - \alpha) \cdot \mathbf{I}(x, y) + \alpha \cdot \mathbf{C}(x, y)
+\end{equation}
+This allows agronomists to slide smoothly between the natural leaf photograph and the heatmap, verifying that network attention directly aligns with necrotized lesion spots, pustules, or chlorotic leaf margins rather than healthy surrounding leaf tissue.
+
+\subsection{Agronomic Treatment Advisory Engine}
+\label{subsec:treatment_advisory}
+% Section 11.4 - Owned by M. Babar Shahzad
+\textit{[Authored by M. Babar Shahzad: Details treatment knowledge base schema, chemical/organic/cultural querying, and dosage guidelines.]}
+
+\subsection{Confidence Thresholding \& Error Handling}
+\label{subsec:confidence_thresholding}
+% Section 11.5 - Owned by M. Babar Shahzad
+\textit{[Authored by M. Babar Shahzad: Details fallback mechanisms, safety banners for low confidence predictions (<60\%), and ambiguous symptom warnings.]}
+
