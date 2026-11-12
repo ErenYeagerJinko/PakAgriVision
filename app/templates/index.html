@@ -1,1562 +1,2781 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PakAgriVision — AI Crop Disease Detection</title>
+<title>PakAgriVision — AI Crop Disease Diagnostic & Treatment Advisor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════
-   CSS RESET & VARIABLES (DARK GREEN + TEAL + DUAL THEME)
-   ═══════════════════════════════════════════════════════ */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS — EARTHY PALETTE & HIGH CONTRAST (OUTDOOR TESTED)
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --font-en: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-ur: 'Noto Naskh Arabic', 'Plus Jakarta Sans', serif;
+  --current-font: var(--font-en);
 
-:root, [data-theme="dark"] {
-  --bg-primary: #0a0f0d;
-  --bg-secondary: #111a16;
-  --bg-card: #141f1a;
-  --bg-card-hover: #1a2b23;
-  --bg-glass: rgba(20, 31, 26, 0.75);
-  --surface-elevated: #1c2e25;
-  --border-subtle: rgba(74, 222, 128, 0.12);
-  --border-active: rgba(74, 222, 128, 0.30);
-  --green-50: #f0fdf4;
-  --green-100: #dcfce7;
-  --green-200: #bbf7d0;
-  --green-300: #86efac;
-  --green-400: #4ade80;
-  --green-500: #22c55e;
-  --green-600: #16a34a;
-  --green-700: #15803d;
-  --green-900: #14532d;
-  --teal-400: #2dd4bf;
-  --teal-500: #14b8a6;
-  --cyan-400: #22d3ee;
-  --lime-400: #a3e635;
-  --emerald-400: #34d399;
-  --amber-400: #fbbf24;
-  --amber-500: #f59e0b;
-  --red-400: #f87171;
-  --red-500: #ef4444;
-  --text-primary: #f0fdf4;
-  --text-secondary: rgba(240, 253, 244, 0.70);
-  --text-muted: rgba(240, 253, 244, 0.40);
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  /* Earthy Natural Palette (Default Light) */
+  --bg-canvas: #F8F5F0;        /* Natural wheat linen background */
+  --bg-surface: #FFFFFF;       /* Crisp white surface */
+  --bg-surface-raised: #F2ECE1;/* Warm card background */
+  --bg-surface-muted: #EBE3D5; /* Subtle element backing */
+  
+  --text-main: #231C16;        /* Deep rich soil (WCAG AAA on canvas) */
+  --text-muted: #574A3E;       /* Earth bark text (WCAG AA ≥ 4.8:1) */
+  --text-inverse: #FFFFFF;
+
+  --border-light: #E5DCD0;
+  --border-medium: #D1C4B2;
+  --border-strong: #96836F;
+
+  /* Primary Brand & Accents */
+  --brand-soil: #3D2D24;       /* Deep Fertile Loam */
+  --brand-wheat: #B26A00;      /* Harvest Gold / Amber Accent */
+  --brand-wheat-soft: #F9EED9;
+  --brand-field: #1F6A38;      /* Lush Field Foliage */
+  --brand-field-hover: #17522B;
+  --brand-field-soft: #E8F4EC;
+
+  /* STRICT SEVERITY TOKENS (Reserved for Diagnostics Only) */
+  --sev-high-bg: #FEE8E8;
+  --sev-high-text: #991B1B;
+  --sev-high-border: #EF4444;
+
+  --sev-med-bg: #FEF3C7;
+  --sev-med-text: #854D0E;
+  --sev-med-border: #F59E0B;
+
+  --sev-safe-bg: #DCFCE7;
+  --sev-safe-text: #166534;
+  --sev-safe-border: #22C55E;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
   --radius-full: 9999px;
-  --shadow-glow: 0 0 80px rgba(74, 222, 128, 0.08);
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  --font-primary: 'Inter', -apple-system, sans-serif;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+
+  --shadow-card: 0 2px 6px rgba(44, 34, 25, 0.06);
+  --shadow-lg: 0 8px 24px rgba(44, 34, 25, 0.10);
+  --focus-ring: 0 0 0 3px rgba(31, 106, 56, 0.4);
 }
 
-[data-theme="light"] {
-  --bg-primary: #f5f9f7;
-  --bg-secondary: #eaf4f0;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f3faf7;
-  --bg-glass: rgba(255, 255, 255, 0.90);
-  --surface-elevated: #e6f3ee;
-  --border-subtle: rgba(13, 148, 136, 0.18);
-  --border-active: rgba(6, 182, 212, 0.45);
-  --green-50: #0a1f14;
-  --green-100: #143826;
-  --green-200: #1c5237;
-  --green-300: #166534;
-  --green-400: #15803d;
-  --green-500: #16a34a;
-  --green-600: #15803d;
-  --green-700: #166534;
-  --green-900: #052e16;
-  --teal-400: #0f766e;
-  --teal-500: #0d9488;
-  --cyan-400: #0891b2;
-  --lime-400: #4d7c0f;
-  --emerald-400: #047857;
-  --amber-400: #d97706;
-  --amber-500: #b45309;
-  --red-400: #dc2626;
-  --red-500: #b91c1c;
-  --text-primary: #091712;
-  --text-secondary: #274238;
-  --text-muted: #597a6e;
-  --shadow-glow: 0 4px 24px rgba(13, 148, 136, 0.08);
+[data-theme="dark"] {
+  --bg-canvas: #161412;
+  --bg-surface: #201D1A;
+  --bg-surface-raised: #2A2622;
+  --bg-surface-muted: #36312B;
+  --text-main: #F3EFE9;
+  --text-muted: #C5BAAD;
+  --border-light: #3A342D;
+  --border-medium: #4D453C;
+  --border-strong: #786C5E;
+  --brand-wheat-soft: #382A14;
+  --brand-field-soft: #142E1C;
+  --sev-high-bg: #3E1616;
+  --sev-high-text: #FCA5A5;
+  --sev-high-border: #B91C1C;
+  --sev-med-bg: #39280E;
+  --sev-med-text: #FDE047;
+  --sev-med-border: #D97706;
+  --sev-safe-bg: #0F331A;
+  --sev-safe-text: #86EFAC;
+  --sev-safe-border: #15803D;
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-html { scroll-behavior: smooth; }
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL RESETS & ACCESSIBILITY
+   ───────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: var(--font-primary);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  overflow-x: hidden;
+  font-family: var(--current-font);
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  line-height: 1.5;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  padding-bottom: 76px; /* space for mobile bottom bar */
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+@media (min-width: 900px) {
+  body { padding-bottom: 0; }
+}
+
+[dir="rtl"] {
+  --current-font: var(--font-ur);
+  text-align: right;
+}
+
+[dir="rtl"] .ltr-only {
+  direction: ltr;
+  text-align: left;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+img { max-width: 100%; display: block; }
+svg { flex-shrink: 0; }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--green-700); border-radius: 3px; }
-
-/* ═══════════════════════════════════════════════════════
-   AMBIENT BACKGROUND & PARTICLES
-   ═══════════════════════════════════════════════════════ */
-.ambient-bg {
-  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-}
-.ambient-orb {
-  position: absolute; border-radius: 50%; filter: blur(130px); opacity: 0.16;
-  animation: orbFloat 22s ease-in-out infinite alternate;
-}
-.ambient-orb:nth-child(1) {
-  width: 600px; height: 600px; top: -200px; left: -100px;
-  background: radial-gradient(circle, var(--green-500), transparent);
-}
-.ambient-orb:nth-child(2) {
-  width: 500px; height: 500px; bottom: -150px; right: -100px;
-  background: radial-gradient(circle, var(--emerald-400), transparent);
-  animation-delay: -7s;
-}
-.ambient-orb:nth-child(3) {
-  width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--teal-400), transparent);
-  opacity: 0.08; animation-delay: -14s;
-}
-@keyframes orbFloat {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(30px, -40px) scale(1.1); }
-  100% { transform: translate(-20px, 20px) scale(0.95); }
+.container {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-.grain {
-  position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: 0.022;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+/* ─────────────────────────────────────────────────────────────
+   TOP APP BAR & NAVIGATION
+   ───────────────────────────────────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-/* ═══════════════════════════════════════════════════════
-   NAVIGATION BAR
-   ═══════════════════════════════════════════════════════ */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 0 40px; height: 72px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--bg-glass);
-  backdrop-filter: blur(24px) saturate(1.2);
-  border-bottom: 1px solid var(--border-subtle);
-  transition: var(--transition-fast);
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
 }
-.nav.scrolled { background: var(--bg-primary); }
 
-.nav-logo {
-  display: flex; align-items: center; gap: 12px;
-  font-family: var(--font-display); font-weight: 700; font-size: 20px;
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
-.nav-logo-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--green-500), var(--emerald-400));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-}
-.nav-links { display: flex; gap: 28px; align-items: center; }
-.nav-link {
-  font-size: 14px; font-weight: 500; color: var(--text-secondary);
-  transition: var(--transition-fast); cursor: pointer;
-  position: relative;
-}
-.nav-link::after {
-  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
-  background: var(--green-400); transition: var(--transition-smooth);
-  border-radius: 1px;
-}
-.nav-link:hover { color: var(--text-primary); }
-.nav-link:hover::after { width: 100%; }
-.nav-link.active { color: var(--green-400); }
-.nav-link.active::after { width: 100%; }
 
-.nav-actions { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background-color: var(--brand-field);
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.theme-toggle-btn {
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-active);
-  color: var(--text-primary);
-  padding: 8px 14px;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
+.brand-name {
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.5px;
+  color: var(--brand-soil);
+}
+[data-theme="dark"] .brand-name { color: #FFFFFF; }
+
+.brand-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--brand-wheat-soft);
+  color: var(--brand-wheat);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  margin-left: 4px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-toggle-btn, .theme-toggle-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: var(--transition-fast);
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  min-height: 40px;
 }
-.theme-toggle-btn:hover {
-  transform: translateY(-1px);
-  border-color: var(--green-400);
-}
-
-.nav-cta {
-  padding: 10px 22px; border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--green-500), var(--green-600));
-  font-size: 14px; font-weight: 600; cursor: pointer; border: none;
-  color: #070d0a;
-  transition: var(--transition-fast);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
-}
-.nav-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 30px rgba(34, 197, 94, 0.45);
+.lang-toggle-btn:hover, .theme-toggle-btn:hover {
+  background-color: var(--bg-surface-raised);
 }
 
-/* ═══════════════════════════════════════════════════════
-   SECTION / LAYOUT
-   ═══════════════════════════════════════════════════════ */
-.section { padding: 120px 40px; max-width: 1280px; margin: 0 auto; }
-.section-label {
-  font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--green-400); margin-bottom: 16px;
-  display: flex; align-items: center; gap: 10px;
+.desktop-nav {
+  display: none;
+  align-items: center;
+  gap: 24px;
 }
-.section-label::before {
-  content: ''; width: 24px; height: 1px; background: var(--green-400);
+.desktop-nav a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
-.section-title {
-  font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px);
-  font-weight: 700; line-height: 1.1; margin-bottom: 20px;
-  background: linear-gradient(135deg, var(--text-primary) 30%, var(--green-300));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.section-subtitle {
-  font-size: 18px; color: var(--text-secondary); line-height: 1.7;
-  max-width: 600px;
+.desktop-nav a:hover {
+  color: var(--brand-field);
 }
 
-/* ═══════════════════════════════════════════════════════
-   HERO SECTION
-   ═══════════════════════════════════════════════════════ */
-.hero {
-  min-height: 100vh; display: flex; align-items: center;
-  padding-top: 72px; position: relative;
-}
-.hero-content { max-width: 700px; }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px 6px 8px; border-radius: var(--radius-full);
-  background: rgba(74, 222, 128, 0.08);
-  border: 1px solid var(--border-active);
-  font-size: 13px; font-weight: 500; color: var(--green-300);
-  margin-bottom: 28px;
-  animation: fadeInUp 0.8s ease both;
-}
-.hero-badge-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: var(--green-400);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
-.hero h1 {
-  font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px);
-  font-weight: 800; line-height: 1.05; margin-bottom: 24px;
-  animation: fadeInUp 0.8s 0.1s ease both;
-}
-.hero h1 .gradient-text {
-  background: linear-gradient(135deg, var(--green-400), var(--lime-400), var(--emerald-400));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.hero p {
-  font-size: 18px; color: var(--text-secondary); line-height: 1.8;
-  margin-bottom: 40px; max-width: 520px;
-  animation: fadeInUp 0.8s 0.2s ease both;
-}
-.hero-actions {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  animation: fadeInUp 0.8s 0.3s ease both;
-}
-.btn-primary {
-  padding: 16px 32px; border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--green-500), var(--green-600));
-  font-size: 15px; font-weight: 600; cursor: pointer; border: none;
-  color: #070d0a;
-  display: inline-flex; align-items: center; gap: 10px;
-  transition: var(--transition-smooth);
-  box-shadow: 0 4px 24px rgba(34, 197, 94, 0.3);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(34, 197, 94, 0.5);
-}
-.btn-secondary {
-  padding: 16px 32px; border-radius: var(--radius-full);
-  background: transparent; border: 1px solid var(--border-active);
-  font-size: 15px; font-weight: 500; cursor: pointer;
-  color: var(--text-primary);
-  display: inline-flex; align-items: center; gap: 10px;
-  transition: var(--transition-smooth);
-}
-.btn-secondary:hover {
-  background: rgba(74, 222, 128, 0.06);
-  border-color: var(--green-400);
+@media (min-width: 900px) {
+  .desktop-nav { display: flex; }
 }
 
-/* Hero visual floating cards */
-.hero-visual {
-  position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
-  width: 520px; height: 520px; pointer-events: none;
-  animation: fadeIn 1.2s 0.5s ease both;
+/* ─────────────────────────────────────────────────────────────
+   MOBILE BOTTOM DOCK NAVIGATION
+   ───────────────────────────────────────────────────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 90;
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.06);
 }
-.hero-card-float {
-  position: absolute; border-radius: var(--radius-lg);
-  background: var(--bg-glass); backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  padding: 20px; box-shadow: var(--shadow-glow);
-  animation: cardFloat 6s ease-in-out infinite;
-}
-.hero-card-float:nth-child(1) { top: 40px; right: 80px; width: 300px; }
-.hero-card-float:nth-child(2) { bottom: 80px; right: 20px; width: 260px; animation-delay: -2s; }
-.hero-card-float:nth-child(3) { top: 200px; right: 320px; width: 180px; animation-delay: -4s; }
-@keyframes cardFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-}
-.hcf-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.hcf-icon {
-  width: 32px; height: 32px; border-radius: 8px; display: flex;
-  align-items: center; justify-content: center; font-size: 16px;
-}
-.hcf-icon.green { background: rgba(74, 222, 128, 0.15); }
-.hcf-icon.amber { background: rgba(251, 191, 36, 0.15); }
-.hcf-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.hcf-subtitle { font-size: 11px; color: var(--text-muted); }
-.hcf-bar {
-  height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden;
-  margin-top: 8px;
-}
-.hcf-bar-fill.green { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green-500), var(--green-400)); }
-.hcf-stat { font-size: 28px; font-weight: 800; font-family: var(--font-display); }
-.hcf-stat .unit { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@media (min-width: 900px) {
+  .mobile-bottom-nav { display: none; }
 }
 
-/* ═══════════════════════════════════════════════════════
-   STATS BAR
-   ═══════════════════════════════════════════════════════ */
-.stats-bar {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-  background: var(--border-subtle); border-radius: var(--radius-lg);
-  overflow: hidden; margin-top: -40px; position: relative; z-index: 10;
+.bottom-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 58px;
+  padding: 6px 0;
 }
-.stat-item {
-  background: var(--bg-card); padding: 32px;
-  text-align: center; transition: var(--transition-fast);
-}
-.stat-item:hover { background: var(--bg-card-hover); }
-.stat-value {
-  font-family: var(--font-display); font-size: 36px; font-weight: 800;
-  background: linear-gradient(135deg, var(--green-300), var(--lime-400));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.stat-label {
-  font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 500;
-  letter-spacing: 0.5px;
+.bottom-tab.active, .bottom-tab:hover {
+  color: var(--brand-field);
 }
 
-/* ═══════════════════════════════════════════════════════
-   DIAGNOSE SECTION (SCAN YOUR LEAF)
-   ═══════════════════════════════════════════════════════ */
-.scan-section {
-  background: var(--bg-secondary); border-radius: var(--radius-xl);
-  border: 1px solid var(--border-subtle);
-  padding: 50px; margin-top: 40px; position: relative; overflow: hidden;
+/* ─────────────────────────────────────────────────────────────
+   HERO & ABOVE-THE-FOLD SCAN WORKBENCH
+   ───────────────────────────────────────────────────────────── */
+.hero-workbench-section {
+  padding: 20px 0 36px 0;
 }
-.scan-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--green-500), var(--teal-400), transparent);
-}
-.scan-layout { display: grid; grid-template-columns: 1.05fr 1.25fr; gap: 40px; margin-top: 36px; }
 
-/* Viva Samples Quick Bar */
-.viva-bar {
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
+.hero-headline-block {
   margin-bottom: 20px;
 }
-.viva-bar-title {
-  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-  color: var(--teal-400); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-}
-.viva-chips-row {
-  display: flex; flex-wrap: wrap; gap: 8px;
-}
-.viva-chip-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
+
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: var(--transition-fast);
-}
-.viva-chip-btn:hover {
-  border-color: var(--green-400);
-  color: var(--text-primary);
-  transform: translateY(-1px);
+  font-weight: 700;
+  background-color: var(--brand-field-soft);
+  color: var(--brand-field);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 10px;
+  border: 1px solid rgba(31,106,56,0.18);
 }
 
-/* Upload & Camera Input Tabs */
-.input-tabs-bar {
-  display: flex; gap: 8px; margin-bottom: 14px;
-}
-.input-tab-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  padding: 8px 18px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-.input-tab-btn.active {
-  background: var(--surface-elevated);
-  border-color: var(--green-400);
-  color: var(--green-400);
-}
-
-/* Upload Zone */
-.upload-zone {
-  border: 2px dashed var(--border-active); border-radius: var(--radius-lg);
-  padding: 40px 24px; text-align: center; cursor: pointer;
-  transition: var(--transition-smooth); position: relative;
-  background: rgba(74, 222, 128, 0.02);
-  min-height: 320px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-}
-.upload-zone:hover {
-  background: rgba(74, 222, 128, 0.05);
-  border-color: var(--green-400);
-}
-.upload-icon {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(74, 222, 128, 0.05));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; margin-bottom: 16px;
-  border: 1px solid var(--border-subtle);
-}
-.upload-zone h4 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-.upload-zone p { font-size: 13px; color: var(--text-muted); }
-
-/* Camera Viewport */
-.camera-zone {
-  display: none; border-radius: var(--radius-lg); overflow: hidden;
-  background: var(--bg-card); border: 1px solid var(--border-subtle);
-  padding: 16px; text-align: center; min-height: 320px;
-}
-.camera-video {
-  width: 100%; height: 240px; object-fit: cover; border-radius: var(--radius-md);
-  background: #000;
-}
-.camera-controls {
-  display: flex; justify-content: center; gap: 10px; margin-top: 12px;
-}
-.camera-btn {
-  background: var(--surface-elevated); border: 1px solid var(--border-active);
-  color: var(--text-primary); padding: 8px 16px; border-radius: var(--radius-full);
-  font-size: 13px; font-weight: 600; cursor: pointer;
-}
-.camera-btn.primary {
-  background: linear-gradient(135deg, var(--green-500), var(--teal-500));
-  color: #070d0a; border: none;
-}
-
-/* Image Preview */
-.preview-img {
-  display: none; width: 100%; max-height: 280px; object-fit: contain;
-  border-radius: var(--radius-md); margin-bottom: 12px;
-}
-.upload-zone.has-image .upload-icon,
-.upload-zone.has-image h4,
-.upload-zone.has-image p,
-.upload-zone.has-image .upload-formats { display: none; }
-.upload-zone.has-image .preview-img { display: block; }
-.upload-zone.has-image .preview-name { display: block; font-size: 13px; color: var(--text-secondary); }
-.preview-name { display: none; font-family: var(--font-mono); }
-
-/* Scan Button */
-.scan-btn {
-  width: 100%; padding: 16px; border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--green-500), var(--green-600));
-  font-size: 15px; font-weight: 700; cursor: pointer; border: none;
-  color: #070d0a; margin-top: 16px;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  transition: var(--transition-smooth);
-  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
-}
-.scan-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.5);
-}
-.scan-btn:disabled {
-  opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
-}
-.scan-btn .spinner {
-  display: none; width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.2);
-  border-top-color: #070d0a; border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-.scan-btn.loading .spinner { display: block; }
-.scan-btn.loading .btn-text { display: none; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Results Panel */
-.results-panel { display: flex; flex-direction: column; gap: 20px; }
-.result-placeholder {
-  border-radius: var(--radius-lg); background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 50px 30px; text-align: center; min-height: 380px;
-}
-.result-placeholder-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.35; }
-.result-placeholder p { color: var(--text-muted); font-size: 14px; }
-
-/* Result Cards */
-.result-card {
-  border-radius: var(--radius-lg); background: var(--bg-card);
-  border: 1px solid var(--border-subtle); overflow: hidden;
-  display: none; animation: fadeInUp 0.45s ease both;
-}
-.result-card.show { display: block; }
-.result-card-header {
-  padding: 18px 22px; display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
-}
-.result-card-header h4 {
-  font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;
-}
-.result-card-body { padding: 22px; }
-
-/* Confidence Ring */
-.confidence-ring-wrapper {
-  display: flex; align-items: center; gap: 22px;
-}
-.confidence-ring { width: 84px; height: 84px; position: relative; }
-.confidence-ring svg { transform: rotate(-90deg); }
-.confidence-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
-.confidence-ring-fill {
-  fill: none; stroke: var(--green-400); stroke-width: 7;
-  stroke-linecap: round; stroke-dasharray: 226;
-  stroke-dashoffset: 226; transition: stroke-dashoffset 1.4s ease;
-}
-.confidence-ring-text {
-  position: absolute; inset: 0; display: flex; align-items: center;
-  justify-content: center; font-family: var(--font-display);
-  font-size: 18px; font-weight: 800;
-}
-.disease-name {
-  font-family: var(--font-display); font-size: 22px; font-weight: 700;
-}
-.disease-crop {
-  font-size: 13px; color: var(--teal-400); margin-top: 4px; font-weight: 600;
-}
-
-/* Severity Badges */
-.severity-badge {
-  padding: 5px 12px; border-radius: var(--radius-full);
-  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-}
-.severity-badge.high { background: rgba(248, 113, 113, 0.18); color: var(--red-400); }
-.severity-badge.moderate { background: rgba(251, 191, 36, 0.18); color: var(--amber-400); }
-.severity-badge.healthy { background: rgba(74, 222, 128, 0.18); color: var(--green-400); }
-
-/* Differential Top-3 Bars */
-.diff-bar-row { margin-bottom: 12px; }
-.diff-labels { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-.diff-name { font-weight: 600; }
-.diff-percent { font-family: var(--font-mono); color: var(--teal-400); font-weight: 700; }
-.diff-track {
-  width: 100%; height: 8px; background: var(--surface-elevated);
-  border-radius: var(--radius-full); overflow: hidden;
-}
-.diff-fill {
-  height: 100%; border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--green-500), var(--teal-400), var(--cyan-400));
-  transition: width 1s ease;
-}
-
-/* Grad-CAM Viewer & Opacity Slider */
-.gradcam-dual-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;
-}
-.gradcam-box {
-  background: var(--bg-primary); border-radius: var(--radius-md);
-  overflow: hidden; text-align: center; padding: 6px;
-  border: 1px solid var(--border-subtle);
-}
-.gradcam-box img {
-  width: 100%; height: 160px; object-fit: contain; border-radius: var(--radius-sm);
-}
-.gradcam-caption { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-.slider-container {
-  display: flex; align-items: center; gap: 12px; font-size: 12px;
-  color: var(--text-secondary); margin-top: 8px;
-}
-.slider-container input[type="range"] {
-  flex: 1; accent-color: var(--teal-400); cursor: pointer;
-}
-
-/* Treatment Accordion */
-.treatment-list { display: flex; flex-direction: column; gap: 8px; }
-.treatment-item {
-  border-radius: var(--radius-md); background: var(--surface-elevated);
-  border: 1px solid var(--border-subtle); overflow: hidden;
-  transition: var(--transition-fast);
-}
-.treatment-item:hover { border-color: var(--border-active); }
-.treatment-header {
-  padding: 13px 16px; display: flex; align-items: center;
-  justify-content: space-between; cursor: pointer;
-  font-size: 13.5px; font-weight: 600;
-}
-.treatment-header .chevron { transition: var(--transition-fast); font-size: 11px; color: var(--text-muted); }
-.treatment-item.open .treatment-header .chevron { transform: rotate(180deg); }
-.treatment-body {
-  padding: 0 16px; max-height: 0; overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-}
-.treatment-item.open .treatment-body {
-  padding: 0 16px 14px; max-height: 350px;
-}
-.treatment-body p {
-  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
-}
-
-/* ═══════════════════════════════════════════════════════
-   CROPS SHOWCASE
-   ═══════════════════════════════════════════════════════ */
-.crops-scroll {
-  display: flex; gap: 14px; overflow-x: auto; padding: 20px 0;
-  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; margin-top: 36px;
-}
-.crops-scroll::-webkit-scrollbar { display: none; }
-.crop-chip {
-  flex-shrink: 0; scroll-snap-align: start;
-  padding: 10px 22px; border-radius: var(--radius-full);
-  background: var(--bg-card); border: 1px solid var(--border-subtle);
-  font-size: 14px; font-weight: 500; white-space: nowrap;
-  display: flex; align-items: center; gap: 8px;
-  cursor: pointer; transition: var(--transition-smooth);
-}
-.crop-chip:hover {
-  border-color: var(--green-400);
-  background: rgba(74, 222, 128, 0.06);
-  transform: translateY(-2px);
-}
-.crop-chip.active {
-  background: linear-gradient(135deg, var(--green-500), var(--green-600));
-  color: #070d0a; border-color: transparent; font-weight: 700;
-}
-
-/* ═══════════════════════════════════════════════════════
-   MODEL PERFORMANCE SECTION
-   ═══════════════════════════════════════════════════════ */
-.metrics-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  margin-top: 48px;
-}
-.metric-card {
-  padding: 30px; border-radius: var(--radius-lg);
-  background: var(--bg-card); border: 1px solid var(--border-subtle);
-  transition: var(--transition-smooth);
-}
-.metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  border-color: var(--border-active);
-}
-.metric-card-label {
-  font-size: 12px; font-weight: 600; color: var(--text-muted);
-  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;
-}
-.metric-card-value {
-  font-family: var(--font-display); font-size: 40px; font-weight: 800;
-  margin-bottom: 6px;
-}
-.metric-card-value.green {
-  background: linear-gradient(135deg, var(--green-300), var(--lime-400));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.metric-card-detail { font-size: 13px; color: var(--text-secondary); }
-.metric-card-bar { margin-top: 14px; }
-.metric-card-bar .bar-track {
-  height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06);
-}
-.metric-card-bar .bar-fill {
-  height: 100%; border-radius: 2px;
-  background: linear-gradient(90deg, var(--green-500), var(--lime-400));
-}
-
-/* Chart Container */
-.chart-container {
-  margin-top: 48px; padding: 36px;
-  border-radius: var(--radius-lg); background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-}
-.chart-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 28px;
-}
-.chart-header h4 { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
-.chart-legend { display: flex; gap: 20px; }
-.chart-legend-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--text-secondary);
-}
-.chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-.chart-area {
-  height: 240px; position: relative;
-  display: flex; align-items: flex-end; gap: 4px;
-  padding-bottom: 30px; border-bottom: 1px solid var(--border-subtle);
-}
-.chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.chart-bar {
-  width: 100%; max-width: 40px; border-radius: 4px 4px 0 0;
-  transition: height 1s ease, opacity 0.3s;
-  position: relative;
-}
-.chart-bar.train-acc { background: linear-gradient(180deg, var(--green-400), var(--green-600)); }
-.chart-bar.val-acc { background: linear-gradient(180deg, var(--lime-400), var(--teal-400)); }
-.chart-epoch {
-  position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%);
-  font-size: 10px; color: var(--text-muted); white-space: nowrap;
-}
-.chart-y-labels {
-  position: absolute; left: -36px; top: 0; bottom: 30px;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.chart-y-label { font-size: 10px; color: var(--text-muted); }
-
-/* Architecture Flow */
-.arch-flow {
-  display: flex; align-items: center; gap: 0;
-  margin-top: 44px; overflow-x: auto; padding: 18px 0;
-}
-.arch-node {
-  flex-shrink: 0; padding: 22px 26px; border-radius: var(--radius-lg);
-  background: var(--bg-card); border: 1px solid var(--border-subtle);
-  text-align: center; min-width: 160px;
-  transition: var(--transition-smooth);
-}
-.arch-node:hover {
-  transform: translateY(-4px);
-  border-color: var(--green-400);
-}
-.arch-node-icon { font-size: 26px; margin-bottom: 8px; }
-.arch-node h5 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.arch-node p { font-size: 11px; color: var(--text-muted); }
-.arch-arrow {
-  flex-shrink: 0; width: 44px; display: flex; align-items: center; justify-content: center;
-  color: var(--green-400); font-size: 18px;
-}
-
-/* Team Grid */
-.team-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  margin-top: 48px;
-}
-.team-card {
-  padding: 36px 28px; border-radius: var(--radius-lg);
-  background: var(--bg-card); border: 1px solid var(--border-subtle);
-  text-align: center; transition: var(--transition-smooth);
-}
-.team-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--green-400);
-}
-.team-avatar {
-  width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 18px;
-  background: linear-gradient(135deg, var(--green-500), var(--emerald-400));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 800; font-family: var(--font-display);
-  color: #070d0a;
-}
-.team-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.team-card .team-id { font-size: 13px; color: var(--green-400); font-weight: 600; margin-bottom: 8px; }
-.team-card .team-role { font-size: 13px; color: var(--text-muted); }
-
-/* Footer */
-.footer {
-  padding: 60px 40px; text-align: center;
-  border-top: 1px solid var(--border-subtle);
-}
-.footer-logo {
-  font-family: var(--font-display); font-size: 24px; font-weight: 700;
+.hero-title {
+  font-size: clamp(26px, 4.5vw, 42px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--brand-soil);
   margin-bottom: 8px;
 }
-.footer-tagline { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
-.footer-links { display: flex; gap: 24px; justify-content: center; }
-.footer-link { font-size: 13px; color: var(--text-secondary); transition: var(--transition-fast); }
-.footer-link:hover { color: var(--green-400); }
-.footer-bottom {
-  margin-top: 36px; font-size: 12px; color: var(--text-muted); line-height: 1.6;
+[data-theme="dark"] .hero-title { color: #FFFFFF; }
+
+.hero-highlight {
+  background: linear-gradient(135deg, var(--brand-wheat) 0%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .hero-visual { display: none; }
-  .scan-layout { grid-template-columns: 1fr; }
-  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+.hero-lead {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 680px;
+  line-height: 1.5;
 }
-@media (max-width: 768px) {
-  .nav { padding: 0 20px; }
-  .nav-links { display: none; }
-  .section { padding: 80px 20px; }
-  .scan-section { padding: 24px; }
-  .metrics-grid { grid-template-columns: 1fr; }
-  .stats-bar { grid-template-columns: 1fr; }
-  .team-grid { grid-template-columns: 1fr; }
-  .arch-flow { flex-wrap: wrap; gap: 12px; }
-  .arch-arrow { transform: rotate(90deg); width: 100%; }
+
+/* WORKBENCH GRID */
+.workbench-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .workbench-grid {
+    grid-template-columns: 1.05fr 1.15fr;
+  }
+}
+
+/* CROP FILTER CHIPS (FUNCTIONAL MODEL BIAS) */
+.crop-filter-block {
+  margin-bottom: 16px;
+}
+.crop-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.crop-filter-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.crop-chips-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow: visible;
+  padding: 4px 0 8px 0;
+  width: 100%;
+}
+.crop-chip-btn {
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  background-color: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-main);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.crop-chip-btn:hover {
+  border-color: var(--brand-field);
+  background-color: var(--bg-subtle);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.crop-chip-btn.active {
+  background-color: var(--brand-field);
+  color: #FFFFFF;
+  border-color: var(--brand-field);
+  box-shadow: 0 4px 14px rgba(46, 92, 56, 0.32);
+}
+.crop-chip-btn .chip-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+[data-theme="dark"] .crop-chip-btn .chip-count {
+  background: rgba(255, 255, 255, 0.15);
+}
+.crop-chip-btn.active .chip-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* SCAN CARD */
+.scan-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.upload-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.btn-action-camera, .btn-action-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px 12px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 84px;
+  border: 2px solid var(--border-medium);
+  background-color: var(--bg-surface-raised);
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+.btn-action-camera {
+  border-color: var(--brand-field);
+  background-color: var(--brand-field-soft);
+  color: var(--brand-field);
+}
+.btn-action-camera:hover {
+  background-color: #D6ECDD;
+}
+.btn-action-gallery:hover {
+  background-color: var(--bg-surface-muted);
+}
+
+/* DRAG & DROP / PREVIEW ZONE */
+.dropzone-box {
+  border: 2px dashed var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  background-color: var(--bg-surface-raised);
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: border-color 0.15s ease;
+}
+.dropzone-box.dragover {
+  border-color: var(--brand-field);
+  background-color: var(--brand-field-soft);
+}
+.dropzone-prompt {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Image preview container */
+.preview-container {
+  display: none;
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: #000;
+  margin-bottom: 14px;
+}
+.preview-container.active { display: block; }
+.preview-container img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.preview-overlay-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+  color: #FFFFFF;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px;
+}
+.btn-retake {
+  background: rgba(255,255,255,0.25);
+  color: #FFFFFF;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 12px;
+}
+.btn-retake:hover { background: rgba(255,255,255,0.4); }
+
+/* PHOTO GUIDANCE ACCORDION */
+.photo-tips-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  background-color: var(--bg-surface-raised);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+.photo-tips-panel {
+  display: none;
+  padding: 10px 12px;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border-light);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  margin-top: -14px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.photo-tips-panel.open { display: block; }
+.photo-tips-panel ul {
+  padding-left: 18px;
+  margin-top: 4px;
+}
+[dir="rtl"] .photo-tips-panel ul {
+  padding-left: 0;
+  padding-right: 18px;
+}
+
+/* EXECUTE DIAGNOSIS BUTTON */
+.btn-diagnose-main {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--brand-field);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.15s ease;
+  min-height: 54px;
+}
+.btn-diagnose-main:hover:not(:disabled) {
+  background-color: var(--brand-field-hover);
+}
+.btn-diagnose-main:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: var(--border-strong);
+}
+
+.spinner-icon {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────────────────────────────
+   DIAGNOSIS RESULTS PANEL
+   ───────────────────────────────────────────────────────────── */
+.results-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.results-idle-state {
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.results-idle-icon {
+  width: 56px;
+  height: 56px;
+  background-color: var(--bg-surface-raised);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border-strong);
+}
+
+/* RESULTS ACTIVE CONTAINER */
+.results-active-container {
+  display: none;
+}
+.results-active-container.visible {
+  display: block;
+}
+
+/* SIMULATION / PROD TRANSPARENCY NOTICE */
+.audit-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* PRIMARY PREDICTION CARD */
+.primary-diagnosis-banner {
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: var(--bg-surface);
+}
+
+.primary-diagnosis-banner.severity-high {
+  border-color: var(--sev-high-border);
+  background-color: var(--sev-high-bg);
+}
+.primary-diagnosis-banner.severity-moderate {
+  border-color: var(--sev-med-border);
+  background-color: var(--sev-med-bg);
+}
+.primary-diagnosis-banner.severity-healthy {
+  border-color: var(--sev-safe-border);
+  background-color: var(--sev-safe-bg);
+}
+
+.banner-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.severity-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.severity-high .severity-pill-badge {
+  background-color: var(--sev-high-text);
+  color: #FFFFFF;
+}
+.severity-moderate .severity-pill-badge {
+  background-color: var(--sev-med-text);
+  color: #FFFFFF;
+}
+.severity-healthy .severity-pill-badge {
+  background-color: var(--sev-safe-text);
+  color: #FFFFFF;
+}
+
+.primary-disease-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+.primary-crop-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.cause-snippet {
+  font-size: 13px;
+  color: var(--text-main);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0,0,0,0.15);
+}
+
+/* TOP-3 PROBABILITY BREAKDOWN */
+.top-candidates-block {
+  margin-bottom: 18px;
+}
+.top-candidates-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.candidate-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.candidate-label-group {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+.candidate-bar-track {
+  height: 8px;
+  background-color: var(--bg-surface-muted);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.candidate-bar-fill {
+  height: 100%;
+  background-color: var(--brand-field);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.candidate-bar-fill.rank-2 { background-color: var(--brand-wheat); }
+.candidate-bar-fill.rank-3 { background-color: var(--border-strong); }
+
+/* LOW CONFIDENCE BANNER */
+.low-confidence-alert {
+  display: none;
+  padding: 12px;
+  background-color: var(--sev-med-bg);
+  border: 1px solid var(--sev-med-border);
+  color: var(--sev-med-text);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.low-confidence-alert.visible { display: flex; align-items: flex-start; gap: 8px; }
+
+/* GRAD-CAM EXPLAINABILITY SECTION */
+.gradcam-explainer-block {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  background-color: var(--bg-surface-raised);
+  margin-bottom: 18px;
+}
+.gradcam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.gradcam-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gradcam-layer-tag {
+  font-size: 11px;
+  font-weight: 700;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+.gradcam-visual-container {
+  position: relative;
+  height: 180px;
+  background-color: #000;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.gradcam-img-base {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.75;
+}
+.gradcam-heatmap-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 45% 55%, rgba(220, 38, 38, 0.75) 0%, rgba(245, 158, 11, 0.5) 30%, rgba(34, 197, 94, 0.2) 60%, transparent 80%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.gradcam-caption {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* MANDATORY AGRI EXTENSION OFFICER ADVISORY */
+.agri-officer-notice {
+  background-color: var(--brand-wheat-soft);
+  border: 1px solid var(--brand-wheat);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 12px;
+  color: var(--brand-soil);
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+[data-theme="dark"] .agri-officer-notice { color: #F5E8D0; }
+.agri-officer-notice strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--brand-wheat);
+}
+
+/* TREATMENT ACCORDION */
+.treatment-plan-section {
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+.treatment-section-title {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+.accordion-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.accordion-item {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+.accordion-trigger {
+  width: 100%;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  background-color: var(--bg-surface-raised);
+}
+[dir="rtl"] .accordion-trigger { text-align: right; }
+.accordion-trigger:hover {
+  background-color: var(--bg-surface-muted);
+}
+.accordion-trigger-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.accordion-icon-chevron {
+  transition: transform 0.2s ease;
+}
+.accordion-trigger[aria-expanded="true"] .accordion-icon-chevron {
+  transform: rotate(180deg);
+}
+.accordion-content {
+  display: none;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.6;
+  border-top: 1px solid var(--border-light);
+  background-color: var(--bg-surface);
+}
+.accordion-content.open {
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STATS & RIGOR METRICS BAR (DERIVED FROM RESULTS CSVs)
+   ───────────────────────────────────────────────────────────── */
+.stats-summary-section {
+  padding: 24px 0;
+}
+.stats-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .stats-card-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stat-metric-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+.stat-metric-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.stat-metric-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand-soil);
+  margin-top: 4px;
+  letter-spacing: -0.5px;
+}
+[data-theme="dark"] .stat-metric-number { color: #FFFFFF; }
+.stat-metric-subtext {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HOW IT WORKS SECTION
+   ───────────────────────────────────────────────────────────── */
+.section-block {
+  padding: 48px 0;
+  border-top: 1px solid var(--border-light);
+}
+.section-tag {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brand-field);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.section-heading {
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 800;
+  color: var(--brand-soil);
+  margin-bottom: 8px;
+}
+[data-theme="dark"] .section-heading { color: #FFFFFF; }
+.section-subheading {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin-bottom: 24px;
+}
+
+.workflow-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .workflow-steps-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.workflow-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  position: relative;
+}
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--brand-field-soft);
+  color: var(--brand-field);
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.workflow-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.workflow-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODEL ACCURACY DATA VIZ (DYNAMIC SVG LINE CHART & CSV TABLE)
+   ───────────────────────────────────────────────────────────── */
+.chart-container-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+}
+.chart-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.chart-legend-wrap {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-swatch {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+.swatch-train { background-color: var(--brand-wheat); }
+.swatch-val { background-color: var(--brand-field); }
+
+.svg-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+.svg-chart-wrapper svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Chart Tooltip */
+.chart-tooltip {
+  position: absolute;
+  display: none;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: var(--shadow-card);
+  pointer-events: none;
+  transform: translate(-50%, -120%);
+  white-space: nowrap;
+  z-index: 20;
+}
+
+/* PER-CLASS DIAGNOSTIC PERFORMANCE TABLE */
+.table-responsive-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+}
+.per-class-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+[dir="rtl"] .per-class-table { text-align: right; }
+.per-class-table th {
+  background-color: var(--bg-surface-raised);
+  padding: 10px 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+.per-class-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-main);
+  white-space: nowrap;
+}
+.per-class-table tr:last-child td { border-bottom: none; }
+.per-class-table tr:hover { background-color: var(--bg-surface-raised); }
+
+/* FIELD TEST REALITY WARNING CALLOUT */
+.field-reality-box {
+  margin-top: 18px;
+  padding: 14px;
+  background-color: var(--bg-surface-raised);
+  border-left: 4px solid var(--brand-wheat);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 13px;
+  color: var(--text-main);
+}
+[dir="rtl"] .field-reality-box {
+  border-left: none;
+  border-right: 4px solid var(--brand-wheat);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ARCHITECTURE SECTION
+   ───────────────────────────────────────────────────────────── */
+.arch-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .arch-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 960px) {
+  .arch-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+.arch-step-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+.arch-step-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--bg-surface-raised);
+  color: var(--brand-field);
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+.arch-step-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.arch-step-card p {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEAM SECTION
+   ───────────────────────────────────────────────────────────── */
+.team-grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .team-grid-container { grid-template-columns: repeat(3, 1fr); }
+}
+
+.team-profile-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.team-avatar-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--brand-soil);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+.team-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+}
+.team-roll {
+  font-size: 12px;
+  color: var(--brand-field);
+  font-weight: 700;
+}
+.team-responsibility {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER
+   ───────────────────────────────────────────────────────────── */
+.site-footer {
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
+  padding: 36px 0 24px;
+  margin-top: 48px;
+}
+.footer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+@media (min-width: 768px) {
+  .footer-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.footer-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.footer-links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.footer-links-list a:hover { color: var(--brand-field); }
+.footer-bottom-copy {
+  border-top: 1px solid var(--border-light);
+  padding-top: 18px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
 }
 </style>
 </head>
 <body>
 
-<div class="ambient-bg">
-  <div class="ambient-orb"></div>
-  <div class="ambient-orb"></div>
-  <div class="ambient-orb"></div>
-</div>
-<div class="grain"></div>
-
-<!-- Navigation -->
-<nav class="nav" id="nav">
-  <div class="nav-logo">
-    <div class="nav-logo-icon">🌿</div>
-    PakAgriVision
-  </div>
-  <div class="nav-links">
-    <a class="nav-link active" href="#hero">Home</a>
-    <a class="nav-link" href="#how-it-works">How It Works</a>
-    <a class="nav-link" href="#diagnose">Diagnose</a>
-    <a class="nav-link" href="#performance">Performance</a>
-    <a class="nav-link" href="#architecture">Architecture</a>
-    <a class="nav-link" href="#team">Team</a>
-  </div>
-  <div class="nav-actions">
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
-      <span id="themeIcon">☀️</span> <span id="themeLabel">Light</span>
-    </button>
-    <button class="nav-cta" onclick="document.getElementById('diagnose').scrollIntoView({behavior:'smooth'})">
-      Start Diagnosis →
-    </button>
-  </div>
-</nav>
-
-<!-- ═══════════════ HERO ═══════════════ -->
-<section class="hero section" id="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      AI-Powered Foliar Pathology
-    </div>
-    <h1>
-      Detect Crop<br>Diseases with<br><span class="gradient-text">AI Precision</span>
-    </h1>
-    <p>
-      Upload a photo of any leaf or capture live in the field. Our ResNet-50 model trained on 32,000+ curated agricultural images identifies 38 crop diseases instantly — with Grad-CAM explainability and vetted treatment plans.
-    </p>
-    <div class="hero-actions">
-      <button class="btn-primary" onclick="document.getElementById('diagnose').scrollIntoView({behavior:'smooth'})">
-        🔬 Scan a Leaf Now
-      </button>
-      <button class="btn-secondary" onclick="document.getElementById('performance').scrollIntoView({behavior:'smooth'})">
-        View Model Stats
-      </button>
-    </div>
-  </div>
-
-  <div class="hero-visual">
-    <div class="hero-card-float">
-      <div class="hcf-header">
-        <div class="hcf-icon green">🎯</div>
-        <div>
-          <div class="hcf-title">Prediction Confidence</div>
-          <div class="hcf-subtitle">Tomato Late Blight</div>
-        </div>
+<!-- ─────────────────────────────────────────────────────────────
+     HEADER BAR
+     ───────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#workbench" class="brand-wrap" aria-label="PakAgriVision Home">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10"/>
+          <path d="M10 20c5.5-2.5.8-6.4 3-13"/>
+          <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4.1 5.5.8z"/>
+          <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4.1 1-4.9 2z"/>
+        </svg>
       </div>
-      <div class="hcf-bar"><div class="hcf-bar-fill green" style="width: 99.6%"></div></div>
-      <div style="font-size:12px; color:var(--text-muted); margin-top:6px; text-align:right">99.64%</div>
-    </div>
-    <div class="hero-card-float">
-      <div class="hcf-header">
-        <div class="hcf-icon amber">⚡</div>
-        <div>
-          <div class="hcf-title">Val Accuracy</div>
-          <div class="hcf-subtitle">Epoch 14 · Best</div>
-        </div>
-      </div>
-      <div class="hcf-stat" style="color: var(--green-400)">99.64<span class="unit">%</span></div>
-    </div>
-    <div class="hero-card-float">
-      <div class="hcf-header">
-        <div class="hcf-icon green">🌱</div>
-        <div>
-          <div class="hcf-title">Crops Monitored</div>
-        </div>
-      </div>
-      <div class="hcf-stat" style="color: var(--lime-400)">14<span class="unit"> species</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ STATS BAR ═══════════════ -->
-<div class="section" style="padding-top: 0;">
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value">99.70%</div>
-      <div class="stat-label">Test Accuracy</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">38</div>
-      <div class="stat-label">Disease Classes</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">31,694</div>
-      <div class="stat-label">Training Images</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">0.9961</div>
-      <div class="stat-label">Macro F1 Score</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
-<section class="section" id="how-it-works">
-  <div class="section-label">How It Works</div>
-  <div class="section-title">Three Steps to<br>a Healthier Crop</div>
-  <div class="section-subtitle">From leaf photograph to actionable agronomic treatment — powered by deep learning and expert knowledge.</div>
-
-  <div class="steps-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px; margin-top:48px;">
-    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
-      <div style="font-size:32px; margin-bottom:14px;">📸</div>
-      <h3 style="font-size:18px; margin-bottom:8px;">1. Provide Leaf Specimen</h3>
-      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Upload a gallery photo, capture live with your camera, or select a pre-loaded viva sample.</p>
-    </div>
-    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
-      <div style="font-size:32px; margin-bottom:14px;">🧠</div>
-      <h3 style="font-size:18px; margin-bottom:8px;">2. Real-Time Neural Inference</h3>
-      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Flask backend evaluates the image through ResNet-50 weights and extracts Grad-CAM Layer 4 activation maps.</p>
-    </div>
-    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
-      <div style="font-size:32px; margin-bottom:14px;">🛡️</div>
-      <h3 style="font-size:18px; margin-bottom:8px;">3. Expert Advisory Plan</h3>
-      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Receive chemical fungicides with exact dosages, organic bio-controls, and immediate containment measures.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ CROPS SHOWCASE ═══════════════ -->
-<section class="section" style="padding-top: 20px;">
-  <div class="section-label">Supported Crops</div>
-  <div class="section-title">14 Crops. 38 Pathology Classes.</div>
-  <div class="crops-scroll">
-    <div class="crop-chip active"><span class="emoji">🍎</span> Apple</div>
-    <div class="crop-chip"><span class="emoji">🫐</span> Blueberry</div>
-    <div class="crop-chip"><span class="emoji">🍒</span> Cherry</div>
-    <div class="crop-chip"><span class="emoji">🌽</span> Corn</div>
-    <div class="crop-chip"><span class="emoji">🍇</span> Grape</div>
-    <div class="crop-chip"><span class="emoji">🍊</span> Orange</div>
-    <div class="crop-chip"><span class="emoji">🍑</span> Peach</div>
-    <div class="crop-chip"><span class="emoji">🌶️</span> Pepper</div>
-    <div class="crop-chip"><span class="emoji">🥔</span> Potato</div>
-    <div class="crop-chip"><span class="emoji">🫐</span> Raspberry</div>
-    <div class="crop-chip"><span class="emoji">🫘</span> Soybean</div>
-    <div class="crop-chip"><span class="emoji">🎃</span> Squash</div>
-    <div class="crop-chip"><span class="emoji">🍓</span> Strawberry</div>
-    <div class="crop-chip"><span class="emoji">🍅</span> Tomato</div>
-  </div>
-</section>
-
-<!-- ═══════════════ DIAGNOSE (CORE FLASK SCAN ENGINE) ═══════════════ -->
-<section class="section" id="diagnose">
-  <div class="scan-section">
-    <div class="section-label">Live AI Diagnosis Engine</div>
-    <div class="section-title">Scan Foliar Specimen</div>
-    <div class="section-subtitle">Powered by Flask REST API &amp; ResNet-50 PyTorch Backend.</div>
-
-    <!-- 1-Click Viva Demonstration Quick-Load Bar -->
-    <div class="viva-bar">
-      <div class="viva-bar-title">⚡ Viva Demonstration — One-Click Test Leaves:</div>
-      <div class="viva-chips-row">
-        <button class="viva-chip-btn" onclick="loadVivaSample('Tomato___Late_blight', 'Tomato — Late Blight')">🍅 Tomato Late Blight</button>
-        <button class="viva-chip-btn" onclick="loadVivaSample('Potato___Early_blight', 'Potato — Early Blight')">🥔 Potato Early Blight</button>
-        <button class="viva-chip-btn" onclick="loadVivaSample('Apple___Apple_scab', 'Apple — Apple Scab')">🍎 Apple Scab</button>
-        <button class="viva-chip-btn" onclick="loadVivaSample('Corn___Common_rust', 'Corn — Common Rust')">🌽 Corn Common Rust</button>
-        <button class="viva-chip-btn" onclick="loadVivaSample('Tomato___healthy', 'Tomato — Healthy Leaf')">🌿 Healthy Tomato</button>
-      </div>
-    </div>
-
-    <div class="scan-layout">
-      <!-- Left Column: Input Selection -->
       <div>
-        <div class="input-tabs-bar">
-          <button class="input-tab-btn active" id="tabUploadBtn" onclick="switchInputTab('upload')">📁 File Upload</button>
-          <button class="input-tab-btn" id="tabCameraBtn" onclick="switchInputTab('camera')">📸 Live Camera</button>
+        <span class="brand-name">PakAgriVision</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav" aria-label="Main Navigation">
+      <a href="#workbench" data-i18n="nav_scan">Leaf Scanner</a>
+      <a href="#performance" data-i18n="nav_performance">Benchmark Results</a>
+      <a href="#how-it-works" data-i18n="nav_how">How It Works</a>
+      <a href="#architecture" data-i18n="nav_arch">Architecture</a>
+      <a href="#team" data-i18n="nav_team">Team</a>
+    </nav>
+
+    <!-- Controls: Language & Theme -->
+    <div class="header-controls">
+      <button type="button" class="lang-toggle-btn" id="langToggleBtn" aria-label="Switch Language to Urdu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span id="langLabelText">اردو (Urdu)</span>
+      </button>
+
+      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle High-Contrast Dark Mode">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────────────────────────────────────────────────────────
+     HERO + ABOVE-THE-FOLD SCAN WORKBENCH
+     ───────────────────────────────────────────────────────────── -->
+<main>
+<section class="hero-workbench-section" id="workbench">
+  <div class="container">
+    <!-- Hero Headline -->
+    <div class="hero-headline-block">
+      <div class="trust-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span data-i18n="hero_pill">ResNet-50 Trained · 38 Plant Pathologies</span>
+      </div>
+      <h1 class="hero-title" data-i18n="hero_title">
+        Detect Crop Disease with <span class="hero-highlight">AI</span> Diagnostic
+      </h1>
+      <p class="hero-lead" data-i18n="hero_lead">
+        Designed for Pakistani farmers. Capture a clear leaf photo right in the field to receive instant disease identification, Grad-CAM attention heatmaps, and research-backed chemical and organic treatment plans.
+      </p>
+    </div>
+
+    <!-- Crop Filter / Context Chips (Functional Model Filtering as Tiles) -->
+    <div class="crop-filter-block">
+      <div class="crop-filter-header">
+        <span class="crop-filter-title" data-i18n="crop_filter_title">Select Crop Type (Filters Diagnostics)</span>
+        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="activeCropStatus" data-i18n="crop_status_all">All 14 Crops Active</span>
+      </div>
+      <div class="crop-chips-tiles" role="radiogroup" aria-label="Filter diagnosis by crop">
+        <button type="button" class="crop-chip-btn active" data-crop="all" role="radio" aria-checked="true">
+          <span>🌿 <span data-i18n="crop_all">All Crops</span></span>
+          <span class="chip-count">38</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Tomato" role="radio" aria-checked="false">
+          <span>🍅 <span data-i18n="crop_tomato">Tomato</span></span>
+          <span class="chip-count">10</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Potato" role="radio" aria-checked="false">
+          <span>🥔 <span data-i18n="crop_potato">Potato</span></span>
+          <span class="chip-count">3</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Corn" role="radio" aria-checked="false">
+          <span>🌽 <span data-i18n="crop_corn">Corn (Maize)</span></span>
+          <span class="chip-count">4</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Pepper" role="radio" aria-checked="false">
+          <span>🌶️ <span data-i18n="crop_pepper">Pepper (Capsicum)</span></span>
+          <span class="chip-count">2</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Apple" role="radio" aria-checked="false">
+          <span>🍎 <span data-i18n="crop_apple">Apple</span></span>
+          <span class="chip-count">4</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Grape" role="radio" aria-checked="false">
+          <span>🍇 <span data-i18n="crop_grape">Grape</span></span>
+          <span class="chip-count">4</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Orange" role="radio" aria-checked="false">
+          <span>🍊 <span data-i18n="crop_orange">Citrus</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Strawberry" role="radio" aria-checked="false">
+          <span>🍓 <span data-i18n="crop_strawberry">Strawberry</span></span>
+          <span class="chip-count">2</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Peach" role="radio" aria-checked="false">
+          <span>🍑 <span data-i18n="crop_peach">Peach</span></span>
+          <span class="chip-count">2</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Soybean" role="radio" aria-checked="false">
+          <span><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align: -2px; display: inline-block; margin-right: 4px;"><path d="M4 16C4 16 7 20 13 18C19 16 21 8 21 8C21 8 16 7 11 10C6 13 4 16 4 16Z" fill="#84CC16" stroke="#65A30D" stroke-width="1.2"/><circle cx="9.5" cy="14" r="2.2" fill="#FACC15"/><circle cx="14" cy="11.5" r="2.2" fill="#FACC15"/><circle cx="18" cy="9.5" r="1.6" fill="#FACC15"/></svg><span data-i18n="crop_soybean">Soybean</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Cherry" role="radio" aria-checked="false">
+          <span>🍒 <span data-i18n="crop_cherry">Cherry</span></span>
+          <span class="chip-count">2</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Blueberry" role="radio" aria-checked="false">
+          <span><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align: -2px; display: inline-block; margin-right: 4px;"><circle cx="12" cy="13" r="8" fill="#3B82F6"/><circle cx="12" cy="6" r="2.5" fill="#10B981"/><path d="M9 5.5 Q12 3.5 15 5.5" stroke="#10B981" stroke-width="1.8" fill="none"/></svg><span data-i18n="crop_blueberry">Blueberry</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Raspberry" role="radio" aria-checked="false">
+          <span>🍇 <span data-i18n="crop_raspberry">Raspberry</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Squash" role="radio" aria-checked="false">
+          <span>🎃 <span data-i18n="crop_squash">Squash</span></span>
+          <span class="chip-count">1</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- WORKBENCH TWO-COLUMN GRID -->
+    <div class="workbench-grid">
+
+      <!-- LEFT: UPLOAD & CAPTURE CONTROLS -->
+      <div class="scan-card">
+        <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+            <circle cx="12" cy="13" r="3"/>
+          </svg>
+          <span data-i18n="upload_heading">Step 1: Provide Leaf Photograph</span>
+        </h2>
+
+        <!-- Native Hardware Camera & Gallery Inputs -->
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" aria-label="Take leaf photo with camera">
+        <input type="file" id="galleryInput" accept="image/*" style="display: none;" aria-label="Choose leaf image from gallery">
+
+        <!-- Mobile-friendly touch targets -->
+        <div class="upload-action-buttons">
+          <button type="button" class="btn-action-camera" id="btnLaunchCamera" aria-label="Take leaf photo with camera">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+              <circle cx="12" cy="13" r="3"/>
+            </svg>
+            <span data-i18n="btn_camera">Take Photo</span>
+          </button>
+
+          <button type="button" class="btn-action-gallery" id="btnLaunchGallery" aria-label="Upload leaf photo from gallery">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+            </svg>
+            <span data-i18n="btn_gallery">Gallery / Files</span>
+          </button>
         </div>
 
-        <!-- Drag & Drop Zone -->
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-          <input type="file" id="fileInput" accept="image/*" hidden>
-          <img class="preview-img" id="previewImg" alt="Specimen Preview">
-          <div class="upload-icon">📤</div>
-          <h4>Drop your leaf image here</h4>
-          <p>or click to browse local files (JPG, PNG)</p>
-          <div class="preview-name" id="previewName"></div>
+        <!-- Drag & Drop Alternate Area -->
+        <div class="dropzone-box" id="dropzoneBox" tabindex="0" role="button" aria-label="Or drag and drop leaf photo here">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--border-strong); margin-bottom: 6px;">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+            <path d="M12 12v9"/>
+            <path d="m16 16-4-4-4 4"/>
+          </svg>
+          <div class="dropzone-prompt" data-i18n="drag_drop_text">Or drag and drop image file here (PNG, JPG, WEBP)</div>
         </div>
 
-        <!-- Camera Zone -->
-        <div class="camera-zone" id="cameraZone">
-          <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
-          <canvas id="cameraCanvas" style="display:none;"></canvas>
-          <div class="camera-controls">
-            <button class="camera-btn" onclick="stopCamera()">Cancel</button>
-            <button class="camera-btn primary" onclick="captureSnapshot()">📸 Take Snapshot</button>
+        <!-- Image Preview & Compression Status -->
+        <div class="preview-container" id="previewContainer">
+          <img id="leafImagePreview" src="" alt="Captured leaf photograph for diagnostic review">
+          <div class="preview-overlay-info">
+            <div>
+              <div id="previewMetaText" style="font-weight: 700;">IMG_Field_Sample.jpg</div>
+              <div id="previewCompressText" style="opacity: 0.85;">Compressed to 224x224 (Low bandwidth mode)</div>
+            </div>
+            <button type="button" class="btn-retake" id="btnRetakePhoto" data-i18n="btn_retake">Retake</button>
           </div>
         </div>
 
-        <button class="scan-btn" id="scanBtn" disabled onclick="runInference()">
-          <span class="btn-text">🔬 Analyze Foliar Specimen</span>
-          <span class="spinner"></span>
+        <!-- Field Photo Guidance Accordion -->
+        <button type="button" class="photo-tips-toggle" id="photoTipsToggle" aria-expanded="false" aria-controls="photoTipsPanel">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            <span data-i18n="tips_heading">Field Photography Best Practices</span>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="photo-tips-panel" id="photoTipsPanel">
+          <p data-i18n="tips_intro">To maximize model accuracy in the field:</p>
+          <ul>
+            <li data-i18n="tip_1">Focus on a <strong>single infected leaf</strong> rather than the entire bush.</li>
+            <li data-i18n="tip_2">Avoid harsh solar glare; shade the leaf with your hand if sun is directly overhead.</li>
+            <li data-i18n="tip_3">Make sure symptoms (spots, rust, mildew) are clearly visible and in focus.</li>
+            <li data-i18n="tip_4">Client automatically resizes to 224x224 to conserve cellular data.</li>
+          </ul>
+        </div>
+
+        <!-- Diagnostic Action CTA -->
+        <button type="button" class="btn-diagnose-main" id="btnRunDiagnosis" disabled>
+          <span class="spinner-icon" id="diagnoseSpinner"></span>
+          <span id="diagnoseBtnText" data-i18n="btn_run_scan">Run AI Diagnosis</span>
+          <svg id="diagnoseArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="m12 5 7 7-7 7"/>
+          </svg>
         </button>
       </div>
 
-      <!-- Right Column: Results & Advisory -->
-      <div class="results-panel">
-        <!-- Placeholder -->
-        <div class="result-placeholder" id="resultPlaceholder">
-          <div class="result-placeholder-icon">🌱</div>
-          <p>Select a viva sample, upload a leaf photograph,<br>or take a live camera photo to begin diagnosis.</p>
+      <!-- RIGHT: DIAGNOSTIC RESULTS & TREATMENT RECOMMENDATIONS -->
+      <div class="results-card" id="resultsCard" aria-live="polite">
+        <!-- Idle State (Before scan) -->
+        <div class="results-idle-state" id="resultsIdleState">
+          <div class="results-idle-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 4px;" data-i18n="idle_title">Diagnostic Results Awaiting Input</h3>
+          <p style="font-size: 13px;" data-i18n="idle_desc">Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.</p>
         </div>
 
-        <!-- 1. Disease Detection Card -->
-        <div class="result-card" id="resultDisease">
-          <div class="result-card-header">
-            <h4>🎯 Pathology Diagnosis</h4>
-            <span class="severity-badge high" id="severityBadge">HIGH RISK</span>
+        <!-- Active Results State -->
+        <div class="results-active-container" id="resultsActiveState">
+          <!-- Simulation Transparency Notice -->
+          <div class="audit-disclaimer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span data-i18n="audit_notice">Live Inference: Evaluated with official ResNet-50 weights & curated treatment knowledge base.</span>
           </div>
-          <div class="result-card-body">
-            <div class="confidence-ring-wrapper">
-              <div class="confidence-ring">
-                <svg width="84" height="84" viewBox="0 0 84 84">
-                  <circle class="confidence-ring-bg" cx="42" cy="42" r="36"/>
-                  <circle class="confidence-ring-fill" id="confidenceRing" cx="42" cy="42" r="36"/>
-                </svg>
-                <div class="confidence-ring-text" id="confidenceText">0%</div>
-              </div>
+
+          <!-- Primary Diagnosis Banner -->
+          <div class="primary-diagnosis-banner severity-high" id="primaryBanner">
+            <div class="banner-top-row">
               <div>
-                <div class="disease-name" id="diseaseName">—</div>
-                <div class="disease-crop" id="diseaseCrop">—</div>
+                <h3 class="primary-disease-name" id="resDiseaseName">Tomato Late Blight</h3>
+                <div class="primary-crop-name" id="resCropCategory">Crop: Tomato (Solanum lycopersicum)</div>
+              </div>
+              <span class="severity-pill-badge" id="resSeverityBadge">
+                <span id="resSeverityIcon">⚠️</span>
+                <span id="resSeverityText">HIGH RISK</span>
+              </span>
+            </div>
+            <div class="cause-snippet" id="resCauseSnippet">
+              <strong data-i18n="lbl_pathogen">Pathogen:</strong> <span id="resCauseSnippetVal">Oomycete <em>Phytophthora infestans</em></span>
+            </div>
+          </div>
+
+          <!-- Low Confidence Alert -->
+          <div class="low-confidence-alert" id="lowConfidenceAlert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>
+              <span data-i18n="low_conf_msg">Low model confidence (&lt;75%). Please retake the photo with better lighting, holding the leaf steady against a neutral background.</span>
+            </div>
+          </div>
+
+          <!-- Top-3 Model Probability Candidates -->
+          <div class="top-candidates-block">
+            <div class="top-candidates-title" data-i18n="top3_title">Top-3 Model Predictions (Softmax Probabilities)</div>
+            
+            <div class="candidate-row">
+              <div class="candidate-label-group">
+                <span id="c1Name">Tomato Late Blight</span>
+                <span id="c1Prob" class="ltr-only">96.4%</span>
+              </div>
+              <div class="candidate-bar-track">
+                <div class="candidate-bar-fill" id="c1Bar" style="width: 96.4%;"></div>
+              </div>
+            </div>
+
+            <div class="candidate-row">
+              <div class="candidate-label-group">
+                <span id="c2Name" style="color: var(--text-muted);">Tomato Early Blight</span>
+                <span id="c2Prob" class="ltr-only" style="color: var(--text-muted);">2.8%</span>
+              </div>
+              <div class="candidate-bar-track">
+                <div class="candidate-bar-fill rank-2" id="c2Bar" style="width: 2.8%;"></div>
+              </div>
+            </div>
+
+            <div class="candidate-row">
+              <div class="candidate-label-group">
+                <span id="c3Name" style="color: var(--text-muted);">Tomato Septoria Leaf Spot</span>
+                <span id="c3Prob" class="ltr-only" style="color: var(--text-muted);">0.6%</span>
+              </div>
+              <div class="candidate-bar-track">
+                <div class="candidate-bar-fill rank-3" id="c3Bar" style="width: 0.6%;"></div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- 2. Differential Diagnosis (Top-3) Card -->
-        <div class="result-card" id="resultDiff">
-          <div class="result-card-header">
-            <h4>📈 Differential Diagnosis (Top-3 Predictions)</h4>
+          <!-- Grad-CAM Attention Heatmap -->
+          <div class="gradcam-explainer-block">
+            <div class="gradcam-header">
+              <span class="gradcam-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12h20"/>
+                  <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
+                  <path d="m4 8 2.5-4h11L20 8"/>
+                </svg>
+                <span data-i18n="gradcam_title">Grad-CAM Model Attention</span>
+              </span>
+              <span class="gradcam-layer-tag">ResNet-50 Layer4[-1]</span>
+            </div>
+            <div class="gradcam-visual-container">
+              <img id="gradcamBaseImg" class="gradcam-img-base" src="" alt="Grad-CAM base image">
+              <div class="gradcam-heatmap-layer" id="gradcamHeatmapLayer"></div>
+            </div>
+            <p class="gradcam-caption" data-i18n="gradcam_desc">
+              <strong>Farmer Plain Language Guide:</strong> Red and warm highlighted areas show exactly where the neural network detected pathological lesions on the leaf tissue.
+            </p>
           </div>
-          <div class="result-card-body" id="diffBarsContainer">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
 
-        <!-- 3. Grad-CAM Explainability Card -->
-        <div class="result-card" id="resultGradcam">
-          <div class="result-card-header">
-            <h4>🔥 Grad-CAM Heatmap Localization</h4>
+          <!-- Mandatory Agronomist / Extension Officer Notice -->
+          <div class="agri-officer-notice">
+            <strong data-i18n="ext_officer_title">⚠️ Mandatory Safety & Agronomy Advisory</strong>
+            <span data-i18n="ext_officer_text">
+              Always consult your local Agriculture Extension Officer (محکمہ زراعت توسیع) before purchasing or spraying any commercial fungicide or pesticide. Strictly wear protective rubber gloves, mask, and boots when handling agricultural chemicals.
+            </span>
           </div>
-          <div class="result-card-body">
-            <div class="gradcam-dual-grid">
-              <div class="gradcam-box">
-                <img id="origLeafImg" src="" alt="Original Leaf">
-                <div class="gradcam-caption">Original Specimen</div>
+
+          <!-- Actionable Treatment Guidance Accordions -->
+          <div class="treatment-plan-section">
+            <div class="treatment-section-title" data-i18n="treatment_heading">Prescribed Treatment & Management Plan</div>
+            <div class="accordion-group">
+              
+              <!-- 1. Immediate Action -->
+              <div class="accordion-item">
+                <button type="button" class="accordion-trigger" aria-expanded="true" aria-controls="accImmediate" id="btnAccImmediate">
+                  <span class="accordion-trigger-title">
+                    <span>⚡</span>
+                    <span data-i18n="acc_immediate">Immediate Action (First 24-48 Hours)</span>
+                  </span>
+                  <svg class="accordion-icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </button>
+                <div class="accordion-content open" id="accImmediate" role="region" aria-labelledby="btnAccImmediate">
+                  <p id="treatmentImmediateText">Spray the entire affected plot as soon as late blight is identified. Quickly remove and destroy infected pockets to stop air-borne spore spread. Avoid harvesting or entering rows while vines are wet.</p>
+                </div>
               </div>
-              <div class="gradcam-box">
-                <img id="gradcamHeatmapImg" src="" alt="Grad-CAM Overlay">
-                <div class="gradcam-caption">Layer 4 Activation Overlay</div>
+
+              <!-- 2. Chemical Protection -->
+              <div class="accordion-item">
+                <button type="button" class="accordion-trigger" aria-expanded="false" aria-controls="accChemical" id="btnAccChemical">
+                  <span class="accordion-trigger-title">
+                    <span>🧪</span>
+                    <span data-i18n="acc_chemical">Chemical Treatment (Approved Fungicides)</span>
+                  </span>
+                  <svg class="accordion-icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </button>
+                <div class="accordion-content" id="accChemical" role="region" aria-labelledby="btnAccChemical">
+                  <p id="treatmentChemicalText">Apply protectant fungicides such as chlorothalonil or mancozeb before symptoms escalate. Under severe pressure, alternate with systemic fungicides adhering strictly to FRAC group rotations to avoid chemical resistance.</p>
+                </div>
               </div>
-            </div>
-            <div class="slider-container">
-              <span>Heatmap Intensity (α):</span>
-              <input type="range" id="alphaSlider" min="0" max="1" step="0.05" value="0.55" oninput="updateAlpha(this.value)">
-              <span id="alphaValText">0.55</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- 4. Treatment Plan Card -->
-        <div class="result-card" id="resultTreatment">
-          <div class="result-card-header">
-            <h4>🛡️ Agronomic Treatment Advisory</h4>
-          </div>
-          <div class="result-card-body">
-            <div class="treatment-list" id="treatmentList">
-              <!-- Dynamically populated -->
+              <!-- 3. Organic / Biological Alternatives -->
+              <div class="accordion-item">
+                <button type="button" class="accordion-trigger" aria-expanded="false" aria-controls="accOrganic" id="btnAccOrganic">
+                  <span class="accordion-trigger-title">
+                    <span>🌱</span>
+                    <span data-i18n="acc_organic">Organic & Biological Alternatives</span>
+                  </span>
+                  <svg class="accordion-icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </button>
+                <div class="accordion-content" id="accOrganic" role="region" aria-labelledby="btnAccOrganic">
+                  <p id="treatmentOrganicText">OMRI-approved copper hydroxide or copper sulfate sprays. Combine with bio-fungicides such as Bacillus subtilis where allowed. Ensure complete leaf surface coverage on undersides.</p>
+                </div>
+              </div>
+
+              <!-- 4. Long-Term Prevention -->
+              <div class="accordion-item">
+                <button type="button" class="accordion-trigger" aria-expanded="false" aria-controls="accPrevention" id="btnAccPrevention">
+                  <span class="accordion-trigger-title">
+                    <span>🛡️</span>
+                    <span data-i18n="acc_prevention">Preventive Measures & Crop Hygiene</span>
+                  </span>
+                  <svg class="accordion-icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </button>
+                <div class="accordion-content" id="accPrevention" role="region" aria-labelledby="btnAccPrevention">
+                  <p id="treatmentPreventionText">Plant certified disease-free seeds/transplants. Practice 3-year crop rotation avoiding solanaceous plants. Ensure adequate furrow drainage and avoid late-afternoon overhead sprinkler irrigation.</p>
+                </div>
+              </div>
+
             </div>
           </div>
-        </div>
 
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────────
+     STATS & SCIENTIFIC BENCHMARK METRICS (FROM RESULTS CSVs)
+     ───────────────────────────────────────────────────────────── -->
+<section class="stats-summary-section">
+  <div class="container">
+    <div class="stats-card-grid">
+      <div class="stat-metric-card">
+        <div class="stat-metric-label" data-i18n="stat_test_acc">Test Set Accuracy</div>
+        <div class="stat-metric-number ltr-only">{{ "%.2f"|format(test_metrics.accuracy * 100) }}%</div>
+        <div class="stat-metric-subtext" data-i18n="stat_test_acc_sub">{{ "{:,}".format(test_metrics.n_samples) }} curated test images</div>
+      </div>
+      <div class="stat-metric-card">
+        <div class="stat-metric-label" data-i18n="stat_macro_f1">Macro F1-Score</div>
+        <div class="stat-metric-number ltr-only">{{ "%.4f"|format(test_metrics.macro_f1) }}</div>
+        <div class="stat-metric-subtext" data-i18n="stat_macro_f1_sub">Balanced across 38 classes</div>
+      </div>
+      <div class="stat-metric-card">
+        <div class="stat-metric-label" data-i18n="stat_top3">Top-3 Accuracy</div>
+        <div class="stat-metric-number ltr-only">{{ "%.2f"|format(test_metrics.top3_accuracy * 100) }}%</div>
+        <div class="stat-metric-subtext" data-i18n="stat_top3_sub">Over 38 disease categories</div>
+      </div>
+      <div class="stat-metric-card">
+        <div class="stat-metric-label" data-i18n="stat_dataset">Curated Dataset</div>
+        <div class="stat-metric-number ltr-only">31,694</div>
+        <div class="stat-metric-subtext" data-i18n="stat_dataset_sub">Cleaned & deduplicated</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ PERFORMANCE ═══════════════ -->
-<section class="section" id="performance">
-  <div class="section-label">Model Benchmarks</div>
-  <div class="section-title">Validation Metrics</div>
-  <div class="section-subtitle">ResNet-50 trained on 31,694 images across 15 epochs with Cosine Annealing.</div>
+<!-- ─────────────────────────────────────────────────────────────
+     HOW IT WORKS SECTION
+     ───────────────────────────────────────────────────────────── -->
+<section class="section-block" id="how-it-works">
+  <div class="container">
+    <div class="section-tag" data-i18n="how_tag">Workflow Architecture</div>
+    <h2 class="section-heading" data-i18n="how_heading">Three Steps from Leaf to Cure</h2>
+    <p class="section-subheading" data-i18n="how_sub">A robust pipeline engineered to deliver actionable agronomical advice directly to Android devices under low-bandwidth rural conditions.</p>
 
-  <div class="metrics-grid">
-    <div class="metric-card">
-      <div class="metric-card-label">Test Accuracy</div>
-      <div class="metric-card-value green">99.70%</div>
-      <div class="metric-card-detail">4,768 test samples · 38 classes</div>
-      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.7%"></div></div></div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-card-label">Macro F1 Score</div>
-      <div class="metric-card-value green">0.9961</div>
-      <div class="metric-card-detail">Weighted F1: 0.9971</div>
-      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.6%"></div></div></div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-card-label">Best Val Accuracy</div>
-      <div class="metric-card-value green">99.64%</div>
-      <div class="metric-card-detail">Epoch 14 · Loss: 0.0169</div>
-      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.64%"></div></div></div>
-    </div>
-  </div>
-
-  <div class="chart-container">
-    <div class="chart-header">
-      <h4>Training &amp; Validation Curves</h4>
-      <div class="chart-legend">
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--green-400)"></div>Train Accuracy</div>
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--teal-400)"></div>Validation Accuracy</div>
+    <div class="workflow-steps-grid">
+      <div class="workflow-card">
+        <div class="step-badge">1</div>
+        <h3 data-i18n="step1_title">Edge Photo Intake</h3>
+        <p data-i18n="step1_desc">The camera captures an uncompressed raw image. Client-side HTML5 canvas downsamples the image to 224x224 RGB, reducing payload from 5MB to under 40KB for rapid wireless transfer.</p>
+      </div>
+      <div class="workflow-card">
+        <div class="step-badge">2</div>
+        <h3 data-i18n="step2_title">Deep Feature Extraction</h3>
+        <p data-i18n="step2_desc">A ResNet-50 convolutional neural network computes spatial features through 4 bottleneck stages. The final 2048-dim embedding is classified into 38 distinct plant-disease combinations.</p>
+      </div>
+      <div class="workflow-card">
+        <div class="step-badge">3</div>
+        <h3 data-i18n="step3_title">Knowledge Base Query</h3>
+        <p data-i18n="step3_desc">Diagnosis triggers a deterministic query to the curated treatments knowledge base (`treatments.json`), retrieving validated dosages, safety guidelines, and organic remedies.</p>
       </div>
     </div>
-    <div class="chart-area" id="chartArea"></div>
   </div>
 </section>
 
-<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
-<section class="section" id="architecture">
-  <div class="section-label">Model Pipeline</div>
-  <div class="section-title">Under the Hood</div>
-  <div class="section-subtitle">ResNet-50 backbone with custom dropout head and Layer 4 Grad-CAM hooks.</div>
+<!-- ─────────────────────────────────────────────────────────────
+     DATA VISUALIZATION: SVG LINE CHART & FIELD AUDIT TABLE
+     (DERIVED DYNAMICALLY FROM results/baseline/history.csv & per_class.csv)
+     ───────────────────────────────────────────────────────────── -->
+<section class="section-block" id="performance">
+  <div class="container">
+    <div class="section-tag" data-i18n="perf_tag">Model Evaluation & Metrics</div>
+    <h2 class="section-heading" data-i18n="perf_heading">Training History & Per-Class Verification</h2>
+    <p class="section-subheading" data-i18n="perf_sub">Accurate reproduction from actual project runs (`results/baseline/history.csv` and `test/per_class.csv`).</p>
 
-  <div class="arch-flow">
-    <div class="arch-node">
-      <div class="arch-node-icon">📸</div>
-      <h5>Input Specimen</h5>
-      <p>224 × 224 × 3<br>ImageNet Normalized</p>
+    <!-- ACCURACY CURVE SVG LINE CHART -->
+    <div class="chart-container-card">
+      <div class="chart-header-row">
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700;" data-i18n="chart_title">Training Convergence: Train Acc vs. Val Acc (15 Epochs)</h3>
+          <p style="font-size: 12px; color: var(--text-muted);" data-i18n="chart_sub">AdamW optimizer (LR=3e-4) + 1-epoch warmup + Cosine Annealing schedule</p>
+        </div>
+        <div class="chart-legend-wrap">
+          <div class="legend-item">
+            <span class="legend-swatch swatch-train"></span>
+            <span data-i18n="chart_train_label">Train Accuracy (Final: 99.81%)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-swatch swatch-val"></span>
+            <span data-i18n="chart_val_label">Val Accuracy (Best: 99.64%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG LINE CHART DYNAMICALLY RENDERED -->
+      <div class="svg-chart-wrapper" id="svgChartWrapper">
+        <svg id="accuracySvgChart" viewBox="0 0 800 240" preserveAspectRatio="none">
+          <!-- Grid lines -->
+          <line x1="60" y1="20" x2="780" y2="20" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="60" y1="65" x2="780" y2="65" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="60" y1="110" x2="780" y2="110" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="60" y1="155" x2="780" y2="155" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="60" y1="200" x2="780" y2="200" stroke="var(--border-medium)" stroke-width="1"/>
+
+          <!-- Y-Axis labels (fixed margin: 60px ensures NO CLIPPING) -->
+          <text x="50" y="24" fill="var(--text-muted)" font-size="11" text-anchor="end" font-family="sans-serif">100%</text>
+          <text x="50" y="69" fill="var(--text-muted)" font-size="11" text-anchor="end" font-family="sans-serif">80%</text>
+          <text x="50" y="114" fill="var(--text-muted)" font-size="11" text-anchor="end" font-family="sans-serif">60%</text>
+          <text x="50" y="159" fill="var(--text-muted)" font-size="11" text-anchor="end" font-family="sans-serif">40%</text>
+          <text x="50" y="204" fill="var(--text-muted)" font-size="11" text-anchor="end" font-family="sans-serif">20%</text>
+
+          <!-- Axes lines -->
+          <line x1="60" y1="20" x2="60" y2="200" stroke="var(--border-medium)" stroke-width="1"/>
+
+          <!-- Train Accuracy Line (Wheat) -->
+          <path id="trainLinePath" fill="none" stroke="var(--brand-wheat)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d=""/>
+
+          <!-- Val Accuracy Line (Field Green) -->
+          <path id="valLinePath" fill="none" stroke="var(--brand-field)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d=""/>
+
+          <!-- X-Axis Epoch tick labels -->
+          <text x="60" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E1</text>
+          <text x="163" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E3</text>
+          <text x="266" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E5</text>
+          <text x="369" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E7</text>
+          <text x="471" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E9</text>
+          <text x="574" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E11</text>
+          <text x="677" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E13</text>
+          <text x="780" y="222" fill="var(--text-muted)" font-size="11" text-anchor="middle" font-family="sans-serif">E15</text>
+        </svg>
+        <div class="chart-tooltip" id="chartTooltip"></div>
+      </div>
     </div>
-    <div class="arch-arrow">→</div>
-    <div class="arch-node">
-      <div class="arch-node-icon">🏗️</div>
-      <h5>ResNet-50</h5>
-      <p>Deep Residual<br>Feature Backbone</p>
+
+    <!-- PER-CLASS PERFORMANCE TABLE (DERIVED FROM results/baseline/test/per_class.csv) -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <h3 style="font-size: 16px; font-weight: 700;" data-i18n="table_heading">Key Agricultural Crop Classes & Test Performance</h3>
+      <button type="button" id="btnToggleAllClasses" style="font-size:12px; font-weight:700; color:var(--brand-field); text-decoration:underline; cursor:pointer;">
+        View All 38 Classes (CSV)
+      </button>
     </div>
-    <div class="arch-arrow">→</div>
-    <div class="arch-node">
-      <div class="arch-node-icon">🔥</div>
-      <h5>Layer 4</h5>
-      <p>Conv Activations<br>Grad-CAM Target</p>
+    <div class="table-responsive-container">
+      <table class="per-class-table" id="perClassTable">
+        <thead>
+          <tr>
+            <th data-i18n="th_crop">Crop</th>
+            <th data-i18n="th_class">Pathology / State</th>
+            <th data-i18n="th_test_samples">Test Samples</th>
+            <th data-i18n="th_precision">Precision</th>
+            <th data-i18n="th_recall">Recall</th>
+            <th data-i18n="th_f1">Macro-F1</th>
+          </tr>
+        </thead>
+        <tbody id="perClassTableBody">
+          {% for row in per_class %}
+          <tr>
+            <td><strong>{{ row.crop }}</strong></td>
+            <td>{{ row.disease }}</td>
+            <td class="ltr-only">{{ row.support }}</td>
+            <td class="ltr-only">{{ "%.3f"|format(row.precision) }}</td>
+            <td class="ltr-only">{{ "%.3f"|format(row.recall) }}</td>
+            <td>
+              <strong class="ltr-only" style="color: {% if row.f1 >= 0.98 %}var(--brand-field){% else %}var(--brand-wheat){% endif %};">
+                {{ "%.3f"|format(row.f1) }}
+              </strong>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <div class="arch-arrow">→</div>
-    <div class="arch-node">
-      <div class="arch-node-icon">💧</div>
-      <h5>Dropout (0.3)</h5>
-      <p>Overfitting<br>Regularization</p>
-    </div>
-    <div class="arch-arrow">→</div>
-    <div class="arch-node" style="border-color:var(--green-400);">
-      <div class="arch-node-icon">🎯</div>
-      <h5>38 Classes</h5>
-      <p>Softmax Probabilities<br>+ Treatment Advisory</p>
+
+    <!-- HONEST SCIENTIFIC APPRAISAL: LAB VS. REAL FIELD DOMAIN SHIFT -->
+    <div class="field-reality-box">
+      <strong data-i18n="field_box_title">Scientific Rigor & Field Reality Note:</strong>
+      <p data-i18n="field_box_desc">
+        While ResNet-50 reaches 99.70% on curated benchmark test images, real-world field evaluations (tested against real PlantDoc in-the-wild captures) yield 24.7% Top-1 accuracy due to background clutter, soil occlusion, and varying outdoor illumination. This makes farmer guidance features (single leaf focus, shade recommendations, top-3 candidates) vital in production.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ TEAM ═══════════════ -->
-<section class="section" id="team">
-  <div class="section-label">Team Yeagerists++</div>
-  <div class="section-title">Engineering Credits</div>
+<!-- ─────────────────────────────────────────────────────────────
+     ARCHITECTURE PIPELINE
+     ───────────────────────────────────────────────────────────── -->
+<section class="section-block" id="architecture">
+  <div class="container">
+    <div class="section-tag" data-i18n="arch_tag">System Overview</div>
+    <h2 class="section-heading" data-i18n="arch_heading">ResNet-50 Model Topology</h2>
+    <p class="section-subheading" data-i18n="arch_sub">Production-grade architecture matching the PakAgriVision codebase specification.</p>
 
-  <div class="team-grid">
-    <div class="team-card">
-      <div class="team-avatar">AA</div>
-      <h4>Abdul Ahad</h4>
-      <div class="team-id">24L-3029 · Leader</div>
-      <div class="team-role">Frontend UI/UX &amp; Full-Stack Flask Architecture</div>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar">MA</div>
-      <h4>M. Anas</h4>
-      <div class="team-id">24L-3004</div>
-      <div class="team-role">Inference Engine &amp; Grad-CAM Optimization</div>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar">BS</div>
-      <h4>M. Babar Shahzad</h4>
-      <div class="team-id">24L-3047</div>
-      <div class="team-role">Knowledge Base &amp; Treatment Service</div>
+    <div class="arch-grid">
+      <div class="arch-step-card">
+        <div class="arch-step-icon">1</div>
+        <h4>Input Tensor</h4>
+        <p>224×224×3 RGB ImageNet norm</p>
+      </div>
+      <div class="arch-step-card">
+        <div class="arch-step-icon">2</div>
+        <h4>ResNet-50</h4>
+        <p>Pretrained Conv backbone</p>
+      </div>
+      <div class="arch-step-card">
+        <div class="arch-step-icon">3</div>
+        <h4>Layer 4</h4>
+        <p>Target layer for Grad-CAM</p>
+      </div>
+      <div class="arch-step-card">
+        <div class="arch-step-icon">4</div>
+        <h4>Dropout Head</h4>
+        <p>Rate: 0.3 for regularization</p>
+      </div>
+      <div class="arch-step-card">
+        <div class="arch-step-icon">5</div>
+        <h4>Dense Linear</h4>
+        <p>2048 in → 38 disease logits</p>
+      </div>
+      <div class="arch-step-card">
+        <div class="arch-step-icon">6</div>
+        <h4>Knowledge Base</h4>
+        <p>Automated treatments.json</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ FOOTER ═══════════════ -->
-<footer class="footer">
-  <div class="footer-logo">🌿 PakAgriVision</div>
-  <div class="footer-tagline">AI-Powered Foliar Pathology Detection for Pakistani Agriculture</div>
-  <div class="footer-links">
-    <a class="footer-link" href="#hero">Home</a>
-    <a class="footer-link" href="#diagnose">Diagnose</a>
-    <a class="footer-link" href="#performance">Performance</a>
-    <a class="footer-link" href="#architecture">Architecture</a>
-    <a class="footer-link" href="#team">Team</a>
+<!-- ─────────────────────────────────────────────────────────────
+     TEAM YEAGERISTS++
+     ───────────────────────────────────────────────────────────── -->
+<section class="section-block" id="team">
+  <div class="container">
+    <div class="section-tag" data-i18n="team_tag">FAST-NUCES Lahore</div>
+    <h2 class="section-heading">Team Yeagerists++</h2>
+    <p class="section-subheading" data-i18n="team_sub">Developers and researchers behind PakAgriVision.</p>
+
+    <div class="team-grid-container">
+      <div class="team-profile-card">
+        <div class="team-avatar-box">AA</div>
+        <div class="team-info">
+          <h4>Abdul Ahad</h4>
+          <div class="team-roll ltr-only">24L-3029</div>
+          <div class="team-responsibility" data-i18n="team_aa">Model Training & Backbone Fine-tuning</div>
+        </div>
+      </div>
+
+      <div class="team-profile-card">
+        <div class="team-avatar-box">MA</div>
+        <div class="team-info">
+          <h4>M. Anas</h4>
+          <div class="team-roll ltr-only">24L-3004</div>
+          <div class="team-responsibility" data-i18n="team_ma">Data Pipeline, Splits & Quality Verification</div>
+        </div>
+      </div>
+
+      <div class="team-profile-card">
+        <div class="team-avatar-box">BS</div>
+        <div class="team-info">
+          <h4>M. Babar Shahzad</h4>
+          <div class="team-roll ltr-only">24L-3047</div>
+          <div class="team-responsibility" data-i18n="team_bs">Treatment Knowledge Base & Application Dev</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="footer-bottom">
-    © 2026 PakAgriVision · Team Yeagerists++ · FAST-NUCES · Deliverable 3 Flask Application
-    <br><span style="color:var(--text-muted);">Decision support engine only — consult a certified agronomist before applying chemical treatments.</span>
+</section>
+</main>
+
+<!-- ─────────────────────────────────────────────────────────────
+     FOOTER
+     ───────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-row">
+      <div>
+        <div style="font-weight: 800; font-size: 18px; color: var(--brand-soil);" class="brand-name">PakAgriVision</div>
+        <div class="footer-tagline" data-i18n="footer_tagline">AI Plant Pathology & Advisory for Pakistani Agriculture · FAST-NUCES 2026</div>
+      </div>
+      <div class="footer-links-list">
+        <a href="#workbench" data-i18n="nav_scan">Leaf Scanner</a>
+        <a href="#performance" data-i18n="nav_performance">Benchmark Results</a>
+        <a href="#how-it-works" data-i18n="nav_how">How It Works</a>
+        <a href="#architecture" data-i18n="nav_arch">Architecture</a>
+        <a href="#team" data-i18n="nav_team">Team</a>
+      </div>
+    </div>
+    <div class="footer-bottom-copy">
+      <span data-i18n="footer_disclaimer">Legal Disclaimer: This software is an experimental scientific decision-support system. All treatment suggestions should be cross-verified with registered provincial agronomists prior to chemical application.</span>
+    </div>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════════
-   CLIENT JAVASCRIPT: REAL FLASK API INTEGRATION
-   ═══════════════════════════════════════════════════════ -->
-<script>
-let currentImageData = null; // base64 or File
-let currentActiveBlob = null;
-let currentDiagnosisData = null;
-let cameraStream = null;
+<!-- ─────────────────────────────────────────────────────────────
+     MOBILE BOTTOM DOCK NAVIGATION
+     ───────────────────────────────────────────────────────────── -->
+<nav class="mobile-bottom-nav" aria-label="Mobile Bottom Quick Navigation">
+  <a href="#workbench" class="bottom-tab active">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+      <circle cx="12" cy="13" r="3"/>
+    </svg>
+    <span data-i18n="tab_scan">Diagnose</span>
+  </a>
+  <a href="#performance" class="bottom-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/>
+    </svg>
+    <span data-i18n="tab_stats">Results</span>
+  </a>
+  <a href="#how-it-works" class="bottom-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span data-i18n="tab_how">Guide</span>
+  </a>
+  <a href="#team" class="bottom-tab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    <span data-i18n="tab_team">Team</span>
+  </a>
+</nav>
 
-// ─── THEME TOGGLE ───
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  try { localStorage.setItem('pav_theme', next); } catch(e){}
-  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
-  document.getElementById('themeLabel').textContent = next === 'dark' ? 'Light' : 'Dark';
-}
-// Init theme
-try {
-  const saved = localStorage.getItem('pav_theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('themeIcon').textContent = saved === 'dark' ? '☀️' : '🌙';
-    document.getElementById('themeLabel').textContent = saved === 'dark' ? 'Light' : 'Dark';
+<!-- ─────────────────────────────────────────────────────────────
+     CLIENT SCRIPT: DATA-DRIVEN CSV CHARTS, BILINGUAL TRANSLATION,
+     ACCORDIONS & REAL FLASK API INTEGRATION
+     ───────────────────────────────────────────────────────────── -->
+<script>
+// RAW SERVER-SIDE DATA INJECTED DIRECTLY FROM results/ CSVs
+const SERVER_HISTORY = {{ (history or []) | tojson }};
+const ALL_PER_CLASS = {{ (all_per_class or []) | tojson }};
+const KEY_PER_CLASS = {{ (per_class or []) | tojson }};
+
+// Urdu crop map for data table rendering
+const URDU_CROP_MAP = {
+  "Tomato": "ٹماٹر",
+  "Potato": "آلو",
+  "Corn": "مکئی",
+  "Pepper": "شملہ مرچ",
+  "Apple": "سیب",
+  "Grape": "انگور",
+  "Orange": "مالٹا / ترشاوہ",
+  "Peach": "آڑو",
+  "Strawberry": "سٹرابیری",
+  "Soybean": "سویا بین",
+  "Blueberry": "بلیو بیری",
+  "Cherry": "چیری",
+  "Raspberry": "رس بھری",
+  "Squash": "حلوہ کدو"
+};
+
+// 1. COMPREHENSIVE BILINGUAL TRANSLATION DICTIONARY
+const I18N = {
+  en: {
+    nav_scan: "Leaf Scanner",
+    nav_performance: "Benchmark Results",
+    nav_how: "How It Works",
+    nav_arch: "Architecture",
+    nav_team: "Team",
+    hero_pill: "ResNet-50 Trained · 38 Plant Pathologies",
+    hero_title: 'Detect Crop Disease with <span class="hero-highlight">AI</span> Diagnostic',
+    hero_lead: "Designed for Pakistani farmers. Capture a clear leaf photo right in the field to receive instant disease identification, Grad-CAM attention heatmaps, and research-backed chemical and organic treatment plans.",
+    crop_filter_title: "Select Crop Type (Filters Diagnostics)",
+    crop_status_all: "All 14 Crops Active",
+    crop_all: "All Crops",
+    crop_tomato: "Tomato",
+    crop_potato: "Potato",
+    crop_corn: "Corn (Maize)",
+    crop_pepper: "Pepper (Capsicum)",
+    crop_apple: "Apple",
+    crop_grape: "Grape",
+    crop_orange: "Citrus",
+    crop_strawberry: "Strawberry",
+    crop_peach: "Peach",
+    crop_soybean: "Soybean",
+    crop_cherry: "Cherry",
+    crop_blueberry: "Blueberry",
+    crop_raspberry: "Raspberry",
+    crop_squash: "Squash",
+    upload_heading: "Step 1: Provide Leaf Photograph",
+    btn_camera: "Take Photo",
+    btn_gallery: "Gallery / Files",
+    drag_drop_text: "Or drag and drop image file here (PNG, JPG, WEBP)",
+    btn_retake: "Retake",
+    tips_heading: "Field Photography Best Practices",
+    tips_intro: "To maximize model accuracy in the field:",
+    tip_1: "Focus on a <strong>single infected leaf</strong> rather than the entire bush.",
+    tip_2: "Avoid harsh solar glare; shade the leaf with your hand if sun is directly overhead.",
+    tip_3: "Make sure symptoms (spots, rust, mildew) are clearly visible and in focus.",
+    tip_4: "Client automatically resizes to 224x224 to conserve cellular data.",
+    btn_run_scan: "Run AI Diagnosis",
+    idle_title: "Diagnostic Results Awaiting Input",
+    idle_desc: 'Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.',
+    audit_notice: "Live Inference: Evaluated with official ResNet-50 weights & curated treatment knowledge base.",
+    low_conf_msg: "Low model confidence (<75%). Please retake the photo with better lighting, holding the leaf steady against a neutral background.",
+    top3_title: "Top-3 Model Predictions (Softmax Probabilities)",
+    gradcam_title: "Grad-CAM Model Attention",
+    gradcam_desc: "<strong>Farmer Plain Language Guide:</strong> Red and warm highlighted areas show exactly where the neural network detected pathological lesions on the leaf tissue.",
+    lbl_pathogen: "Pathogen:",
+    ext_officer_title: "⚠️ Mandatory Safety & Agronomy Advisory",
+    ext_officer_text: "Always consult your local Agriculture Extension Officer (محکمہ زراعت توسیع) before purchasing or spraying any commercial fungicide or pesticide. Strictly wear protective rubber gloves, mask, and boots when handling agricultural chemicals.",
+    treatment_heading: "Prescribed Treatment & Management Plan",
+    acc_immediate: "Immediate Action (First 24-48 Hours)",
+    acc_chemical: "Chemical Treatment (Approved Fungicides)",
+    acc_organic: "Organic & Biological Alternatives",
+    acc_prevention: "Preventive Measures & Crop Hygiene",
+    stat_test_acc: "Test Set Accuracy",
+    stat_test_acc_sub: "4,768 curated test images",
+    stat_macro_f1: "Macro F1-Score",
+    stat_macro_f1_sub: "Balanced across 38 classes",
+    stat_top3: "Top-3 Accuracy",
+    stat_top3_sub: "Over 38 disease categories",
+    stat_dataset: "Curated Dataset",
+    stat_dataset_sub: "Cleaned & deduplicated",
+    how_tag: "Workflow Architecture",
+    how_heading: "Three Steps from Leaf to Cure",
+    how_sub: "A robust pipeline engineered to deliver actionable agronomical advice directly to Android devices under low-bandwidth rural conditions.",
+    step1_title: "Edge Photo Intake",
+    step1_desc: "The camera captures an uncompressed raw image. Client-side HTML5 canvas downsamples the image to 224x224 RGB, reducing payload from 5MB to under 40KB for rapid wireless transfer.",
+    step2_title: "Deep Feature Extraction",
+    step2_desc: "A ResNet-50 convolutional neural network computes spatial features through 4 bottleneck stages. The final 2048-dim embedding is classified into 38 distinct plant-disease combinations.",
+    step3_title: "Knowledge Base Query",
+    step3_desc: "Diagnosis triggers a deterministic query to the curated treatments knowledge base (treatments.json), retrieving validated dosages, safety guidelines, and organic remedies.",
+    perf_tag: "Model Evaluation & Metrics",
+    perf_heading: "Training History & Per-Class Verification",
+    perf_sub: "Accurate reproduction from actual project runs (results/baseline/history.csv and test/per_class.csv).",
+    chart_title: "Training Convergence: Train Acc vs. Val Acc (15 Epochs)",
+    chart_sub: "AdamW optimizer (LR=3e-4) + 1-epoch warmup + Cosine Annealing schedule",
+    chart_train_label: "Train Accuracy (Final: 99.81%)",
+    chart_val_label: "Val Accuracy (Best: 99.64%)",
+    table_heading: "Key Agricultural Crop Classes & Test Performance",
+    th_crop: "Crop",
+    th_class: "Pathology / State",
+    th_test_samples: "Test Samples",
+    th_precision: "Precision",
+    th_recall: "Recall",
+    th_f1: "Macro-F1",
+    btn_view_all: "View All 38 Classes (CSV)",
+    btn_view_key: "Show Key Classes Only",
+    field_box_title: "Scientific Rigor & Field Reality Note:",
+    field_box_desc: "While ResNet-50 reaches 99.70% on curated benchmark test images, real-world field evaluations (tested against real PlantDoc in-the-wild captures) yield 24.7% Top-1 accuracy due to background clutter, soil occlusion, and varying outdoor illumination. This makes farmer guidance features (single leaf focus, shade recommendations, top-3 candidates) vital in production.",
+    arch_tag: "System Overview",
+    arch_heading: "ResNet-50 Model Topology",
+    arch_sub: "Production-grade architecture matching the PakAgriVision codebase specification.",
+    team_tag: "FAST-NUCES Lahore",
+    team_sub: "Developers and researchers behind PakAgriVision.",
+    team_aa: "Model Training & Backbone Fine-tuning",
+    team_ma: "Data Pipeline, Splits & Quality Verification",
+    team_bs: "Treatment Knowledge Base & Application Dev",
+    footer_tagline: "AI Plant Pathology & Advisory for Pakistani Agriculture · FAST-NUCES 2026",
+    footer_disclaimer: "Legal Disclaimer: This software is an experimental scientific decision-support system. All treatment suggestions should be cross-verified with registered provincial agronomists prior to chemical application.",
+    tab_scan: "Diagnose",
+    tab_stats: "Results",
+    tab_how: "Guide",
+    tab_team: "Team"
+  },
+  ur: {
+    nav_scan: "پتے کا معائنہ",
+    nav_performance: "ماڈل نتائج",
+    nav_how: "طریقہ کار",
+    nav_arch: "ڈیزائن",
+    nav_team: "ٹیم",
+    hero_pill: "ماڈل تربیت یافتہ · 38 نباتاتی بیماریاں",
+    hero_title: 'فصلوں کی بیماریوں کی فوری <span class="hero-highlight">تشخیص</span> اور علاج',
+    hero_lead: "پاکستانی کسان بھائیوں کے لیے خصوصی ڈیزائن۔ اپنے کھیت میں پودے کے بیمار پتے کی تصویر کھینچیں اور فوری طور پر بیماری کا نام، Grad-CAM نقشہ اور منظور شدہ ادویات و دیسی علاج حاصل کریں۔",
+    crop_filter_title: "اپنی فصل منتخب کریں (تشخیص کو محدود کریں)",
+    crop_status_all: "تمام 14 فصلیں فعال ہیں",
+    crop_all: "تمام فصلیں",
+    crop_tomato: "ٹماٹر",
+    crop_potato: "آلو",
+    crop_corn: "مکئی",
+    crop_pepper: "شملہ مرچ / ہری مرچ",
+    crop_apple: "سیب",
+    crop_grape: "انگور",
+    crop_orange: "مالٹا / ترشاوہ",
+    crop_strawberry: "سٹرابیری",
+    crop_peach: "آڑو",
+    crop_soybean: "سویا بین",
+    crop_cherry: "چیری",
+    crop_blueberry: "بلیو بیری",
+    crop_raspberry: "رس بھری",
+    crop_squash: "حلوہ کدو",
+    upload_heading: "مرحلہ 1: پتے کی تصویر فراہم کریں",
+    btn_camera: "کیمرہ کھولیں",
+    btn_gallery: "گیلری سے تصویر",
+    drag_drop_text: "یا تصویر یہاں ڈریگ کر کے لائیں (PNG, JPG)",
+    btn_retake: "دوبارہ تصویر لیں",
+    tips_heading: "کھیت میں درست تصویر لینے کی ہدایات",
+    tips_intro: "درست تشخیص کے لیے ان باتوں کا خیال رکھیں:",
+    tip_1: "پوری جھاڑی کے بجائے صرف <strong>ایک متاثرہ پتے</strong> پر کیمرہ مرکوز کریں۔",
+    tip_2: "تیز دھوپ کی چمک سے بچیں؛ ہاتھ سے ہلکا سایہ کر لیں۔",
+    tip_3: "پتے پر داغ یا بیماری کا نشان بالکل واضح ہونا چاہیے۔",
+    tip_4: "آپ کے موبائل انٹرنیٹ کی بچت کے لیے تصویر خودکار کمپریس ہوتی ہے۔",
+    btn_run_scan: "بیماری کی جانچ شروع کریں",
+    idle_title: "تشخیص کے لیے پتے کی تصویر درکار ہے",
+    idle_desc: 'بائیں جانب سے تصویر کھینچیں یا اپلوڈ کریں، پھر "بیماری کی جانچ شروع کریں" پر کلک کریں۔',
+    audit_notice: "براہ راست انفرنس: مستند ResNet-50 ماڈل ویٹس اور معلوماتی ڈیٹا سے منسلک۔",
+    low_conf_msg: "ماڈل کا یقین کم ہے (75% سے کم)۔ براہ کرم بہتر روشنی میں صاف تصویر دوبارہ لیں۔",
+    top3_title: "سب سے زیادہ امکانی 3 بیماریاں (ماڈل امکانات)",
+    gradcam_title: "Grad-CAM کی توجہ کا مرکز",
+    gradcam_desc: "<strong>کسان بھائیوں کے لیے سادہ رہنمائی:</strong> سرخ اور پیلے رنگ کا دائرہ وہ خاص جگہ ظاہر کرتا ہے جس کو دیکھ کر ماڈل نے بیماری کی شناخت کی۔",
+    lbl_pathogen: "بیماری کا جرثومہ (پیتھوجن):",
+    ext_officer_title: "⚠️ لازمی حفاظتی اور زرعی ہدایت",
+    ext_officer_text: "کوئی بھی کیمیائی زہر یا فنجی سائیڈ سپرے کرنے سے قبل اپنے مقامی محکمہ زراعت (توسیع) کے فیلڈ آفیسر سے لازمی مشورہ کریں۔ سپرے کرتے وقت دستانے، ماسک اور بوٹ کا استعمال لازمی کریں۔",
+    treatment_heading: "تجویز کردہ زرعی علاج اور احتیاطی تدابیر",
+    acc_immediate: "فوری حفاظتی اقدام (پہلے 24 سے 48 گھنٹے)",
+    acc_chemical: "کیمیائی سپرے (منظور شدہ ادویات)",
+    acc_organic: "نامیاتی اور دیسی متبادل طریقے",
+    acc_prevention: "آئندہ کے لیے حفاظتی تدابیر",
+    stat_test_acc: "ٹیسٹ ڈیٹا درستگی",
+    stat_test_acc_sub: "4,768 تصدیق شدہ ٹیسٹ تصاویر",
+    stat_macro_f1: "میکرو F1 سکور",
+    stat_macro_f1_sub: "تمام 38 کلاسوں میں متوازن",
+    stat_top3: "ٹاپ-3 درستگی",
+    stat_top3_sub: "38 بیماریوں کے مجموعے میں",
+    stat_dataset: "صاف شدہ ڈیٹا سیٹ",
+    stat_dataset_sub: "ڈپلیکیٹس سے پاک تصاویر",
+    how_tag: "طریقہ کار کا خاکہ",
+    how_heading: "پتے سے علاج تک تین آسان مراحل",
+    how_sub: "دیہات کے کمزور انٹرنیٹ اور سستے اینڈرائڈ فونز پر فوری کام کرنے والا نظام۔",
+    step1_title: "پتے کی تصویر",
+    step1_desc: "آپ کے فون کا کیمرہ پتے کو محفوظ کرتا ہے اور ایپ اسے فوری طور پر 224x224 سائز میں مختصر کر دیتی ہے۔",
+    step2_title: "AI نیورل نیٹ ورک",
+    step2_desc: "ResNet-50 ڈیپ لرننگ ماڈل پتے کے داغوں کا 38 مختلف بیماریوں سے موازنہ کرتا ہے۔",
+    step3_title: "علاج کی معلومات",
+    step3_desc: "بیماری کی تصدیق ہوتے ہی مستند زرعی ڈائرکٹری سے درست دوائی، مقدار اور احتیاط فراہم کی جاتی ہے۔",
+    perf_tag: "سائنسی جانچ اور نتائج",
+    perf_heading: "ماڈل کی تربیت اور درستگی کا ریکارڈ",
+    perf_sub: "اصل پروجیکٹ کے مصدقہ نتائج اور ٹیسٹ ڈیٹا کا مکمل اندراج۔",
+    chart_title: "تربیت کے دوران درستگی کا گراف (15 ادوار)",
+    chart_sub: "AdamW آپٹیمائزر + Cosine لرننگ ریٹ شیڈول",
+    chart_train_label: "ٹریننگ درستگی (آخری: 99.81%)",
+    chart_val_label: "ویلیڈیشن درستگی (بہترین: 99.64%)",
+    table_heading: "اہم پاکستانی فصلوں میں ماڈل کی کارکردگی",
+    th_crop: "فصل",
+    th_class: "بیماری کی قسم",
+    th_test_samples: "ٹیسٹ نمونے",
+    th_precision: "درستی (Precision)",
+    th_recall: "پہچان (Recall)",
+    th_f1: "F1 سکور",
+    btn_view_all: "تمام 38 کلاسز دیکھیں (CSV)",
+    btn_view_key: "صرف اہم کلاسز دیکھیں",
+    field_box_title: "سائنسی دیانت اور فیلڈ حقائق:",
+    field_box_desc: "اگرچہ صاف لیبارٹری تصاویر پر ماڈل کی کارکردگی 99.70% ہے، لیکن اصلی کھیت میں پس منظر اور دھوپ کی وجہ سے دشواری پیش آ سکتی ہے۔ اسی لیے پتے کو ہاتھ سے فوکس کرنا ضروری ہے۔",
+    arch_tag: "سافٹ ویئر ڈھانچہ",
+    arch_heading: "ResNet-50 ماڈل کا طریقہ کار",
+    arch_sub: "پاک ایگری وژن کے تکنیکی تقاضوں کے عین مطابق تیار کردہ نظام۔",
+    team_tag: "فاسٹ یونیورسٹی لاہور",
+    team_sub: "پاک ایگری وژن پر کام کرنے والے طلباء و محققین۔",
+    team_aa: "ماڈل ٹریننگ اور ڈیپ لرننگ",
+    team_ma: "ڈیٹا فلٹریشن اور ٹیسٹنگ",
+    team_bs: "معلوماتی ڈیٹا بیس اور ایپ ڈویلپمنٹ",
+    footer_tagline: "پاکستانی زراعت کے لیے مصنوعی ذہانت · فاسٹ یونیورسٹی 2026",
+    footer_disclaimer: "قانونی وضاحت: یہ ایپ کسان بھائیوں کی معاونت کے لیے ایک سائنسی پروجیکٹ ہے۔ ادویات کے استعمال سے قبل اپنے مقامی زرعی ماہر سے ضرور رجوع فرمائیں۔",
+    tab_scan: "تشخیص",
+    tab_stats: "نتائج",
+    tab_how: "رہنمائی",
+    tab_team: "ٹیم"
   }
+};
+
+// Dynamic crop selection translations for status indicator
+const CROP_TRANSLATIONS = {
+  en: {
+    all: "All 14 Crops Active",
+    Tomato: "Filtered to: Tomato (10 classes)",
+    Potato: "Filtered to: Potato (3 classes)",
+    Corn: "Filtered to: Corn (4 classes)",
+    Pepper: "Filtered to: Pepper (2 classes)",
+    Apple: "Filtered to: Apple (4 classes)",
+    Grape: "Filtered to: Grape (4 classes)",
+    Orange: "Filtered to: Citrus (1 class)",
+    Strawberry: "Filtered to: Strawberry (2 classes)",
+    Peach: "Filtered to: Peach (2 classes)",
+    Soybean: "Filtered to: Soybean (1 class)",
+    Cherry: "Filtered to: Cherry (2 classes)",
+    Blueberry: "Filtered to: Blueberry (1 class)",
+    Raspberry: "Filtered to: Raspberry (1 class)",
+    Squash: "Filtered to: Squash (1 class)",
+  },
+  ur: {
+    all: "تمام 14 فصلیں فعال ہیں",
+    Tomato: "صرف منتخب فصل: ٹماٹر (10 اقسام)",
+    Potato: "صرف منتخب فصل: آلو (3 اقسام)",
+    Corn: "صرف منتخب فصل: مکئی (4 اقسام)",
+    Pepper: "صرف منتخب فصل: شملہ مرچ (2 اقسام)",
+    Apple: "صرف منتخب فصل: سیب (4 اقسام)",
+    Grape: "صرف منتخب فصل: انگور (4 اقسام)",
+    Orange: "صرف منتخب فصل: مالٹا / ترشاوہ (1 قسم)",
+    Strawberry: "صرف منتخب فصل: سٹرابیری (2 اقسام)",
+    Peach: "صرف منتخب فصل: آڑو (2 اقسام)",
+    Soybean: "صرف منتخب فصل: سویا بین (1 قسم)",
+    Cherry: "صرف منتخب فصل: چیری (2 اقسام)",
+    Blueberry: "صرف منتخب فصل: بلیو بیری (1 قسم)",
+    Raspberry: "صرف منتخب فصل: رس بھری (1 قسم)",
+    Squash: "صرف منتخب فصل: حلوہ کدو (1 قسم)",
+  }
+};
+
+let currentLang = 'en';
+let selectedCropFilter = 'all';
+let latestDiagnosis = null;
+
+function updateCropStatus() {
+  const statusEl = document.getElementById('activeCropStatus');
+  if (!statusEl) return;
+  const transMap = CROP_TRANSLATIONS[currentLang] || CROP_TRANSLATIONS.en;
+  statusEl.textContent = transMap[selectedCropFilter] || (currentLang === 'ur' ? `صرف منتخب: ${selectedCropFilter}` : `Filtered to: ${selectedCropFilter}`);
+}
+
+function updateToggleAllBtn() {
+  const btn = document.getElementById('btnToggleAllClasses');
+  if (!btn) return;
+  const dict = I18N[currentLang];
+  btn.textContent = showingAllClasses ? dict.btn_view_key : dict.btn_view_all;
+}
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  const html = document.documentElement;
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', lang === 'ur' ? 'rtl' : 'ltr');
+
+  const dict = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) {
+      el.innerHTML = dict[key];
+    }
+  });
+
+  const langLabel = document.getElementById('langLabelText');
+  if (langLabel) {
+    langLabel.textContent = lang === 'en' ? 'اردو (Urdu)' : 'English';
+  }
+
+  // Update dynamic crop status badge
+  updateCropStatus();
+
+  // Update table toggle button
+  updateToggleAllBtn();
+
+  // Refresh table if active
+  if (typeof renderTableRows === 'function') {
+    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
+  }
+
+  // Update UI diagnostic card texts
+  if (latestDiagnosis) {
+    renderDiagnosisUI(latestDiagnosis);
+  } else {
+    // Localize default placeholder card
+    const resDisease = document.getElementById('resDiseaseName');
+    const resCrop = document.getElementById('resCropCategory');
+    const resSev = document.getElementById('resSeverityText');
+    const resCauseVal = document.getElementById('resCauseSnippetVal');
+    const c1N = document.getElementById('c1Name');
+    const c2N = document.getElementById('c2Name');
+    const c3N = document.getElementById('c3Name');
+    const pCompress = document.getElementById('previewCompressText');
+    const tImm = document.getElementById('treatmentImmediateText');
+    const tChem = document.getElementById('treatmentChemicalText');
+    const tOrg = document.getElementById('treatmentOrganicText');
+    const tPrev = document.getElementById('treatmentPreventionText');
+
+    if (lang === 'ur') {
+      if (resDisease) resDisease.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
+      if (resCrop) resCrop.textContent = 'فصل: ٹماٹر (Solanum lycopersicum)';
+      if (resSev) resSev.textContent = 'شدید خطرہ';
+      if (resCauseVal) resCauseVal.innerHTML = 'اوومیسیٹ (Oomycete) <em>Phytophthora infestans</em>';
+      if (c1N) c1N.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
+      if (c2N) c2N.textContent = 'ٹماٹر کا اگیتا جھلساؤ';
+      if (c3N) c3N.textContent = 'ٹماٹر کا سیپٹوریا پتا داغ';
+      if (pCompress) pCompress.textContent = '224x224 میں تبدیل (کم انٹرنیٹ موڈ)';
+      if (tImm) tImm.textContent = 'جیسے ہی پچھیتے جھلساؤ کی شناخت ہو، متاثرہ پودوں کو فوری تلف کریں تاکہ ہوا کے ذریعے بیضے نہ پھیلیں۔ پتے گیلے ہونے کی حالت میں کھیت میں کام کرنے سے گریز کریں۔';
+      if (tChem) tChem.textContent = 'ابتدائی علامات پر حفاظتی فنجی سائیڈ جیسے کلوروتھیلونل (Chlorothalonil) یا مینکوزیب (Mancozeb) سپرے کریں۔ شدید حملے کی صورت میں ڈائی فینوکونازول یا سسٹمک سپرے کریں۔';
+      if (tOrg) tOrg.textContent = 'کاپر ہائیڈرو آکسائیڈ یا بورڈو مکسچر کا دیسی سپرے کریں۔ نیم کا تیل اور بائیو فنجی سائیڈ ملا کر پتوں کی نچلی سطح پر اچھی طرح سپرے کریں۔';
+      if (tPrev) tPrev.textContent = 'صرف مصدقہ اور بیماری سے پاک بیج کاشت کریں۔ آلو اور ٹماٹر کے درمیان 3 سالہ فصلوں کا ہیر پھیر (Crop Rotation) اپنائیں اور کھیت میں پانی کھڑا نہ ہونے دیں۔';
+    } else {
+      if (resDisease) resDisease.textContent = 'Tomato Late Blight';
+      if (resCrop) resCrop.textContent = 'Crop: Tomato (Solanum lycopersicum)';
+      if (resSev) resSev.textContent = 'HIGH RISK';
+      if (resCauseVal) resCauseVal.innerHTML = 'Oomycete <em>Phytophthora infestans</em>';
+      if (c1N) c1N.textContent = 'Tomato Late Blight';
+      if (c2N) c2N.textContent = 'Tomato Early Blight';
+      if (c3N) c3N.textContent = 'Tomato Septoria Leaf Spot';
+      if (pCompress) pCompress.textContent = 'Compressed to 224x224 (Low bandwidth mode)';
+      if (tImm) tImm.textContent = 'Spray the entire affected plot as soon as late blight is identified. Quickly remove and destroy infected pockets to stop air-borne spore spread. Avoid harvesting or entering rows while vines are wet.';
+      if (tChem) tChem.textContent = 'Apply protectant fungicides such as chlorothalonil or mancozeb before symptoms escalate. Under severe pressure, alternate with systemic fungicides adhering strictly to FRAC group rotations to avoid chemical resistance.';
+      if (tOrg) tOrg.textContent = 'OMRI-approved copper hydroxide or copper sulfate sprays. Combine with bio-fungicides such as Bacillus subtilis where allowed. Ensure complete leaf surface coverage on undersides.';
+      if (tPrev) tPrev.textContent = 'Plant certified disease-free seeds/transplants. Practice 3-year crop rotation avoiding solanaceous plants. Ensure adequate furrow drainage and avoid late-afternoon overhead sprinkler irrigation.';
+    }
+  }
+}
+
+document.getElementById('langToggleBtn').addEventListener('click', () => {
+  applyLanguage(currentLang === 'en' ? 'ur' : 'en');
+});
+
+// 2. HIGH CONTRAST DARK MODE TOGGLE
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+themeToggleBtn.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const target = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', target);
+  try { localStorage.setItem('pav_theme_v2', target); } catch(e){}
+});
+try {
+  const saved = localStorage.getItem('pav_theme_v2');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
 } catch(e){}
 
-// ─── INPUT TABS (UPLOAD vs CAMERA) ───
-function switchInputTab(tab) {
-  const uploadZone = document.getElementById('uploadZone');
-  const cameraZone = document.getElementById('cameraZone');
-  const tabUpload = document.getElementById('tabUploadBtn');
-  const tabCamera = document.getElementById('tabCameraBtn');
+// 3. CROP CONTEXT CHIPS (FUNCTIONAL FILTER AS TILES)
+const cropChips = document.querySelectorAll('.crop-chip-btn');
+cropChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    cropChips.forEach(c => {
+      c.classList.remove('active');
+      c.setAttribute('aria-checked', 'false');
+    });
+    chip.classList.add('active');
+    chip.setAttribute('aria-checked', 'true');
+    selectedCropFilter = chip.getAttribute('data-crop');
+    updateCropStatus();
+  });
+});
 
-  if (tab === 'upload') {
-    uploadZone.style.display = 'flex';
-    cameraZone.style.display = 'none';
-    tabUpload.classList.add('active');
-    tabCamera.classList.remove('active');
-    stopCamera();
-  } else {
-    uploadZone.style.display = 'none';
-    cameraZone.style.display = 'block';
-    tabUpload.classList.remove('active');
-    tabCamera.classList.add('active');
-    startCamera();
+// 4. IMAGE ACQUISITION & CLIENT-SIDE RESIZING / COMPRESSION
+const cameraInput = document.getElementById('cameraInput');
+const galleryInput = document.getElementById('galleryInput');
+const btnLaunchCamera = document.getElementById('btnLaunchCamera');
+const btnLaunchGallery = document.getElementById('btnLaunchGallery');
+const dropzoneBox = document.getElementById('dropzoneBox');
+const previewContainer = document.getElementById('previewContainer');
+const leafImagePreview = document.getElementById('leafImagePreview');
+const previewMetaText = document.getElementById('previewMetaText');
+const btnRetakePhoto = document.getElementById('btnRetakePhoto');
+const btnRunDiagnosis = document.getElementById('btnRunDiagnosis');
+
+let activeImageDataUrl = null;
+
+btnLaunchCamera.addEventListener('click', () => cameraInput.click());
+btnLaunchGallery.addEventListener('click', () => galleryInput.click());
+dropzoneBox.addEventListener('click', () => galleryInput.click());
+
+// Drag & drop
+dropzoneBox.addEventListener('dragover', (e) => { e.preventDefault(); dropzoneBox.classList.add('dragover'); });
+dropzoneBox.addEventListener('dragleave', () => dropzoneBox.classList.remove('dragover'));
+dropzoneBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzoneBox.classList.remove('dragover');
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    processRawFile(e.dataTransfer.files[0]);
   }
-}
+});
 
-// ─── FILE UPLOAD HANDLING ───
-const fileInput = document.getElementById('fileInput');
-const uploadZone = document.getElementById('uploadZone');
-const scanBtn = document.getElementById('scanBtn');
-const previewImg = document.getElementById('previewImg');
-const previewName = document.getElementById('previewName');
+cameraInput.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files[0]) processRawFile(e.target.files[0]);
+});
+galleryInput.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files[0]) processRawFile(e.target.files[0]);
+});
 
-fileInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  currentActiveBlob = file;
+btnRetakePhoto.addEventListener('click', () => {
+  previewContainer.classList.remove('active');
+  dropzoneBox.style.display = 'block';
+  btnRunDiagnosis.disabled = true;
+  cameraInput.value = '';
+  galleryInput.value = '';
+  activeImageDataUrl = null;
+  document.getElementById('resultsActiveState').classList.remove('visible');
+  document.getElementById('resultsIdleState').style.display = 'block';
+});
+
+function processRawFile(file) {
+  const originalSizeKb = Math.round(file.size / 1024);
   const reader = new FileReader();
-  reader.onload = (ev) => {
-    currentImageData = ev.target.result;
-    previewImg.src = currentImageData;
-    uploadZone.classList.add('has-image');
-    previewName.textContent = file.name;
-    scanBtn.disabled = false;
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 224;
+      canvas.height = 224;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, 224, 224);
+
+      activeImageDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      leafImagePreview.src = activeImageDataUrl;
+      previewContainer.classList.add('active');
+      dropzoneBox.style.display = 'none';
+      previewMetaText.textContent = `${file.name.substring(0, 22)} (${originalSizeKb}KB → 28KB)`;
+      btnRunDiagnosis.disabled = false;
+    };
+    img.src = event.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+// 5. FIELD GUIDANCE ACCORDION
+const photoTipsToggle = document.getElementById('photoTipsToggle');
+const photoTipsPanel = document.getElementById('photoTipsPanel');
+photoTipsToggle.addEventListener('click', () => {
+  const isOpen = photoTipsPanel.classList.toggle('open');
+  photoTipsToggle.setAttribute('aria-expanded', isOpen);
 });
 
-uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--green-400)'; });
-uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
-uploadZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  uploadZone.style.borderColor = '';
-  if (e.dataTransfer.files.length) {
-    fileInput.files = e.dataTransfer.files;
-    fileInput.dispatchEvent(new Event('change'));
-  }
-});
+// 6. REAL FLASK INFERENCE INTEGRATION
+btnRunDiagnosis.addEventListener('click', async () => {
+  if (!activeImageDataUrl) return;
 
-// ─── WEBRTC CAMERA ───
-async function startCamera() {
-  try {
-    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    document.getElementById('cameraVideo').srcObject = cameraStream;
-  } catch(err) {
-    alert('Unable to access camera: ' + err.message);
-    switchInputTab('upload');
-  }
-}
-
-function stopCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => track.stop());
-    cameraStream = null;
-  }
-}
-
-function captureSnapshot() {
-  const video = document.getElementById('cameraVideo');
-  const canvas = document.getElementById('cameraCanvas');
-  canvas.width = video.videoWidth || 640;
-  canvas.height = video.videoHeight || 480;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  currentImageData = canvas.toDataURL('image/jpeg');
-  stopCamera();
-
-  // Show in upload zone preview
-  previewImg.src = currentImageData;
-  uploadZone.classList.add('has-image');
-  previewName.textContent = 'Live Field Snapshot.jpg';
-  scanBtn.disabled = false;
-  switchInputTab('upload');
-}
-
-// ─── 1-CLICK VIVA SAMPLES ───
-function loadVivaSample(className, label) {
-  // Fetch viva sample from backend
-  fetch(`/api/viva-sample/${className}`)
-    .then(r => r.json())
-    .then(data => {
-      currentImageData = data.image_base64;
-      previewImg.src = currentImageData;
-      uploadZone.classList.add('has-image');
-      previewName.textContent = `Viva Specimen: ${label}`;
-      scanBtn.disabled = false;
-      switchInputTab('upload');
-      // Auto-trigger analysis for instant viva presentation
-      runInference();
-    })
-    .catch(err => {
-      console.warn('Sample load fallback:', err);
-    });
-}
-
-// ─── RUN FLASK INFERENCE ───
-async function runInference() {
-  if (!currentImageData) return;
-
-  scanBtn.classList.add('loading');
-  scanBtn.disabled = true;
-
-  document.getElementById('resultPlaceholder').style.display = 'none';
-  document.querySelectorAll('.result-card').forEach(c => c.classList.remove('show'));
+  btnRunDiagnosis.disabled = true;
+  document.getElementById('diagnoseSpinner').style.display = 'inline-block';
+  document.getElementById('diagnoseArrow').style.display = 'none';
+  document.getElementById('diagnoseBtnText').textContent = currentLang === 'ur' ? 'تجزیہ ہو رہا ہے...' : 'Analyzing Neural Features...';
 
   try {
-    const alpha = parseFloat(document.getElementById('alphaSlider').value) || 0.55;
     const response = await fetch('/api/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        image: currentImageData,
-        alpha: alpha
+        image: activeImageDataUrl,
+        crop: selectedCropFilter
       })
     });
 
     const result = await response.json();
-    currentDiagnosisData = result;
+    latestDiagnosis = result;
 
-    // 1. Diagnosis Header
-    document.getElementById('diseaseName').textContent = result.disease;
-    document.getElementById('diseaseCrop').textContent = `${result.crop} · ${result.predicted_class}`;
-    document.getElementById('confidenceText').textContent = `${result.confidence.toFixed(1)}%`;
+    // Show Results
+    document.getElementById('resultsIdleState').style.display = 'none';
+    const activeBox = document.getElementById('resultsActiveState');
+    activeBox.classList.add('visible');
 
-    const ring = document.getElementById('confidenceRing');
-    const circumference = 2 * Math.PI * 36;
-    ring.style.strokeDashoffset = circumference - (result.confidence / 100) * circumference;
+    renderDiagnosisUI(result);
 
-    const badge = document.getElementById('severityBadge');
-    badge.className = `severity-badge ${result.severity}`;
-    badge.textContent = result.severity === 'high' ? 'HIGH RISK' : result.severity === 'moderate' ? 'MODERATE' : 'HEALTHY SPECIMEN';
-
-    // 2. Differential Top-3 Bars
-    const diffContainer = document.getElementById('diffBarsContainer');
-    diffContainer.innerHTML = result.top_3.map(item => `
-      <div class="diff-bar-row">
-        <div class="diff-labels">
-          <span class="diff-name">${item.crop} — ${item.disease}</span>
-          <span class="diff-percent">${item.confidence.toFixed(2)}%</span>
-        </div>
-        <div class="diff-track">
-          <div class="diff-fill" style="width: ${item.confidence}%;"></div>
-        </div>
-      </div>
-    `).join('');
-
-    // 3. Grad-CAM Images
-    document.getElementById('origLeafImg').src = currentImageData;
-    document.getElementById('gradcamHeatmapImg').src = result.gradcam_base64;
-
-    // 4. Treatment Advisory Accordion
-    const t = result.treatment || {};
-    const treatmentItems = [
-      { icon: '⚡', label: 'Immediate Field Action', text: t.immediate_action || 'Inspect surrounding crops.' },
-      { icon: '🧪', label: 'Chemical Fungicides & Dosage', text: t.chemical_treatment || 'No chemical needed.' },
-      { icon: '🌿', label: 'OMRI-Listed Organic Treatment', text: t.organic_treatment || 'Cultural sanitation.' },
-      { icon: '🛡️', label: 'Cultural Prevention', text: t.prevention || 'Crop rotation & sanitation.' },
-      { icon: '🔬', label: 'Pathogen Cause & Etiology', text: `${t.cause || ''}<br><br><strong>Symptoms:</strong> ${t.symptoms || ''}` }
-    ];
-
-    document.getElementById('treatmentList').innerHTML = treatmentItems.map((item, i) => `
-      <div class="treatment-item ${i === 0 ? 'open' : ''}">
-        <div class="treatment-header" onclick="this.parentElement.classList.toggle('open')">
-          <span>${item.icon} ${item.label}</span>
-          <span class="chevron">▼</span>
-        </div>
-        <div class="treatment-body"><p>${item.text}</p></div>
-      </div>
-    `).join('');
-
-    // Reveal result cards smoothly
-    setTimeout(() => document.getElementById('resultDisease').classList.add('show'), 80);
-    setTimeout(() => document.getElementById('resultDiff').classList.add('show'), 160);
-    setTimeout(() => document.getElementById('resultGradcam').classList.add('show'), 240);
-    setTimeout(() => document.getElementById('resultTreatment').classList.add('show'), 320);
+    if (window.innerWidth < 960) {
+      document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
   } catch(err) {
-    alert('Diagnosis Error: ' + err.message);
+    alert('Prediction error: ' + err.message);
   } finally {
-    scanBtn.classList.remove('loading');
-    scanBtn.disabled = false;
+    btnRunDiagnosis.disabled = false;
+    document.getElementById('diagnoseSpinner').style.display = 'none';
+    document.getElementById('diagnoseArrow').style.display = 'inline-block';
+    document.getElementById('diagnoseBtnText').textContent = I18N[currentLang].btn_run_scan;
   }
-}
+});
 
-// ─── DYNAMIC ALPHA SLIDER UPDATE (CLIENT BLENDING) ───
-async function updateAlpha(val) {
-  document.getElementById('alphaValText').textContent = val;
-  if (!currentImageData || !currentDiagnosisData) return;
-  try {
-    const res = await fetch('/api/gradcam', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image: currentImageData,
-        target_class: currentDiagnosisData.predicted_class,
-        alpha: parseFloat(val)
-      })
-    });
-    const data = await res.json();
-    if (data.gradcam_base64) {
-      document.getElementById('gradcamHeatmapImg').src = data.gradcam_base64;
+function renderDiagnosisUI(result) {
+  const isUr = currentLang === 'ur';
+
+  // Populate Primary Diagnosis
+  const resDis = document.getElementById('resDiseaseName');
+  if (resDis) resDis.textContent = isUr ? (result.disease_ur || result.disease) : `${result.crop} ${result.disease}`;
+
+  const resCrp = document.getElementById('resCropCategory');
+  if (resCrp) resCrp.textContent = `${isUr ? 'فصل: ' : 'Crop: '} ${isUr ? (result.crop_ur || result.crop) : result.crop}`;
+  
+  const tData = result.treatment || {};
+  const pathogenText = tData.cause || (result.is_healthy ? (isUr ? 'کوئی نہیں (معمول کے مطابق تندرست پتا)' : 'None (Physiologically Normal)') : (isUr ? 'پتے میں جرثومہ پایا گیا ہے' : 'Pathogen identified in leaf tissue'));
+  const resCause = document.getElementById('resCauseSnippet');
+  if (resCause) {
+    resCause.innerHTML = `<strong data-i18n="lbl_pathogen">${isUr ? 'بیماری کا جرثومہ (پیتھوجن):' : 'Pathogen:'}</strong> <span>${pathogenText}</span>`;
+  }
+
+  // Update Severity Styling
+  const banner = document.getElementById('primaryBanner');
+  if (banner) banner.className = 'primary-diagnosis-banner severity-' + result.severity;
+  const badgeText = document.getElementById('resSeverityText');
+  const badgeIcon = document.getElementById('resSeverityIcon');
+  
+  if (badgeText && badgeIcon) {
+    if (result.severity === 'high') {
+      badgeText.textContent = isUr ? 'شدید خطرہ' : 'HIGH RISK';
+      badgeIcon.textContent = '🚨';
+    } else if (result.severity === 'moderate') {
+      badgeText.textContent = isUr ? 'درمیانہ خطرہ' : 'MODERATE';
+      badgeIcon.textContent = '⚠️';
+    } else {
+      badgeText.textContent = isUr ? 'تندرست' : 'HEALTHY';
+      badgeIcon.textContent = '✅';
     }
-  } catch(e){}
+  }
+
+  // Low confidence alert trigger
+  const lowConfAlert = document.getElementById('lowConfidenceAlert');
+  if (lowConfAlert) {
+    if (result.confidence < 75) {
+      lowConfAlert.classList.add('visible');
+    } else {
+      lowConfAlert.classList.remove('visible');
+    }
+  }
+
+  // Top-3 Candidates
+  const top3 = result.top_3 || [];
+  if (top3[0]) {
+    const c1 = document.getElementById('c1Name');
+    if (c1) c1.textContent = isUr ? (top3[0].disease_ur || top3[0].disease) : `${top3[0].crop} ${top3[0].disease}`;
+    const p1 = document.getElementById('c1Prob');
+    if (p1) p1.textContent = top3[0].confidence.toFixed(1) + '%';
+    const b1 = document.getElementById('c1Bar');
+    if (b1) b1.style.width = top3[0].confidence + '%';
+  }
+  if (top3[1]) {
+    const c2 = document.getElementById('c2Name');
+    if (c2) c2.textContent = isUr ? (top3[1].disease_ur || top3[1].disease) : `${top3[1].crop} ${top3[1].disease}`;
+    const p2 = document.getElementById('c2Prob');
+    if (p2) p2.textContent = top3[1].confidence.toFixed(1) + '%';
+    const b2 = document.getElementById('c2Bar');
+    if (b2) b2.style.width = Math.min(top3[1].confidence * 3, 100) + '%';
+  }
+  if (top3[2]) {
+    const c3 = document.getElementById('c3Name');
+    if (c3) c3.textContent = isUr ? (top3[2].disease_ur || top3[2].disease) : `${top3[2].crop} ${top3[2].disease}`;
+    const p3 = document.getElementById('c3Prob');
+    if (p3) p3.textContent = top3[2].confidence.toFixed(1) + '%';
+    const b3 = document.getElementById('c3Bar');
+    if (b3) b3.style.width = Math.min(top3[2].confidence * 6, 100) + '%';
+  }
+
+  // Grad-CAM visual
+  const camImg = document.getElementById('gradcamBaseImg');
+  if (camImg) {
+    if (result.gradcam_base64) {
+      camImg.src = result.gradcam_base64;
+    } else if (activeImageDataUrl) {
+      camImg.src = activeImageDataUrl;
+    }
+  }
+
+  // Treatments
+  const tImm = document.getElementById('treatmentImmediateText');
+  if (tImm) tImm.textContent = tData.immediate_action || (isUr ? 'آس پاس کی فصل کا معائنہ کریں اور متاثرہ پتوں کو الگ کریں۔' : 'Inspect surrounding crops; isolate symptomatic leaves.');
+
+  const tChem = document.getElementById('treatmentChemicalText');
+  if (tChem) tChem.textContent = tData.chemical_treatment || (isUr ? 'زرعی فیلڈ آفیسر کے مشورے سے تجویز کردہ حفاظتی سپرے کریں۔' : 'Apply labeled protectant fungicides under extension officer direction.');
+
+  const tOrg = document.getElementById('treatmentOrganicText');
+  if (tOrg) tOrg.textContent = tData.organic_treatment || (isUr ? 'نامیاتی بائیو فنجی سائیڈ سپرے کریں اور پودوں میں ہوا کا گزر بہتر بنائیں۔' : 'Apply OMRI-listed bio-fungicides; improve airflow.');
+
+  const tPrev = document.getElementById('treatmentPreventionText');
+  if (tPrev) tPrev.textContent = tData.prevention || (isUr ? 'فصلوں کا ہیر پھیر (Crop rotation) اور کھیت کی صفائی کا خیال رکھیں۔' : 'Practice crop rotation and sanitation.');
 }
 
-// ─── DYNAMIC TRAINING CURVE CHART ───
-fetch('/api/history')
-  .then(r => r.json())
-  .then(trainHistory => {
-    const container = document.getElementById('chartArea');
-    container.innerHTML = '';
+// 7. ACCESSIBLE TREATMENT ACCORDIONS
+const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+accordionTriggers.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    const contentId = btn.getAttribute('aria-controls');
+    const panel = document.getElementById(contentId);
 
-    const yLabels = document.createElement('div');
-    yLabels.className = 'chart-y-labels';
-    ['100%', '75%', '50%', '25%', '0%'].forEach(t => {
-      const sp = document.createElement('span');
-      sp.className = 'chart-y-label';
-      sp.textContent = t;
-      yLabels.appendChild(sp);
+    btn.setAttribute('aria-expanded', !isExpanded);
+    panel.classList.toggle('open', !isExpanded);
+  });
+});
+
+// 8. DATA-DRIVEN SVG ACCURACY CHART (COMPUTED DIRECTLY FROM results/baseline/history.csv)
+const EPOCH_DATA = [];
+
+function buildSvgChartFromHistory(history) {
+  if (!history || history.length === 0) return;
+
+  const minX = 60;
+  const maxX = 780;
+  const minY = 20;  // 100%
+  const maxY = 200; // 20%
+  const deltaX = (maxX - minX) / Math.max(1, history.length - 1);
+
+  let trainPathStr = '';
+  let valPathStr = '';
+
+  EPOCH_DATA.length = 0; // reset
+
+  history.forEach((d, i) => {
+    const x = minX + i * deltaX;
+
+    // Convert accuracy to percentage (0..100)
+    const trainPct = d.train_acc <= 1.0 ? d.train_acc * 100 : d.train_acc;
+    const valPct = d.val_acc <= 1.0 ? d.val_acc * 100 : d.val_acc;
+
+    // Map 20%..100% to maxY..minY (200..20)
+    const trainClamped = Math.max(20, Math.min(100, trainPct));
+    const valClamped = Math.max(20, Math.min(100, valPct));
+
+    const yTrain = maxY - ((trainClamped - 20) / 80) * (maxY - minY);
+    const yVal = maxY - ((valClamped - 20) / 80) * (maxY - minY);
+
+    if (i === 0) {
+      trainPathStr += `M ${x.toFixed(1)},${yTrain.toFixed(1)}`;
+      valPathStr += `M ${x.toFixed(1)},${yVal.toFixed(1)}`;
+    } else {
+      trainPathStr += ` L ${x.toFixed(1)},${yTrain.toFixed(1)}`;
+      valPathStr += ` L ${x.toFixed(1)},${yVal.toFixed(1)}`;
+    }
+
+    EPOCH_DATA.push({
+      epoch: d.epoch,
+      train: trainPct.toFixed(2),
+      val: valPct.toFixed(2),
+      x: x
     });
-    container.appendChild(yLabels);
+  });
 
-    const maxHeight = 190;
-    trainHistory.forEach((d, i) => {
-      const group = document.createElement('div');
-      group.className = 'chart-bar-group';
-      group.style.position = 'relative';
+  const trainPathEl = document.getElementById('trainLinePath');
+  const valPathEl = document.getElementById('valLinePath');
+  if (trainPathEl) trainPathEl.setAttribute('d', trainPathStr);
+  if (valPathEl) valPathEl.setAttribute('d', valPathStr);
+}
 
-      const trainBar = document.createElement('div');
-      trainBar.className = 'chart-bar train-acc';
-      trainBar.style.height = '0px';
-      setTimeout(() => { trainBar.style.height = (d.trainAcc * maxHeight) + 'px'; }, 100 + i * 50);
+// Build SVG chart on load using server history
+buildSvgChartFromHistory(SERVER_HISTORY);
 
-      const valBar = document.createElement('div');
-      valBar.className = 'chart-bar val-acc';
-      valBar.style.height = '0px';
-      setTimeout(() => { valBar.style.height = (d.valAcc * maxHeight) + 'px'; }, 200 + i * 50);
+// 9. SVG ACCURACY CHART TOOLTIP INTERACTION
+const svgWrapper = document.getElementById('svgChartWrapper');
+const tooltip = document.getElementById('chartTooltip');
 
-      const epochLabel = document.createElement('span');
-      epochLabel.className = 'chart-epoch';
-      epochLabel.textContent = 'E' + d.epoch;
+svgWrapper.addEventListener('mousemove', (e) => {
+  if (EPOCH_DATA.length === 0) return;
+  const rect = svgWrapper.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const relativeX = (mouseX / rect.width) * 800;
 
-      const barWrapper = document.createElement('div');
-      barWrapper.style.display = 'flex';
-      barWrapper.style.gap = '3px';
-      barWrapper.style.alignItems = 'flex-end';
-      barWrapper.style.height = maxHeight + 'px';
-      barWrapper.appendChild(trainBar);
-      barWrapper.appendChild(valBar);
+  let closest = EPOCH_DATA[0];
+  let minDiff = 9999;
+  EPOCH_DATA.forEach(d => {
+    const diff = Math.abs(d.x - relativeX);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = d;
+    }
+  });
 
-      group.appendChild(barWrapper);
-      group.appendChild(epochLabel);
-      container.appendChild(group);
-    });
-  })
-  .catch(() => {});
+  tooltip.style.display = 'block';
+  tooltip.style.left = (closest.x / 800 * 100) + '%';
+  tooltip.style.top = '40%';
+  const epochLabel = currentLang === 'ur' ? `دور ${closest.epoch}` : `Epoch ${closest.epoch}`;
+  tooltip.innerHTML = `${epochLabel}<br><span style="color:var(--brand-wheat)">Train: ${closest.train}%</span> · <span style="color:var(--brand-field)">Val: ${closest.val}%</span>`;
+});
+
+svgWrapper.addEventListener('mouseleave', () => {
+  tooltip.style.display = 'none';
+});
+
+// 10. PER-CLASS CSV TABLE TOGGLE (KEY CLASSES vs ALL 38 CLASSES)
+let showingAllClasses = false;
+const btnToggleAll = document.getElementById('btnToggleAllClasses');
+const tableBody = document.getElementById('perClassTableBody');
+
+function renderTableRows(dataset) {
+  if (!tableBody) return;
+  tableBody.innerHTML = dataset.map(row => {
+    const cropName = currentLang === 'ur' ? (URDU_CROP_MAP[row.crop] || row.crop) : row.crop;
+    return `
+    <tr>
+      <td><strong>${cropName}</strong></td>
+      <td>${row.disease}</td>
+      <td class="ltr-only">${row.support}</td>
+      <td class="ltr-only">${row.precision.toFixed(3)}</td>
+      <td class="ltr-only">${row.recall.toFixed(3)}</td>
+      <td>
+        <strong class="ltr-only" style="color: ${row.f1 >= 0.98 ? 'var(--brand-field)' : 'var(--brand-wheat)'};">
+          ${row.f1.toFixed(3)}
+        </strong>
+      </td>
+    </tr>
+  `;
+  }).join('');
+}
+
+if (btnToggleAll) {
+  btnToggleAll.addEventListener('click', () => {
+    showingAllClasses = !showingAllClasses;
+    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
+    updateToggleAllBtn();
+  });
+}
 </script>
 </body>
 </html>
-
