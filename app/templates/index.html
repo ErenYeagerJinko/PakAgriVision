@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PakAgriVision — AI Crop Disease Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   CSS RESET & VARIABLES (DARK GREEN + TEAL + DUAL THEME)
+   ═══════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root, [data-theme="dark"] {
+  --bg-primary: #0a0f0d;
+  --bg-secondary: #111a16;
+  --bg-card: #141f1a;
+  --bg-card-hover: #1a2b23;
+  --bg-glass: rgba(20, 31, 26, 0.75);
+  --surface-elevated: #1c2e25;
+  --border-subtle: rgba(74, 222, 128, 0.12);
+  --border-active: rgba(74, 222, 128, 0.30);
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-200: #bbf7d0;
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-900: #14532d;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --cyan-400: #22d3ee;
+  --lime-400: #a3e635;
+  --emerald-400: #34d399;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --red-400: #f87171;
+  --red-500: #ef4444;
+  --text-primary: #f0fdf4;
+  --text-secondary: rgba(240, 253, 244, 0.70);
+  --text-muted: rgba(240, 253, 244, 0.40);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  --shadow-glow: 0 0 80px rgba(74, 222, 128, 0.08);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --font-primary: 'Inter', -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f9f7;
+  --bg-secondary: #eaf4f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3faf7;
+  --bg-glass: rgba(255, 255, 255, 0.90);
+  --surface-elevated: #e6f3ee;
+  --border-subtle: rgba(13, 148, 136, 0.18);
+  --border-active: rgba(6, 182, 212, 0.45);
+  --green-50: #0a1f14;
+  --green-100: #143826;
+  --green-200: #1c5237;
+  --green-300: #166534;
+  --green-400: #15803d;
+  --green-500: #16a34a;
+  --green-600: #15803d;
+  --green-700: #166534;
+  --green-900: #052e16;
+  --teal-400: #0f766e;
+  --teal-500: #0d9488;
+  --cyan-400: #0891b2;
+  --lime-400: #4d7c0f;
+  --emerald-400: #047857;
+  --amber-400: #d97706;
+  --amber-500: #b45309;
+  --red-400: #dc2626;
+  --red-500: #b91c1c;
+  --text-primary: #091712;
+  --text-secondary: #274238;
+  --text-muted: #597a6e;
+  --shadow-glow: 0 4px 24px rgba(13, 148, 136, 0.08);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+a { color: inherit; text-decoration: none; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--green-700); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════════
+   AMBIENT BACKGROUND & PARTICLES
+   ═══════════════════════════════════════════════════════ */
+.ambient-bg {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+}
+.ambient-orb {
+  position: absolute; border-radius: 50%; filter: blur(130px); opacity: 0.16;
+  animation: orbFloat 22s ease-in-out infinite alternate;
+}
+.ambient-orb:nth-child(1) {
+  width: 600px; height: 600px; top: -200px; left: -100px;
+  background: radial-gradient(circle, var(--green-500), transparent);
+}
+.ambient-orb:nth-child(2) {
+  width: 500px; height: 500px; bottom: -150px; right: -100px;
+  background: radial-gradient(circle, var(--emerald-400), transparent);
+  animation-delay: -7s;
+}
+.ambient-orb:nth-child(3) {
+  width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--teal-400), transparent);
+  opacity: 0.08; animation-delay: -14s;
+}
+@keyframes orbFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.1); }
+  100% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+.grain {
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVIGATION BAR
+   ═══════════════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 40px; height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-glass);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition-fast);
+}
+.nav.scrolled { background: var(--bg-primary); }
+
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-display); font-weight: 700; font-size: 20px;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green-500), var(--emerald-400));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-link {
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  transition: var(--transition-fast); cursor: pointer;
+  position: relative;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+  background: var(--green-400); transition: var(--transition-smooth);
+  border-radius: 1px;
+}
+.nav-link:hover { color: var(--text-primary); }
+.nav-link:hover::after { width: 100%; }
+.nav-link.active { color: var(--green-400); }
+.nav-link.active::after { width: 100%; }
+
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+
+.theme-toggle-btn {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-active);
+  color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-fast);
+}
+.theme-toggle-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--green-400);
+}
+
+.nav-cta {
+  padding: 10px 22px; border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--green-500), var(--green-600));
+  font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+  color: #070d0a;
+  transition: var(--transition-fast);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+}
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.45);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION / LAYOUT
+   ═══════════════════════════════════════════════════════ */
+.section { padding: 120px 40px; max-width: 1280px; margin: 0 auto; }
+.section-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--green-400); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::before {
+  content: ''; width: 24px; height: 1px; background: var(--green-400);
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700; line-height: 1.1; margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--green-300));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.section-subtitle {
+  font-size: 18px; color: var(--text-secondary); line-height: 1.7;
+  max-width: 600px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding-top: 72px; position: relative;
+}
+.hero-content { max-width: 700px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px 6px 8px; border-radius: var(--radius-full);
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid var(--border-active);
+  font-size: 13px; font-weight: 500; color: var(--green-300);
+  margin-bottom: 28px;
+  animation: fadeInUp 0.8s ease both;
+}
+.hero-badge-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green-400);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800; line-height: 1.05; margin-bottom: 24px;
+  animation: fadeInUp 0.8s 0.1s ease both;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--green-400), var(--lime-400), var(--emerald-400));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 18px; color: var(--text-secondary); line-height: 1.8;
+  margin-bottom: 40px; max-width: 520px;
+  animation: fadeInUp 0.8s 0.2s ease both;
+}
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  animation: fadeInUp 0.8s 0.3s ease both;
+}
+.btn-primary {
+  padding: 16px 32px; border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--green-500), var(--green-600));
+  font-size: 15px; font-weight: 600; cursor: pointer; border: none;
+  color: #070d0a;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 24px rgba(34, 197, 94, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(34, 197, 94, 0.5);
+}
+.btn-secondary {
+  padding: 16px 32px; border-radius: var(--radius-full);
+  background: transparent; border: 1px solid var(--border-active);
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  color: var(--text-primary);
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: var(--transition-smooth);
+}
+.btn-secondary:hover {
+  background: rgba(74, 222, 128, 0.06);
+  border-color: var(--green-400);
+}
+
+/* Hero visual floating cards */
+.hero-visual {
+  position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+  width: 520px; height: 520px; pointer-events: none;
+  animation: fadeIn 1.2s 0.5s ease both;
+}
+.hero-card-float {
+  position: absolute; border-radius: var(--radius-lg);
+  background: var(--bg-glass); backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  padding: 20px; box-shadow: var(--shadow-glow);
+  animation: cardFloat 6s ease-in-out infinite;
+}
+.hero-card-float:nth-child(1) { top: 40px; right: 80px; width: 300px; }
+.hero-card-float:nth-child(2) { bottom: 80px; right: 20px; width: 260px; animation-delay: -2s; }
+.hero-card-float:nth-child(3) { top: 200px; right: 320px; width: 180px; animation-delay: -4s; }
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.hcf-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.hcf-icon {
+  width: 32px; height: 32px; border-radius: 8px; display: flex;
+  align-items: center; justify-content: center; font-size: 16px;
+}
+.hcf-icon.green { background: rgba(74, 222, 128, 0.15); }
+.hcf-icon.amber { background: rgba(251, 191, 36, 0.15); }
+.hcf-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.hcf-subtitle { font-size: 11px; color: var(--text-muted); }
+.hcf-bar {
+  height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden;
+  margin-top: 8px;
+}
+.hcf-bar-fill.green { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green-500), var(--green-400)); }
+.hcf-stat { font-size: 28px; font-weight: 800; font-family: var(--font-display); }
+.hcf-stat .unit { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATS BAR
+   ═══════════════════════════════════════════════════════ */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--border-subtle); border-radius: var(--radius-lg);
+  overflow: hidden; margin-top: -40px; position: relative; z-index: 10;
+}
+.stat-item {
+  background: var(--bg-card); padding: 32px;
+  text-align: center; transition: var(--transition-fast);
+}
+.stat-item:hover { background: var(--bg-card-hover); }
+.stat-value {
+  font-family: var(--font-display); font-size: 36px; font-weight: 800;
+  background: linear-gradient(135deg, var(--green-300), var(--lime-400));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label {
+  font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DIAGNOSE SECTION (SCAN YOUR LEAF)
+   ═══════════════════════════════════════════════════════ */
+.scan-section {
+  background: var(--bg-secondary); border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  padding: 50px; margin-top: 40px; position: relative; overflow: hidden;
+}
+.scan-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-500), var(--teal-400), transparent);
+}
+.scan-layout { display: grid; grid-template-columns: 1.05fr 1.25fr; gap: 40px; margin-top: 36px; }
+
+/* Viva Samples Quick Bar */
+.viva-bar {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.viva-bar-title {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--teal-400); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.viva-chips-row {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.viva-chip-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: var(--transition-fast);
+}
+.viva-chip-btn:hover {
+  border-color: var(--green-400);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* Upload & Camera Input Tabs */
+.input-tabs-bar {
+  display: flex; gap: 8px; margin-bottom: 14px;
+}
+.input-tab-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.input-tab-btn.active {
+  background: var(--surface-elevated);
+  border-color: var(--green-400);
+  color: var(--green-400);
+}
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed var(--border-active); border-radius: var(--radius-lg);
+  padding: 40px 24px; text-align: center; cursor: pointer;
+  transition: var(--transition-smooth); position: relative;
+  background: rgba(74, 222, 128, 0.02);
+  min-height: 320px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.upload-zone:hover {
+  background: rgba(74, 222, 128, 0.05);
+  border-color: var(--green-400);
+}
+.upload-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(74, 222, 128, 0.05));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+}
+.upload-zone h4 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.upload-zone p { font-size: 13px; color: var(--text-muted); }
+
+/* Camera Viewport */
+.camera-zone {
+  display: none; border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  padding: 16px; text-align: center; min-height: 320px;
+}
+.camera-video {
+  width: 100%; height: 240px; object-fit: cover; border-radius: var(--radius-md);
+  background: #000;
+}
+.camera-controls {
+  display: flex; justify-content: center; gap: 10px; margin-top: 12px;
+}
+.camera-btn {
+  background: var(--surface-elevated); border: 1px solid var(--border-active);
+  color: var(--text-primary); padding: 8px 16px; border-radius: var(--radius-full);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.camera-btn.primary {
+  background: linear-gradient(135deg, var(--green-500), var(--teal-500));
+  color: #070d0a; border: none;
+}
+
+/* Image Preview */
+.preview-img {
+  display: none; width: 100%; max-height: 280px; object-fit: contain;
+  border-radius: var(--radius-md); margin-bottom: 12px;
+}
+.upload-zone.has-image .upload-icon,
+.upload-zone.has-image h4,
+.upload-zone.has-image p,
+.upload-zone.has-image .upload-formats { display: none; }
+.upload-zone.has-image .preview-img { display: block; }
+.upload-zone.has-image .preview-name { display: block; font-size: 13px; color: var(--text-secondary); }
+.preview-name { display: none; font-family: var(--font-mono); }
+
+/* Scan Button */
+.scan-btn {
+  width: 100%; padding: 16px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--green-500), var(--green-600));
+  font-size: 15px; font-weight: 700; cursor: pointer; border: none;
+  color: #070d0a; margin-top: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+}
+.scan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.5);
+}
+.scan-btn:disabled {
+  opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
+}
+.scan-btn .spinner {
+  display: none; width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: #070d0a; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.scan-btn.loading .spinner { display: block; }
+.scan-btn.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Results Panel */
+.results-panel { display: flex; flex-direction: column; gap: 20px; }
+.result-placeholder {
+  border-radius: var(--radius-lg); background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 50px 30px; text-align: center; min-height: 380px;
+}
+.result-placeholder-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.35; }
+.result-placeholder p { color: var(--text-muted); font-size: 14px; }
+
+/* Result Cards */
+.result-card {
+  border-radius: var(--radius-lg); background: var(--bg-card);
+  border: 1px solid var(--border-subtle); overflow: hidden;
+  display: none; animation: fadeInUp 0.45s ease both;
+}
+.result-card.show { display: block; }
+.result-card-header {
+  padding: 18px 22px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.result-card-header h4 {
+  font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+}
+.result-card-body { padding: 22px; }
+
+/* Confidence Ring */
+.confidence-ring-wrapper {
+  display: flex; align-items: center; gap: 22px;
+}
+.confidence-ring { width: 84px; height: 84px; position: relative; }
+.confidence-ring svg { transform: rotate(-90deg); }
+.confidence-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+.confidence-ring-fill {
+  fill: none; stroke: var(--green-400); stroke-width: 7;
+  stroke-linecap: round; stroke-dasharray: 226;
+  stroke-dashoffset: 226; transition: stroke-dashoffset 1.4s ease;
+}
+.confidence-ring-text {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-family: var(--font-display);
+  font-size: 18px; font-weight: 800;
+}
+.disease-name {
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+}
+.disease-crop {
+  font-size: 13px; color: var(--teal-400); margin-top: 4px; font-weight: 600;
+}
+
+/* Severity Badges */
+.severity-badge {
+  padding: 5px 12px; border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+}
+.severity-badge.high { background: rgba(248, 113, 113, 0.18); color: var(--red-400); }
+.severity-badge.moderate { background: rgba(251, 191, 36, 0.18); color: var(--amber-400); }
+.severity-badge.healthy { background: rgba(74, 222, 128, 0.18); color: var(--green-400); }
+
+/* Differential Top-3 Bars */
+.diff-bar-row { margin-bottom: 12px; }
+.diff-labels { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.diff-name { font-weight: 600; }
+.diff-percent { font-family: var(--font-mono); color: var(--teal-400); font-weight: 700; }
+.diff-track {
+  width: 100%; height: 8px; background: var(--surface-elevated);
+  border-radius: var(--radius-full); overflow: hidden;
+}
+.diff-fill {
+  height: 100%; border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--green-500), var(--teal-400), var(--cyan-400));
+  transition: width 1s ease;
+}
+
+/* Grad-CAM Viewer & Opacity Slider */
+.gradcam-dual-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;
+}
+.gradcam-box {
+  background: var(--bg-primary); border-radius: var(--radius-md);
+  overflow: hidden; text-align: center; padding: 6px;
+  border: 1px solid var(--border-subtle);
+}
+.gradcam-box img {
+  width: 100%; height: 160px; object-fit: contain; border-radius: var(--radius-sm);
+}
+.gradcam-caption { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.slider-container {
+  display: flex; align-items: center; gap: 12px; font-size: 12px;
+  color: var(--text-secondary); margin-top: 8px;
+}
+.slider-container input[type="range"] {
+  flex: 1; accent-color: var(--teal-400); cursor: pointer;
+}
+
+/* Treatment Accordion */
+.treatment-list { display: flex; flex-direction: column; gap: 8px; }
+.treatment-item {
+  border-radius: var(--radius-md); background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle); overflow: hidden;
+  transition: var(--transition-fast);
+}
+.treatment-item:hover { border-color: var(--border-active); }
+.treatment-header {
+  padding: 13px 16px; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer;
+  font-size: 13.5px; font-weight: 600;
+}
+.treatment-header .chevron { transition: var(--transition-fast); font-size: 11px; color: var(--text-muted); }
+.treatment-item.open .treatment-header .chevron { transform: rotate(180deg); }
+.treatment-body {
+  padding: 0 16px; max-height: 0; overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.treatment-item.open .treatment-body {
+  padding: 0 16px 14px; max-height: 350px;
+}
+.treatment-body p {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CROPS SHOWCASE
+   ═══════════════════════════════════════════════════════ */
+.crops-scroll {
+  display: flex; gap: 14px; overflow-x: auto; padding: 20px 0;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; margin-top: 36px;
+}
+.crops-scroll::-webkit-scrollbar { display: none; }
+.crop-chip {
+  flex-shrink: 0; scroll-snap-align: start;
+  padding: 10px 22px; border-radius: var(--radius-full);
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  font-size: 14px; font-weight: 500; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; transition: var(--transition-smooth);
+}
+.crop-chip:hover {
+  border-color: var(--green-400);
+  background: rgba(74, 222, 128, 0.06);
+  transform: translateY(-2px);
+}
+.crop-chip.active {
+  background: linear-gradient(135deg, var(--green-500), var(--green-600));
+  color: #070d0a; border-color: transparent; font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODEL PERFORMANCE SECTION
+   ═══════════════════════════════════════════════════════ */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.metric-card {
+  padding: 30px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  transition: var(--transition-smooth);
+}
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  border-color: var(--border-active);
+}
+.metric-card-label {
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;
+}
+.metric-card-value {
+  font-family: var(--font-display); font-size: 40px; font-weight: 800;
+  margin-bottom: 6px;
+}
+.metric-card-value.green {
+  background: linear-gradient(135deg, var(--green-300), var(--lime-400));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.metric-card-detail { font-size: 13px; color: var(--text-secondary); }
+.metric-card-bar { margin-top: 14px; }
+.metric-card-bar .bar-track {
+  height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06);
+}
+.metric-card-bar .bar-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--green-500), var(--lime-400));
+}
+
+/* Chart Container */
+.chart-container {
+  margin-top: 48px; padding: 36px;
+  border-radius: var(--radius-lg); background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+.chart-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 28px;
+}
+.chart-header h4 { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.chart-legend { display: flex; gap: 20px; }
+.chart-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary);
+}
+.chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.chart-area {
+  height: 240px; position: relative;
+  display: flex; align-items: flex-end; gap: 4px;
+  padding-bottom: 30px; border-bottom: 1px solid var(--border-subtle);
+}
+.chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.chart-bar {
+  width: 100%; max-width: 40px; border-radius: 4px 4px 0 0;
+  transition: height 1s ease, opacity 0.3s;
+  position: relative;
+}
+.chart-bar.train-acc { background: linear-gradient(180deg, var(--green-400), var(--green-600)); }
+.chart-bar.val-acc { background: linear-gradient(180deg, var(--lime-400), var(--teal-400)); }
+.chart-epoch {
+  position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-muted); white-space: nowrap;
+}
+.chart-y-labels {
+  position: absolute; left: -36px; top: 0; bottom: 30px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.chart-y-label { font-size: 10px; color: var(--text-muted); }
+
+/* Architecture Flow */
+.arch-flow {
+  display: flex; align-items: center; gap: 0;
+  margin-top: 44px; overflow-x: auto; padding: 18px 0;
+}
+.arch-node {
+  flex-shrink: 0; padding: 22px 26px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  text-align: center; min-width: 160px;
+  transition: var(--transition-smooth);
+}
+.arch-node:hover {
+  transform: translateY(-4px);
+  border-color: var(--green-400);
+}
+.arch-node-icon { font-size: 26px; margin-bottom: 8px; }
+.arch-node h5 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.arch-node p { font-size: 11px; color: var(--text-muted); }
+.arch-arrow {
+  flex-shrink: 0; width: 44px; display: flex; align-items: center; justify-content: center;
+  color: var(--green-400); font-size: 18px;
+}
+
+/* Team Grid */
+.team-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.team-card {
+  padding: 36px 28px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  text-align: center; transition: var(--transition-smooth);
+}
+.team-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--green-400);
+}
+.team-avatar {
+  width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 18px;
+  background: linear-gradient(135deg, var(--green-500), var(--emerald-400));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800; font-family: var(--font-display);
+  color: #070d0a;
+}
+.team-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.team-card .team-id { font-size: 13px; color: var(--green-400); font-weight: 600; margin-bottom: 8px; }
+.team-card .team-role { font-size: 13px; color: var(--text-muted); }
+
+/* Footer */
+.footer {
+  padding: 60px 40px; text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
+.footer-logo {
+  font-family: var(--font-display); font-size: 24px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.footer-tagline { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+.footer-links { display: flex; gap: 24px; justify-content: center; }
+.footer-link { font-size: 13px; color: var(--text-secondary); transition: var(--transition-fast); }
+.footer-link:hover { color: var(--green-400); }
+.footer-bottom {
+  margin-top: 36px; font-size: 12px; color: var(--text-muted); line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-visual { display: none; }
+  .scan-layout { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .section { padding: 80px 20px; }
+  .scan-section { padding: 24px; }
+  .metrics-grid { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .arch-flow { flex-wrap: wrap; gap: 12px; }
+  .arch-arrow { transform: rotate(90deg); width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-bg">
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb"></div>
+</div>
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    PakAgriVision
+  </div>
+  <div class="nav-links">
+    <a class="nav-link active" href="#hero">Home</a>
+    <a class="nav-link" href="#how-it-works">How It Works</a>
+    <a class="nav-link" href="#diagnose">Diagnose</a>
+    <a class="nav-link" href="#performance">Performance</a>
+    <a class="nav-link" href="#architecture">Architecture</a>
+    <a class="nav-link" href="#team">Team</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
+      <span id="themeIcon">☀️</span> <span id="themeLabel">Light</span>
+    </button>
+    <button class="nav-cta" onclick="document.getElementById('diagnose').scrollIntoView({behavior:'smooth'})">
+      Start Diagnosis →
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero section" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      AI-Powered Foliar Pathology
+    </div>
+    <h1>
+      Detect Crop<br>Diseases with<br><span class="gradient-text">AI Precision</span>
+    </h1>
+    <p>
+      Upload a photo of any leaf or capture live in the field. Our ResNet-50 model trained on 32,000+ curated agricultural images identifies 38 crop diseases instantly — with Grad-CAM explainability and vetted treatment plans.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('diagnose').scrollIntoView({behavior:'smooth'})">
+        🔬 Scan a Leaf Now
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('performance').scrollIntoView({behavior:'smooth'})">
+        View Model Stats
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-card-float">
+      <div class="hcf-header">
+        <div class="hcf-icon green">🎯</div>
+        <div>
+          <div class="hcf-title">Prediction Confidence</div>
+          <div class="hcf-subtitle">Tomato Late Blight</div>
+        </div>
+      </div>
+      <div class="hcf-bar"><div class="hcf-bar-fill green" style="width: 99.6%"></div></div>
+      <div style="font-size:12px; color:var(--text-muted); margin-top:6px; text-align:right">99.64%</div>
+    </div>
+    <div class="hero-card-float">
+      <div class="hcf-header">
+        <div class="hcf-icon amber">⚡</div>
+        <div>
+          <div class="hcf-title">Val Accuracy</div>
+          <div class="hcf-subtitle">Epoch 14 · Best</div>
+        </div>
+      </div>
+      <div class="hcf-stat" style="color: var(--green-400)">99.64<span class="unit">%</span></div>
+    </div>
+    <div class="hero-card-float">
+      <div class="hcf-header">
+        <div class="hcf-icon green">🌱</div>
+        <div>
+          <div class="hcf-title">Crops Monitored</div>
+        </div>
+      </div>
+      <div class="hcf-stat" style="color: var(--lime-400)">14<span class="unit"> species</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS BAR ═══════════════ -->
+<div class="section" style="padding-top: 0;">
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">99.70%</div>
+      <div class="stat-label">Test Accuracy</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">38</div>
+      <div class="stat-label">Disease Classes</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">31,694</div>
+      <div class="stat-label">Training Images</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">0.9961</div>
+      <div class="stat-label">Macro F1 Score</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section class="section" id="how-it-works">
+  <div class="section-label">How It Works</div>
+  <div class="section-title">Three Steps to<br>a Healthier Crop</div>
+  <div class="section-subtitle">From leaf photograph to actionable agronomic treatment — powered by deep learning and expert knowledge.</div>
+
+  <div class="steps-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px; margin-top:48px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
+      <div style="font-size:32px; margin-bottom:14px;">📸</div>
+      <h3 style="font-size:18px; margin-bottom:8px;">1. Provide Leaf Specimen</h3>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Upload a gallery photo, capture live with your camera, or select a pre-loaded viva sample.</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
+      <div style="font-size:32px; margin-bottom:14px;">🧠</div>
+      <h3 style="font-size:18px; margin-bottom:8px;">2. Real-Time Neural Inference</h3>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Flask backend evaluates the image through ResNet-50 weights and extracts Grad-CAM Layer 4 activation maps.</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:32px;">
+      <div style="font-size:32px; margin-bottom:14px;">🛡️</div>
+      <h3 style="font-size:18px; margin-bottom:8px;">3. Expert Advisory Plan</h3>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Receive chemical fungicides with exact dosages, organic bio-controls, and immediate containment measures.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CROPS SHOWCASE ═══════════════ -->
+<section class="section" style="padding-top: 20px;">
+  <div class="section-label">Supported Crops</div>
+  <div class="section-title">14 Crops. 38 Pathology Classes.</div>
+  <div class="crops-scroll">
+    <div class="crop-chip active"><span class="emoji">🍎</span> Apple</div>
+    <div class="crop-chip"><span class="emoji">🫐</span> Blueberry</div>
+    <div class="crop-chip"><span class="emoji">🍒</span> Cherry</div>
+    <div class="crop-chip"><span class="emoji">🌽</span> Corn</div>
+    <div class="crop-chip"><span class="emoji">🍇</span> Grape</div>
+    <div class="crop-chip"><span class="emoji">🍊</span> Orange</div>
+    <div class="crop-chip"><span class="emoji">🍑</span> Peach</div>
+    <div class="crop-chip"><span class="emoji">🌶️</span> Pepper</div>
+    <div class="crop-chip"><span class="emoji">🥔</span> Potato</div>
+    <div class="crop-chip"><span class="emoji">🫐</span> Raspberry</div>
+    <div class="crop-chip"><span class="emoji">🫘</span> Soybean</div>
+    <div class="crop-chip"><span class="emoji">🎃</span> Squash</div>
+    <div class="crop-chip"><span class="emoji">🍓</span> Strawberry</div>
+    <div class="crop-chip"><span class="emoji">🍅</span> Tomato</div>
+  </div>
+</section>
+
+<!-- ═══════════════ DIAGNOSE (CORE FLASK SCAN ENGINE) ═══════════════ -->
+<section class="section" id="diagnose">
+  <div class="scan-section">
+    <div class="section-label">Live AI Diagnosis Engine</div>
+    <div class="section-title">Scan Foliar Specimen</div>
+    <div class="section-subtitle">Powered by Flask REST API &amp; ResNet-50 PyTorch Backend.</div>
+
+    <!-- 1-Click Viva Demonstration Quick-Load Bar -->
+    <div class="viva-bar">
+      <div class="viva-bar-title">⚡ Viva Demonstration — One-Click Test Leaves:</div>
+      <div class="viva-chips-row">
+        <button class="viva-chip-btn" onclick="loadVivaSample('Tomato___Late_blight', 'Tomato — Late Blight')">🍅 Tomato Late Blight</button>
+        <button class="viva-chip-btn" onclick="loadVivaSample('Potato___Early_blight', 'Potato — Early Blight')">🥔 Potato Early Blight</button>
+        <button class="viva-chip-btn" onclick="loadVivaSample('Apple___Apple_scab', 'Apple — Apple Scab')">🍎 Apple Scab</button>
+        <button class="viva-chip-btn" onclick="loadVivaSample('Corn___Common_rust', 'Corn — Common Rust')">🌽 Corn Common Rust</button>
+        <button class="viva-chip-btn" onclick="loadVivaSample('Tomato___healthy', 'Tomato — Healthy Leaf')">🌿 Healthy Tomato</button>
+      </div>
+    </div>
+
+    <div class="scan-layout">
+      <!-- Left Column: Input Selection -->
+      <div>
+        <div class="input-tabs-bar">
+          <button class="input-tab-btn active" id="tabUploadBtn" onclick="switchInputTab('upload')">📁 File Upload</button>
+          <button class="input-tab-btn" id="tabCameraBtn" onclick="switchInputTab('camera')">📸 Live Camera</button>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept="image/*" hidden>
+          <img class="preview-img" id="previewImg" alt="Specimen Preview">
+          <div class="upload-icon">📤</div>
+          <h4>Drop your leaf image here</h4>
+          <p>or click to browse local files (JPG, PNG)</p>
+          <div class="preview-name" id="previewName"></div>
+        </div>
+
+        <!-- Camera Zone -->
+        <div class="camera-zone" id="cameraZone">
+          <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+          <canvas id="cameraCanvas" style="display:none;"></canvas>
+          <div class="camera-controls">
+            <button class="camera-btn" onclick="stopCamera()">Cancel</button>
+            <button class="camera-btn primary" onclick="captureSnapshot()">📸 Take Snapshot</button>
+          </div>
+        </div>
+
+        <button class="scan-btn" id="scanBtn" disabled onclick="runInference()">
+          <span class="btn-text">🔬 Analyze Foliar Specimen</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+
+      <!-- Right Column: Results & Advisory -->
+      <div class="results-panel">
+        <!-- Placeholder -->
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div class="result-placeholder-icon">🌱</div>
+          <p>Select a viva sample, upload a leaf photograph,<br>or take a live camera photo to begin diagnosis.</p>
+        </div>
+
+        <!-- 1. Disease Detection Card -->
+        <div class="result-card" id="resultDisease">
+          <div class="result-card-header">
+            <h4>🎯 Pathology Diagnosis</h4>
+            <span class="severity-badge high" id="severityBadge">HIGH RISK</span>
+          </div>
+          <div class="result-card-body">
+            <div class="confidence-ring-wrapper">
+              <div class="confidence-ring">
+                <svg width="84" height="84" viewBox="0 0 84 84">
+                  <circle class="confidence-ring-bg" cx="42" cy="42" r="36"/>
+                  <circle class="confidence-ring-fill" id="confidenceRing" cx="42" cy="42" r="36"/>
+                </svg>
+                <div class="confidence-ring-text" id="confidenceText">0%</div>
+              </div>
+              <div>
+                <div class="disease-name" id="diseaseName">—</div>
+                <div class="disease-crop" id="diseaseCrop">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Differential Diagnosis (Top-3) Card -->
+        <div class="result-card" id="resultDiff">
+          <div class="result-card-header">
+            <h4>📈 Differential Diagnosis (Top-3 Predictions)</h4>
+          </div>
+          <div class="result-card-body" id="diffBarsContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- 3. Grad-CAM Explainability Card -->
+        <div class="result-card" id="resultGradcam">
+          <div class="result-card-header">
+            <h4>🔥 Grad-CAM Heatmap Localization</h4>
+          </div>
+          <div class="result-card-body">
+            <div class="gradcam-dual-grid">
+              <div class="gradcam-box">
+                <img id="origLeafImg" src="" alt="Original Leaf">
+                <div class="gradcam-caption">Original Specimen</div>
+              </div>
+              <div class="gradcam-box">
+                <img id="gradcamHeatmapImg" src="" alt="Grad-CAM Overlay">
+                <div class="gradcam-caption">Layer 4 Activation Overlay</div>
+              </div>
+            </div>
+            <div class="slider-container">
+              <span>Heatmap Intensity (α):</span>
+              <input type="range" id="alphaSlider" min="0" max="1" step="0.05" value="0.55" oninput="updateAlpha(this.value)">
+              <span id="alphaValText">0.55</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Treatment Plan Card -->
+        <div class="result-card" id="resultTreatment">
+          <div class="result-card-header">
+            <h4>🛡️ Agronomic Treatment Advisory</h4>
+          </div>
+          <div class="result-card-body">
+            <div class="treatment-list" id="treatmentList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PERFORMANCE ═══════════════ -->
+<section class="section" id="performance">
+  <div class="section-label">Model Benchmarks</div>
+  <div class="section-title">Validation Metrics</div>
+  <div class="section-subtitle">ResNet-50 trained on 31,694 images across 15 epochs with Cosine Annealing.</div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-card-label">Test Accuracy</div>
+      <div class="metric-card-value green">99.70%</div>
+      <div class="metric-card-detail">4,768 test samples · 38 classes</div>
+      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.7%"></div></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-label">Macro F1 Score</div>
+      <div class="metric-card-value green">0.9961</div>
+      <div class="metric-card-detail">Weighted F1: 0.9971</div>
+      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.6%"></div></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-label">Best Val Accuracy</div>
+      <div class="metric-card-value green">99.64%</div>
+      <div class="metric-card-detail">Epoch 14 · Loss: 0.0169</div>
+      <div class="metric-card-bar"><div class="bar-track"><div class="bar-fill" style="width:99.64%"></div></div></div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-header">
+      <h4>Training &amp; Validation Curves</h4>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--green-400)"></div>Train Accuracy</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--teal-400)"></div>Validation Accuracy</div>
+      </div>
+    </div>
+    <div class="chart-area" id="chartArea"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
+<section class="section" id="architecture">
+  <div class="section-label">Model Pipeline</div>
+  <div class="section-title">Under the Hood</div>
+  <div class="section-subtitle">ResNet-50 backbone with custom dropout head and Layer 4 Grad-CAM hooks.</div>
+
+  <div class="arch-flow">
+    <div class="arch-node">
+      <div class="arch-node-icon">📸</div>
+      <h5>Input Specimen</h5>
+      <p>224 × 224 × 3<br>ImageNet Normalized</p>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <div class="arch-node-icon">🏗️</div>
+      <h5>ResNet-50</h5>
+      <p>Deep Residual<br>Feature Backbone</p>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <div class="arch-node-icon">🔥</div>
+      <h5>Layer 4</h5>
+      <p>Conv Activations<br>Grad-CAM Target</p>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <div class="arch-node-icon">💧</div>
+      <h5>Dropout (0.3)</h5>
+      <p>Overfitting<br>Regularization</p>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node" style="border-color:var(--green-400);">
+      <div class="arch-node-icon">🎯</div>
+      <h5>38 Classes</h5>
+      <p>Softmax Probabilities<br>+ Treatment Advisory</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TEAM ═══════════════ -->
+<section class="section" id="team">
+  <div class="section-label">Team Yeagerists++</div>
+  <div class="section-title">Engineering Credits</div>
+
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">AA</div>
+      <h4>Abdul Ahad</h4>
+      <div class="team-id">24L-3029 · Leader</div>
+      <div class="team-role">Frontend UI/UX &amp; Full-Stack Flask Architecture</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">MA</div>
+      <h4>M. Anas</h4>
+      <div class="team-id">24L-3004</div>
+      <div class="team-role">Inference Engine &amp; Grad-CAM Optimization</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">BS</div>
+      <h4>M. Babar Shahzad</h4>
+      <div class="team-id">24L-3047</div>
+      <div class="team-role">Knowledge Base &amp; Treatment Service</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-logo">🌿 PakAgriVision</div>
+  <div class="footer-tagline">AI-Powered Foliar Pathology Detection for Pakistani Agriculture</div>
+  <div class="footer-links">
+    <a class="footer-link" href="#hero">Home</a>
+    <a class="footer-link" href="#diagnose">Diagnose</a>
+    <a class="footer-link" href="#performance">Performance</a>
+    <a class="footer-link" href="#architecture">Architecture</a>
+    <a class="footer-link" href="#team">Team</a>
+  </div>
+  <div class="footer-bottom">
+    © 2026 PakAgriVision · Team Yeagerists++ · FAST-NUCES · Deliverable 3 Flask Application
+    <br><span style="color:var(--text-muted);">Decision support engine only — consult a certified agronomist before applying chemical treatments.</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+   CLIENT JAVASCRIPT: REAL FLASK API INTEGRATION
+   ═══════════════════════════════════════════════════════ -->
+<script>
+let currentImageData = null; // base64 or File
+let currentActiveBlob = null;
+let currentDiagnosisData = null;
+let cameraStream = null;
+
+// ─── THEME TOGGLE ───
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('pav_theme', next); } catch(e){}
+  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = next === 'dark' ? 'Light' : 'Dark';
+}
+// Init theme
+try {
+  const saved = localStorage.getItem('pav_theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeIcon').textContent = saved === 'dark' ? '☀️' : '🌙';
+    document.getElementById('themeLabel').textContent = saved === 'dark' ? 'Light' : 'Dark';
+  }
+} catch(e){}
+
+// ─── INPUT TABS (UPLOAD vs CAMERA) ───
+function switchInputTab(tab) {
+  const uploadZone = document.getElementById('uploadZone');
+  const cameraZone = document.getElementById('cameraZone');
+  const tabUpload = document.getElementById('tabUploadBtn');
+  const tabCamera = document.getElementById('tabCameraBtn');
+
+  if (tab === 'upload') {
+    uploadZone.style.display = 'flex';
+    cameraZone.style.display = 'none';
+    tabUpload.classList.add('active');
+    tabCamera.classList.remove('active');
+    stopCamera();
+  } else {
+    uploadZone.style.display = 'none';
+    cameraZone.style.display = 'block';
+    tabUpload.classList.remove('active');
+    tabCamera.classList.add('active');
+    startCamera();
+  }
+}
+
+// ─── FILE UPLOAD HANDLING ───
+const fileInput = document.getElementById('fileInput');
+const uploadZone = document.getElementById('uploadZone');
+const scanBtn = document.getElementById('scanBtn');
+const previewImg = document.getElementById('previewImg');
+const previewName = document.getElementById('previewName');
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentActiveBlob = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    currentImageData = ev.target.result;
+    previewImg.src = currentImageData;
+    uploadZone.classList.add('has-image');
+    previewName.textContent = file.name;
+    scanBtn.disabled = false;
+  };
+  reader.readAsDataURL(file);
+});
+
+uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--green-400)'; });
+uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.style.borderColor = '';
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    fileInput.dispatchEvent(new Event('change'));
+  }
+});
+
+// ─── WEBRTC CAMERA ───
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    document.getElementById('cameraVideo').srcObject = cameraStream;
+  } catch(err) {
+    alert('Unable to access camera: ' + err.message);
+    switchInputTab('upload');
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+}
+
+function captureSnapshot() {
+  const video = document.getElementById('cameraVideo');
+  const canvas = document.getElementById('cameraCanvas');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  currentImageData = canvas.toDataURL('image/jpeg');
+  stopCamera();
+
+  // Show in upload zone preview
+  previewImg.src = currentImageData;
+  uploadZone.classList.add('has-image');
+  previewName.textContent = 'Live Field Snapshot.jpg';
+  scanBtn.disabled = false;
+  switchInputTab('upload');
+}
+
+// ─── 1-CLICK VIVA SAMPLES ───
+function loadVivaSample(className, label) {
+  // Fetch viva sample from backend
+  fetch(`/api/viva-sample/${className}`)
+    .then(r => r.json())
+    .then(data => {
+      currentImageData = data.image_base64;
+      previewImg.src = currentImageData;
+      uploadZone.classList.add('has-image');
+      previewName.textContent = `Viva Specimen: ${label}`;
+      scanBtn.disabled = false;
+      switchInputTab('upload');
+      // Auto-trigger analysis for instant viva presentation
+      runInference();
+    })
+    .catch(err => {
+      console.warn('Sample load fallback:', err);
+    });
+}
+
+// ─── RUN FLASK INFERENCE ───
+async function runInference() {
+  if (!currentImageData) return;
+
+  scanBtn.classList.add('loading');
+  scanBtn.disabled = true;
+
+  document.getElementById('resultPlaceholder').style.display = 'none';
+  document.querySelectorAll('.result-card').forEach(c => c.classList.remove('show'));
+
+  try {
+    const alpha = parseFloat(document.getElementById('alphaSlider').value) || 0.55;
+    const response = await fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        image: currentImageData,
+        alpha: alpha
+      })
+    });
+
+    const result = await response.json();
+    currentDiagnosisData = result;
+
+    // 1. Diagnosis Header
+    document.getElementById('diseaseName').textContent = result.disease;
+    document.getElementById('diseaseCrop').textContent = `${result.crop} · ${result.predicted_class}`;
+    document.getElementById('confidenceText').textContent = `${result.confidence.toFixed(1)}%`;
+
+    const ring = document.getElementById('confidenceRing');
+    const circumference = 2 * Math.PI * 36;
+    ring.style.strokeDashoffset = circumference - (result.confidence / 100) * circumference;
+
+    const badge = document.getElementById('severityBadge');
+    badge.className = `severity-badge ${result.severity}`;
+    badge.textContent = result.severity === 'high' ? 'HIGH RISK' : result.severity === 'moderate' ? 'MODERATE' : 'HEALTHY SPECIMEN';
+
+    // 2. Differential Top-3 Bars
+    const diffContainer = document.getElementById('diffBarsContainer');
+    diffContainer.innerHTML = result.top_3.map(item => `
+      <div class="diff-bar-row">
+        <div class="diff-labels">
+          <span class="diff-name">${item.crop} — ${item.disease}</span>
+          <span class="diff-percent">${item.confidence.toFixed(2)}%</span>
+        </div>
+        <div class="diff-track">
+          <div class="diff-fill" style="width: ${item.confidence}%;"></div>
+        </div>
+      </div>
+    `).join('');
+
+    // 3. Grad-CAM Images
+    document.getElementById('origLeafImg').src = currentImageData;
+    document.getElementById('gradcamHeatmapImg').src = result.gradcam_base64;
+
+    // 4. Treatment Advisory Accordion
+    const t = result.treatment || {};
+    const treatmentItems = [
+      { icon: '⚡', label: 'Immediate Field Action', text: t.immediate_action || 'Inspect surrounding crops.' },
+      { icon: '🧪', label: 'Chemical Fungicides & Dosage', text: t.chemical_treatment || 'No chemical needed.' },
+      { icon: '🌿', label: 'OMRI-Listed Organic Treatment', text: t.organic_treatment || 'Cultural sanitation.' },
+      { icon: '🛡️', label: 'Cultural Prevention', text: t.prevention || 'Crop rotation & sanitation.' },
+      { icon: '🔬', label: 'Pathogen Cause & Etiology', text: `${t.cause || ''}<br><br><strong>Symptoms:</strong> ${t.symptoms || ''}` }
+    ];
+
+    document.getElementById('treatmentList').innerHTML = treatmentItems.map((item, i) => `
+      <div class="treatment-item ${i === 0 ? 'open' : ''}">
+        <div class="treatment-header" onclick="this.parentElement.classList.toggle('open')">
+          <span>${item.icon} ${item.label}</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="treatment-body"><p>${item.text}</p></div>
+      </div>
+    `).join('');
+
+    // Reveal result cards smoothly
+    setTimeout(() => document.getElementById('resultDisease').classList.add('show'), 80);
+    setTimeout(() => document.getElementById('resultDiff').classList.add('show'), 160);
+    setTimeout(() => document.getElementById('resultGradcam').classList.add('show'), 240);
+    setTimeout(() => document.getElementById('resultTreatment').classList.add('show'), 320);
+
+  } catch(err) {
+    alert('Diagnosis Error: ' + err.message);
+  } finally {
+    scanBtn.classList.remove('loading');
+    scanBtn.disabled = false;
+  }
+}
+
+// ─── DYNAMIC ALPHA SLIDER UPDATE (CLIENT BLENDING) ───
+async function updateAlpha(val) {
+  document.getElementById('alphaValText').textContent = val;
+  if (!currentImageData || !currentDiagnosisData) return;
+  try {
+    const res = await fetch('/api/gradcam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        image: currentImageData,
+        target_class: currentDiagnosisData.predicted_class,
+        alpha: parseFloat(val)
+      })
+    });
+    const data = await res.json();
+    if (data.gradcam_base64) {
+      document.getElementById('gradcamHeatmapImg').src = data.gradcam_base64;
+    }
+  } catch(e){}
+}
+
+// ─── DYNAMIC TRAINING CURVE CHART ───
+fetch('/api/history')
+  .then(r => r.json())
+  .then(trainHistory => {
+    const container = document.getElementById('chartArea');
+    container.innerHTML = '';
+
+    const yLabels = document.createElement('div');
+    yLabels.className = 'chart-y-labels';
+    ['100%', '75%', '50%', '25%', '0%'].forEach(t => {
+      const sp = document.createElement('span');
+      sp.className = 'chart-y-label';
+      sp.textContent = t;
+      yLabels.appendChild(sp);
+    });
+    container.appendChild(yLabels);
+
+    const maxHeight = 190;
+    trainHistory.forEach((d, i) => {
+      const group = document.createElement('div');
+      group.className = 'chart-bar-group';
+      group.style.position = 'relative';
+
+      const trainBar = document.createElement('div');
+      trainBar.className = 'chart-bar train-acc';
+      trainBar.style.height = '0px';
+      setTimeout(() => { trainBar.style.height = (d.trainAcc * maxHeight) + 'px'; }, 100 + i * 50);
+
+      const valBar = document.createElement('div');
+      valBar.className = 'chart-bar val-acc';
+      valBar.style.height = '0px';
+      setTimeout(() => { valBar.style.height = (d.valAcc * maxHeight) + 'px'; }, 200 + i * 50);
+
+      const epochLabel = document.createElement('span');
+      epochLabel.className = 'chart-epoch';
+      epochLabel.textContent = 'E' + d.epoch;
+
+      const barWrapper = document.createElement('div');
+      barWrapper.style.display = 'flex';
+      barWrapper.style.gap = '3px';
+      barWrapper.style.alignItems = 'flex-end';
+      barWrapper.style.height = maxHeight + 'px';
+      barWrapper.appendChild(trainBar);
+      barWrapper.appendChild(valBar);
+
+      group.appendChild(barWrapper);
+      group.appendChild(epochLabel);
+      container.appendChild(group);
+    });
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
+

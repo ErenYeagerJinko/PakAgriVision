@@ -63,6 +63,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.html
+!app/templates/*.html
 
 # ---------- Archives (datasets often arrive zipped) ----------
 *.zip
