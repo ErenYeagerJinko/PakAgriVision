@@ -24,3 +24,11 @@ jsonschema>=4.20.0
 pytest>=8.0.0
 jupyter>=1.0.0
 nbstripout>=0.7.0
+
+# Deliverable 3 - Streamlit Web Application & Interpretability
+streamlit>=1.30.0
+opencv-python-headless>=4.8.0
+
+# Deliverable 3 - Streamlit Web Application & Interpretability
+streamlit>=1.30.0
+opencv-python-headless>=4.8.0
