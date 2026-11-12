@@ -34,7 +34,7 @@
 
 \title{
     \textbf{PakAgriVision: Crop Disease Detector}\\
-    \large Deliverable 2: Model Architecture, Training \& Evaluation (Phase 3 \& 4)\\
+    \large Final Consolidated Technical Report (Deliverables 1--3)\\
     \normalsize Track A: Application Development
 }
 
@@ -53,7 +53,7 @@
 \maketitle
 
 \begin{abstract}
-PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. Building upon Deliverable~1's curated dataset foundations ($\sim$32,000 balanced images across 38 classes and 38-class treatment knowledge base), this Deliverable~2 report presents the complete Phase~3 Model Architecture and Phase~4 Training and Evaluation pipeline. We implement a deep residual classifier (ResNet-50) featuring a custom regularization head ($p=0.30$ dropout and 38-class projection) and an explicit Grad-CAM explainability target layer. Training incorporates class-weighted cross-entropy with label smoothing, AdamW optimization, a two-stage progressive fine-tuning schedule (head-only warm-up followed by cosine annealing), and a structured 13-trial hyperparameter tuning protocol. The resulting baseline model achieves \textbf{99.64\% validation accuracy} and a \textbf{0.9961 macro-F1 score} with a validation loss of \textbf{0.0169}. We detail evaluation methodology across macro precision/recall, one-vs-rest AUC-ROC, top-3 metrics, error analysis, a comprehensive Bias Check auditing class-size disparities and lab-vs-field generalization gaps, and the complete individual contribution breakdown.
+PakAgriVision is an experimental agricultural decision-support application for leaf-image disease identification and sourced treatment guidance. This report consolidates dataset preparation, model development, evaluation and local application deployment across Deliverables~1--3. The curated PlantVillage dataset contains 31,694 images across 38 classes, linked to a schema-validated treatment knowledge base. A fine-tuned ResNet-50 uses a dropout classification head, class-weighted cross-entropy, AdamW optimization and a head-warm-up/cosine schedule; a 13-trial tuning protocol examines alternative configurations. The baseline achieves \textbf{99.64\% validation accuracy} and \textbf{99.71\% lab test accuracy}, but only \textbf{24.73\% field test accuracy}, demonstrating a substantial generalization gap. A local Flask dashboard integrates image upload, top-three predictions, real Grad-CAM overlays and confidence-aware chemical, organic and cultural-management panels. Below 60\% confidence, product instructions are withheld and users are directed to obtain an in-person assessment. Strict checkpoint and knowledge-base checks prevent fabricated fallback diagnoses. Source links, product-label precautions and agronomist consultation remain necessary even at higher confidence; neither confidence nor visual attention establishes a verified disease diagnosis.
 \end{abstract}
 
 % Deliverable 1 Foundations (Retained for complete context)
@@ -72,7 +72,7 @@ PakAgriVision is an AI-driven agricultural decision-support tool addressing late
 \input{sections/10_contributions.tex}
 
 \bibliographystyle{plain}
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{plantvillage}
 Hughes, D.~P., \& Salath{\'e}, M. (2015).
 An open access repository of images on plant health to enable the development of mobile disease diagnostics.
@@ -102,6 +102,17 @@ SGDR: Stochastic gradient descent with warm restarts.
 Singh, D., Jain, N., Jain, P., Kayal, P., Kumawat, S., \& Batra, N. (2020).
 PlantDoc: A dataset for visual plant disease detection.
 In \emph{Proceedings of the 7th ACM IKDD CoDS and 25th COMAD}, 249--253.
+\bibitem{pepper_bacterial_spot}
+NC State Extension.
+\emph{Bacterial Spot of Pepper and Tomato}.
+\url{https://content.ces.ncsu.edu/bacterial-spot-of-pepper-and-tomato}.
+Access date recorded in the curated knowledge base: 12 October 2026.
+
+\bibitem{tomato_late_blight}
+University of Minnesota Extension.
+\emph{Late Blight of Tomato}.
+\url{https://extension.umn.edu/diseases/late-blight}.
+Access date recorded in the curated knowledge base: 11 October 2026.
 \end{thebibliography}
 
 \end{document}

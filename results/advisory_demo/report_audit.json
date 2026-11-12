@@ -1,0 +1,29 @@
+{
+  "scope": "Structural citation, cross-reference, figure and KB registry checks; live URLs and agronomic claims not reverified",
+  "source_files": 12,
+  "citation_keys": [
+    "adamw",
+    "cosine_annealing",
+    "gradcam",
+    "pepper_bacterial_spot",
+    "plantdoc",
+    "plantvillage",
+    "resnet",
+    "tomato_late_blight"
+  ],
+  "bibliography_entries": 8,
+  "figure_count": 21,
+  "kb_source_urls": 53,
+  "missing_source_files": [],
+  "undefined_citations": [],
+  "duplicate_bibliography_keys": [],
+  "unused_bibliography_keys": [],
+  "undefined_references": [],
+  "duplicate_labels": [],
+  "missing_figures": [],
+  "unregistered_kb_urls": [],
+  "unreferenced_registry_urls": [
+    "https://www.canr.msu.edu/plant-disease/apple-cedar-apple-rust"
+  ],
+  "passed": true
+}
