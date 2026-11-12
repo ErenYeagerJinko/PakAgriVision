@@ -1,119 +1,93 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   PakAgriVision — Agronomic Bioluminescent Design System (Dark Green + Teal + Cyan)
+   PakAgriVision — Agronomic Bioluminescent Design System
    Dual-Theme Engine: Dark Mode (Default) & Light Mode (Daylight Agronomist)
    Track A: Lead Frontend Architect (Abdul Ahad, 24L-3029)
    ═══════════════════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* ─── THEME TOKENS: DARK MODE (DEFAULT) ─── */
-:root, [data-theme="dark"] {
+/* ─── BASE STREAMLIT APP VIEWPORT ─── */
+.stApp, [data-testid="stAppViewContainer"] {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  transition: background-color 0.25s ease, color 0.25s ease !important;
+}
+
+/* ─── DARK THEME (DEFAULT) ─── */
+.stApp.dark-theme,
+.stApp:not(.light-theme),
+[data-testid="stAppViewContainer"]:not(.light-theme) {
   --bg-primary: #070d0a;
   --bg-secondary: #0d1913;
   --bg-card: #12221b;
   --bg-card-hover: #172d24;
-  --bg-glass: rgba(18, 34, 27, 0.75);
   --surface-elevated: #1a3329;
-  --border-subtle: rgba(45, 212, 191, 0.16);
-  --border-active: rgba(34, 211, 238, 0.45);
-  --border-accent: #2dd4bf;
+  --border-subtle: rgba(45, 212, 191, 0.20);
+  --border-active: rgba(34, 211, 238, 0.50);
 
   --text-primary: #f0fdfa;
-  --text-secondary: rgba(240, 253, 250, 0.75);
-  --text-muted: rgba(240, 253, 250, 0.45);
+  --text-secondary: #ccfbf1;
+  --text-muted: #99f6e4;
 
-  /* Thematic Palette Trio */
   --green-400: #4ade80;
   --green-500: #22c55e;
-  --green-700: #15803d;
-  --green-900: #0f3820;
-
   --teal-300: #5eead4;
   --teal-400: #2dd4bf;
   --teal-500: #14b8a6;
-  --teal-600: #0d9488;
-
   --cyan-300: #67e8f9;
   --cyan-400: #22d3ee;
   --cyan-500: #06b6d4;
-  --cyan-600: #0891b2;
 
-  --amber-400: #fbbf24;
-  --red-400: #f87171;
-
-  --gradient-hero: linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(74, 222, 128, 0.25), rgba(20, 184, 166, 0.3), rgba(6, 182, 212, 0.25));
-  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-  --glow-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
-  --code-bg: #050b08;
-  --chip-bg: rgba(45, 212, 191, 0.12);
+  background-color: #070d0a !important;
+  color: #f0fdfa !important;
 }
 
-/* ─── THEME TOKENS: LIGHT MODE (DAYLIGHT AGRONOMIST) ─── */
-[data-theme="light"] {
+/* ─── LIGHT THEME (DAYLIGHT AGRONOMIST) ─── */
+.stApp.light-theme,
+[data-testid="stAppViewContainer"].light-theme {
   --bg-primary: #f5f9f7;
   --bg-secondary: #eaf4f0;
   --bg-card: #ffffff;
-  --bg-card-hover: #f3faf7;
-  --bg-glass: rgba(255, 255, 255, 0.92);
+  --bg-card-hover: #f0fdf9;
   --surface-elevated: #e6f3ee;
-  --border-subtle: rgba(13, 148, 136, 0.22);
-  --border-active: rgba(6, 182, 212, 0.55);
-  --border-accent: #0d9488;
+  --border-subtle: rgba(13, 148, 136, 0.25);
+  --border-active: rgba(6, 182, 212, 0.60);
 
   --text-primary: #091712;
-  --text-secondary: #274238;
-  --text-muted: #597a6e;
+  --text-secondary: #134e4a;
+  --text-muted: #115e59;
 
   --green-400: #16a34a;
   --green-500: #15803d;
-  --green-700: #166534;
-  --green-900: #14532d;
-
   --teal-300: #0d9488;
   --teal-400: #0f766e;
   --teal-500: #115e59;
-  --teal-600: #134e4a;
-
   --cyan-300: #0891b2;
   --cyan-400: #0e7490;
   --cyan-500: #155e75;
-  --cyan-600: #164e63;
 
-  --amber-400: #d97706;
-  --red-400: #dc2626;
-
-  --gradient-hero: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #155e75 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(6, 182, 212, 0.15));
-  --card-shadow: 0 4px 24px rgba(13, 148, 136, 0.10);
-  --glow-shadow: 0 0 16px rgba(13, 148, 136, 0.15);
-  --code-bg: #0d1e18;
-  --chip-bg: rgba(13, 148, 136, 0.12);
+  background-color: #f5f9f7 !important;
+  color: #091712 !important;
 }
 
-/* ─── STREAMLIT BASE OVERRIDES ─── */
-.stApp {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
-  font-family: 'Inter', -apple-system, sans-serif !important;
-}
-
-/* Streamlit main header / toolbar */
-header[data-testid="stHeader"] {
-  background-color: transparent !important;
-}
-
-/* Sidebar Styling */
+/* ─── SIDEBAR STYLING ─── */
 section[data-testid="stSidebar"] {
   background-color: var(--bg-secondary) !important;
   border-right: 1px solid var(--border-subtle) !important;
 }
 
-section[data-testid="stSidebar"] .stMarkdown h1,
-section[data-testid="stSidebar"] .stMarkdown h2,
-section[data-testid="stSidebar"] .stMarkdown h3 {
+section[data-testid="stSidebar"] * {
+  color: var(--text-primary) !important;
+}
+
+/* ─── TEXT & HEADINGS ─── */
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Space Grotesk', sans-serif !important;
   color: var(--text-primary) !important;
+  letter-spacing: -0.3px !important;
+}
+
+p, span, label, div {
+  color: var(--text-primary);
 }
 
 /* ─── CUSTOM AGRI HERO BANNER ─── */
@@ -121,10 +95,10 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  box-shadow: var(--card-shadow);
+  border-radius: 14px;
+  padding: 22px 26px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 
@@ -132,36 +106,35 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--green-500), var(--teal-400), var(--cyan-400));
+  background: linear-gradient(90deg, #22c55e, #2dd4bf, #22d3ee);
 }
 
 .agri-hero-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.9rem;
+  font-size: 1.85rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
   line-height: 1.2;
   margin-bottom: 6px;
+  color: var(--text-primary);
 }
 
 .agri-gradient-text {
-  background: linear-gradient(135deg, var(--green-400), var(--teal-300), var(--cyan-400));
+  background: linear-gradient(135deg, #4ade80, #2dd4bf, #22d3ee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .agri-hero-sub {
   color: var(--text-secondary);
-  font-size: 0.92rem;
+  font-size: 0.90rem;
   margin-bottom: 12px;
 }
 
-/* Metadata Chips */
 .agri-chips-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .agri-chip {
@@ -169,31 +142,21 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
   border: 1px solid var(--border-subtle);
   padding: 4px 12px;
   border-radius: 9999px;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
-.agri-chip strong {
-  color: var(--teal-300);
-}
-
-/* ─── CARDS & SURFACES ─── */
+/* ─── CUSTOM CARDS ─── */
 .agri-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 18px 20px;
   margin-bottom: 16px;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.agri-card:hover {
-  border-color: var(--border-active);
-  box-shadow: var(--glow-shadow);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .agri-card-title {
@@ -204,44 +167,35 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-/* ─── DIAGNOSIS CARD & GAUGE ─── */
+/* ─── DIAGNOSIS CARD ─── */
 .diagnosis-banner {
   background: var(--bg-card);
-  border: 2px solid var(--teal-500);
+  border: 2px solid var(--teal-400);
   border-radius: 14px;
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: var(--glow-shadow);
-}
-
-.diagnosis-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.20);
 }
 
 .disease-name {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .crop-name {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--teal-400);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
-/* Badges */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -255,56 +209,26 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
 }
 
 .status-badge-healthy {
-  background: rgba(34, 197, 94, 0.15);
-  color: var(--green-400);
-  border: 1px solid rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e !important;
+  border: 1px solid rgba(34, 197, 94, 0.45);
 }
 
 .status-badge-diseased {
-  background: rgba(248, 113, 113, 0.15);
-  color: var(--red-400);
-  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.18);
+  color: #f87171 !important;
+  border: 1px solid rgba(248, 113, 113, 0.45);
 }
 
-/* Circular Metric Display */
-.gauge-container {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.gauge-circle {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: radial-gradient(circle closest-side, var(--bg-card) 68%, transparent 70% 100%),
-              conic-gradient(var(--cyan-400) calc(var(--percent) * 1%), var(--surface-elevated) 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: var(--cyan-300);
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.25);
-}
-
-/* ─── TOP-3 PROBABILITY BARS ─── */
-.prob-card {
-  margin-top: 12px;
-}
-
+/* ─── PROBABILITY BARS ─── */
 .prob-row {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .prob-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   margin-bottom: 4px;
 }
 
@@ -315,8 +239,8 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
 
 .prob-percent {
   font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-  color: var(--teal-300);
+  font-weight: 700;
+  color: var(--teal-400);
 }
 
 .prob-track {
@@ -325,102 +249,77 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
   background: var(--surface-elevated);
   border-radius: 9999px;
   overflow: hidden;
-  padding: 1px;
 }
 
 .prob-bar {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, var(--green-500), var(--teal-400), var(--cyan-400));
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(90deg, #22c55e, #2dd4bf, #22d3ee);
 }
 
-/* ─── GRAD-CAM INTENSITY CONTAINER ─── */
-.gradcam-view {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 16px;
-  margin-top: 16px;
-}
-
-/* ─── TREATMENT ADVISORY ACCORDION / TABS ─── */
+/* ─── TREATMENT ADVISORY BOXES ─── */
 .treatment-box {
   background: var(--surface-elevated);
   border-left: 4px solid var(--teal-400);
-  border-radius: 0 10px 10px 0;
-  padding: 14px 18px;
-  margin-bottom: 12px;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin-bottom: 10px;
   font-size: 0.88rem;
-  line-height: 1.55;
+  line-height: 1.5;
+  color: var(--text-primary);
 }
 
 .treatment-box h5 {
-  font-family: 'Space Grotesk', sans-serif;
-  color: var(--teal-300);
+  color: var(--teal-400) !important;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
-/* ─── STREAMLIT NATIVE COMPONENT RE-SKINNING ─── */
-/* Primary Buttons */
+/* ─── STREAMLIT UI WIDGET RE-SKINNING ─── */
 .stButton > button {
-  background: linear-gradient(135deg, var(--teal-500), var(--cyan-500)) !important;
+  background: linear-gradient(135deg, #0d9488, #0891b2) !important;
   color: #ffffff !important;
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 700 !important;
   border: none !important;
-  border-radius: 10px !important;
-  padding: 8px 20px !important;
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3) !important;
+  border-radius: 8px !important;
+  padding: 8px 18px !important;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3) !important;
   transition: all 0.2s ease !important;
 }
 
 .stButton > button:hover {
-  background: linear-gradient(135deg, var(--teal-400), var(--cyan-400)) !important;
-  color: #070d0a !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.45) !important;
-}
-
-/* File Uploader */
-[data-testid="stFileUploader"] {
-  border: 2px dashed var(--teal-500) !important;
-  border-radius: 12px !important;
-  padding: 14px !important;
-  background: var(--surface-elevated) !important;
-  transition: border-color 0.2s ease !important;
-}
-
-[data-testid="stFileUploader"]:hover {
-  border-color: var(--cyan-400) !important;
+  background: linear-gradient(135deg, #14b8a6, #06b6d4) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(6, 182, 212, 0.45) !important;
 }
 
 /* Streamlit Tabs */
 .stTabs [data-baseweb="tab-list"] {
-  gap: 8px !important;
+  gap: 6px !important;
   background-color: var(--surface-elevated) !important;
-  padding: 6px !important;
-  border-radius: 10px !important;
+  padding: 5px !important;
+  border-radius: 8px !important;
   border: 1px solid var(--border-subtle) !important;
 }
 
 .stTabs [data-baseweb="tab"] {
-  border-radius: 8px !important;
+  border-radius: 6px !important;
   color: var(--text-secondary) !important;
   font-weight: 600 !important;
-  padding: 8px 16px !important;
+  padding: 6px 14px !important;
 }
 
 .stTabs [aria-selected="true"] {
-  background: linear-gradient(135deg, var(--teal-600), var(--cyan-600)) !important;
+  background: linear-gradient(135deg, #0f766e, #0e7490) !important;
   color: #ffffff !important;
   font-weight: 700 !important;
 }
 
-/* Sliders */
-[data-testid="stSlider"] [role="slider"] {
-  background-color: var(--cyan-400) !important;
-  box-shadow: 0 0 10px var(--cyan-400) !important;
+/* File Uploader Container */
+[data-testid="stFileUploader"] {
+  border: 1.5px dashed var(--teal-400) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  background: var(--surface-elevated) !important;
 }
-
