@@ -19,6 +19,85 @@ The project originated from the PlantVillage dataset (~54,000 raw images across 
 
 ---
 
+## Run the Local Application (Deliverable 3)
+
+After installing `requirements.txt` in the project virtual environment and downloading
+`runs/baseline/best.pt`, launch from Windows:
+
+```powershell
+.\scripts\run_app.bat
+```
+
+On macOS/Linux (or Git Bash):
+
+```bash
+bash scripts/run_app.sh
+```
+
+Both launchers open **http://127.0.0.1:8501**. They check dependencies, trained weights,
+class compatibility, treatment data and port availability before serving. They do not
+install packages or download weights silently. Stop with **Ctrl+C**.
+
+```bash
+python scripts/run_app.py --check                  # Preflight only
+python scripts/run_app.py --no-browser --port 8502 # Alternate port
+python app/app.py                                 # Direct Flask launch, port 5000
+```
+
+### Diagnosis and treatment safety
+
+Upload a JPEG, PNG or WebP leaf photo, optionally choose a crop, and run diagnosis.
+The dashboard shows top-three predictions, a real Grad-CAM overlay, immediate action,
+chemical/organic guidance, prevention, source links and the review date. The English/Urdu
+interface preserves the reviewed English treatment wording; the safety warning is bilingual.
+
+- **Below 60% confidence:** chemical and organic product instructions are withheld;
+  retake the photo and obtain an in-person assessment. The server enforces this policy.
+- **At or above 60%:** sourced guidance remains subject to local product labels and
+  agronomist verification. Healthy predictions do not recommend disease-control products.
+- Crop selection does **not** renormalize probabilities or inflate confidence.
+- No universal numeric pesticide dose is supplied; follow the registered product label
+  for rate, PPE, re-entry and pre-harvest intervals.
+- Missing/incompatible models or treatment data fail explicitly, never with demo diagnoses.
+  Grad-CAM errors are disclosed instead of drawing synthetic overlays.
+- Browser uploads are limited to 7 MB; API requests to 10 MB. Images must have at least
+  32 pixels per side and at most 20 megapixels.
+
+**Important limitation:** saved lab test accuracy is **99.71% (4,768 images)**, versus
+**24.73% on the field test set (93 images)**. Confidence is not disease severity, a
+calibrated correctness guarantee, or an out-of-distribution detector. Grad-CAM is not
+proof of disease. This is experimental decision support, not a prescription.
+
+![Local prediction and sourced treatment guidance](reports/figures/advisory_dashboard.png)
+
+### Verification and reproducible report artifacts
+
+```bash
+python -m pytest -q
+python data_scripts/validate_treatments.py --require-complete
+python scripts/generate_advisory_figures.py
+python scripts/audit_report.py --out results/advisory_demo/report_audit.json
+```
+
+The figure generator uses fixed, first-in-manifest validation/field examples with real
+checkpoint inference. It records paths, predictions and the checkpoint SHA-256 under
+`results/advisory_demo/`; it does not overwrite the saved benchmark evaluation.
+`tests/test_app_integration.py` includes a real-image/checkpoint smoke test (skipped
+when local assets are absent); the remaining boundary tests use explicit test fixtures.
+
+An optional real Chromium browser check captures the dashboard, tests language switching,
+warning rendering and mobile layout. It requires an installed Chrome/Edge/Chromium and
+`websocket-client` as a development-only dependency:
+
+```bash
+python scripts/check_app_browser.py --screenshot reports/figures/advisory_dashboard.png
+```
+
+See [`docs/deliverable3_babar.md`](docs/deliverable3_babar.md) for module ownership,
+API behavior, reproducibility commands and the viva walkthrough.
+
+---
+
 ## Directory Structure
 
 The repository follows the structure defined for Deliverable 1 and Deliverable 2. Key directories:
@@ -116,8 +195,12 @@ PakAgriVision/
 │   ├── proposal/              # Proposal .tex + compiled .pdf
 │   └── report/                # Main report LaTeX file
 │
-└── app/                       # Streamlit app (Phase 5)
-    └── .gitkeep
+└── app/                       # Flask dashboard and advisory integration (Phase 5)
+    ├── app.py                 # HTTP routes and input/error handling
+    ├── model_engine.py        # Shared inference/Grad-CAM adapter
+    ├── treatment_advisor.py   # Confidence-aware advisory presentation
+    ├── static/advisory.js     # Sourced treatment panel rendering
+    └── templates/index.html  # Bilingual dashboard
 ```
 
 ### Placement Rules (quick lookup)
@@ -284,7 +367,7 @@ pdflatex main.tex
 ## Key Project Goals
 
 1. **Classifier**: Fine-tuned ResNet-50 / EfficientNet-B0 on PlantVillage (38 disease classes)
-2. **Explainability**: Grad-CAM heatmaps integrated into Streamlit UI
+2. **Explainability**: Real Grad-CAM heatmaps integrated into the Flask UI
 3. **Treatment Engine**: Curated JSON mapping each of 38 classes to chemical/organic treatment, immediate action, and prevention measures
 4. **Robustness Testing**: Lab vs. field image performance gap analysis (≥150 real field images)
 

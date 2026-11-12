@@ -1,33 +1,34 @@
 \section{Team Contributions \& Task Distribution}
 \label{sec:contributions}
 
-In accordance with course deliverable requirements, Table~\ref{tab:contribution_table} provides a transparent breakdown of individual contributions, module ownership, and verified development tasks across Deliverables~1 and 2.
+Table~\ref{tab:contribution_table} summarizes module ownership and repository artifacts across Deliverables~1--3 (Phases~1--6). Integration changes connect the owned components rather than replacing their original responsibilities.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{\textbf{Verified Team Contribution and Module Ownership Table.}}
+\small
+\caption{Team contribution and module ownership across Deliverables~1--3.}
 \label{tab:contribution_table}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}p{2.6cm}l>{\raggedright\arraybackslash}p{9.2cm}c@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.75\textwidth}@{}}
 \toprule
-\textbf{Team Member} & \textbf{GitHub Handle} & \textbf{Owned Modules \& Technical Deliverables} & \textbf{Phase} \\
+\textbf{Team Member} & \textbf{Owned Modules \& Technical Deliverables} \\
 \midrule
-\textbf{Abdul Ahad} \newline (Leader, 24L-3029) & \texttt{@ErenYeagerJinko} & 
-\textbf{Deliverable 2:} Model architecture definitions (\texttt{src/models/classifier.py}), custom classification head, class-weighted loss and label smoothing (\texttt{src/losses.py}), AdamW optimizer and cosine warmup scheduler (\texttt{src/optim.py}), model test suite (\texttt{tests/test\_model.py}), YAML experiment configs (\texttt{configs/*.yaml}), baseline training execution (ResNet-50, 99.64\% val acc), model weights hosting and download automation (\texttt{scripts/download\_weights.py}), architecture diagram, full report drafting. \newline
-\textbf{Deliverable 1:} Repository architecture, dependencies (\texttt{requirements.txt}), .gitignore hygiene, raw PlantVillage acquisition. & 1--4 \\
+\textbf{Abdul Ahad} \newline Leader \newline 24L-3029 \newline \texttt{@ErenYeagerJinko} &
+\textbf{D1:} Repository structure, dependencies and dataset acquisition. \newline
+\textbf{D2:} Model architectures (\texttt{src/models/}), weighted loss, optimizer/scheduler, experiment configs, model tests, baseline training, weights download automation and architecture figures. \newline
+\textbf{D3:} Flask dashboard and HTML/CSS/JavaScript frontend, image-upload workflow, bilingual interface and benchmark visualizations. \\
 \midrule
-\textbf{M. Anas} \newline (24L-3004) & \texttt{@Plagiaryze2} & 
-\textbf{Deliverable 2:} Training engine loop with mixed precision and gradient clipping (\texttt{src/engine.py}), CLI training orchestrator with checkpointing (\texttt{src/train.py}), hyperparameter tuning harness (\texttt{src/tune.py}), engine unit tests (\texttt{tests/test\_engine.py}), training curves plotting (\texttt{src/plotting.py}). \newline
-\textbf{Deliverable 1:} Dataset class and DataLoader factory (\texttt{src/data/dataset.py}), image transforms and augmentation pipeline (\texttt{src/data/transforms.py}), data quality and deduplication scan (\texttt{src/data/quality.py}). & 1--4 \\
+\textbf{M. Anas} \newline 24L-3004 \newline \texttt{@Plagiaryze2} &
+\textbf{D1:} Dataset/DataLoader implementation, image transforms and quality/deduplication pipeline. \newline
+\textbf{D2:} Training engine, CLI orchestrator, checkpointing, tuning harness, engine tests and training plots. \newline
+\textbf{D3:} Shared inference engine (\texttt{src/inference.py}), Grad-CAM module (\texttt{src/explainability/gradcam.py}), corresponding tests and backend/explainability report material. \\
 \midrule
-\textbf{M. Babar Shahzad} \newline (24L-3047) & \texttt{@babarshahzad2005} & 
-\textbf{Deliverable 2:} Evaluation metrics suite (\texttt{src/metrics.py}), CLI evaluation module (\texttt{src/evaluate.py}), metric tests (\texttt{tests/test\_metrics.py}), error analysis and confusion matrix extraction (\texttt{src/analysis/error\_analysis.py}), systematic Bias Check auditing (\texttt{src/analysis/bias\_check.py}). \newline
-\textbf{Deliverable 1:} Field robustness image collection ($\ge 150$ images), field metadata mapping (\texttt{field\_meta/}), treatment knowledge base curation and JSON schema validation (\texttt{knowledge\_base/}). & 1--4 \\
+\textbf{M. Babar Shahzad} \newline 24L-3047 \newline \texttt{@babarshahzad2005} &
+\textbf{D1:} Field-image collection and metadata mapping, treatment curation and schema validation. \newline
+\textbf{D2:} Evaluation metrics/CLI, metric tests, error analysis and Bias Check. \newline
+\textbf{D3:} Validated knowledge-base service, confidence-aware advisory policy, Flask safety integration/shared-engine adapter, local launchers, treatment/integration tests, reproducible advisory figures, report Sections~\ref{subsec:treatment_advisory}--\ref{subsec:confidence_thresholding} and structural citation audit. \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabular}
 \end{table}
 
-\subsection{Individual Development Hygiene}
-All team members maintain individual module ownership, develop on separate feature branches, submit peer-reviewed pull requests, and write automated test suites for their respective codebases. No single member implements another member's assigned modules, ensuring rigorous adherence to university academic integrity standards.
-
+\subsection{Development History and Review Verification}
+The table describes module ownership and implementation artifacts, not independently verified commit totals, activity dates or completed peer reviews. Commit activity and peer-review requirements should be verified from the GitHub history before submission.

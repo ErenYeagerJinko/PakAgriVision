@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -24,13 +25,16 @@ from src.inference import InferenceEngine
 
 @pytest.fixture(scope="module")
 def inference_engine() -> InferenceEngine:
-    """Fixture providing initialized InferenceEngine on CPU."""
-    return InferenceEngine(
-        checkpoint_path=None,
-        backbone="resnet50",
-        num_classes=38,
-        device="cpu",
-    )
+    """Offline structural tests; trained-model behavior is covered by integration tests."""
+    from src.models.classifier import build_model
+    with patch("src.inference.build_model", side_effect=lambda **kwargs:
+               build_model(**{**kwargs, "pretrained": False})):
+        return InferenceEngine(
+            checkpoint_path=None,
+            backbone="resnet50",
+            num_classes=38,
+            device="cpu",
+        )
 
 
 @pytest.fixture

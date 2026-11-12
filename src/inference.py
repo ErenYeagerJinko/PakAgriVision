@@ -95,6 +95,9 @@ class InferenceEngine:
             if ckpt_p.is_file():
                 checkpoint = torch.load(ckpt_p, map_location="cpu", weights_only=False)
                 state_dict = checkpoint.get("model_state_dict", checkpoint)
+                checkpoint_classes = checkpoint.get("class_names")
+                if checkpoint_classes and list(checkpoint_classes) != self.class_names:
+                    raise ValueError("Checkpoint class order does not match the class manifest")
 
                 # Accommodate direct model or wrapper module
                 try:
@@ -105,8 +108,7 @@ class InferenceEngine:
                     else:
                         raise
             else:
-                # If path provided does not exist, initialize fresh model
-                pass
+                raise FileNotFoundError(f"Trained checkpoint not found: {ckpt_p}")
 
         return model
 
@@ -220,7 +222,7 @@ class InferenceEngine:
                 "crop": c_crop,
                 "condition": c_dis,
                 "is_healthy": c_healthy,
-                "probability": round(float(prob), 5),
+                "probability": float(prob),
                 "probability_pct": f"{float(prob) * 100:.1f}%",
             })
 
@@ -232,7 +234,7 @@ class InferenceEngine:
             "crop_name": crop_name,
             "disease_name": disease_name,
             "is_healthy": is_healthy,
-            "confidence": round(best_prob, 5),
+            "confidence": best_prob,
             "confidence_pct": f"{best_prob * 100:.1f}%",
             "top_k": top_k_candidates,
             "latency_ms": round(latency_ms, 2),

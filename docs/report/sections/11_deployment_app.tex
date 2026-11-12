@@ -6,15 +6,22 @@ Phase~5 operationalizes the trained crop disease diagnosis models into an intera
 \subsection{Frontend UI Architecture \& User Experience}
 \label{subsec:frontend_ux}
 % Section 11.1 - Owned by Abdul Ahad (Leader)
-\textit{[Authored by Abdul Ahad: Details Streamlit multi-stage layout, dual-upload webcam support, confidence meters, differential top-3 probability bars, and opacity slider controls.]}
+The local application uses Flask with a server-rendered HTML/CSS/JavaScript dashboard. Users capture or upload JPEG, PNG or WebP images, optionally select a crop, and request a diagnosis through \texttt{/api/predict}. The browser preserves aspect ratio while limiting large uploads to 1024 pixels on the longest side; the backend applies the shared evaluation transform. The response populates the predicted class, top-three probabilities, a real Grad-CAM overlay and sourced treatment panels. English/Urdu interface controls and a persistent light/dark theme support accessibility. Reviewed treatment text remains in English rather than being replaced with unverified translations; the confidence warning is also supplied in Urdu. Figure~\ref{fig:advisory_dashboard} shows a real local application response.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.77\textwidth,height=0.75\textheight,keepaspectratio]{advisory_dashboard.png}
+    \caption{Local Flask dashboard after a real validation-image upload: prediction, Grad-CAM, confidence-aware advisory panels, product-label precautions and source links. This is an illustrative case, not a performance estimate.}
+    \label{fig:advisory_dashboard}
+\end{figure}
 
 \subsection{Real-Time Backend Inference Engine}
 \label{subsec:inference_engine}
 % Section 11.2 - Owned by M. Anas (24L-3004)
-The backend inference service is implemented in \texttt{src/inference.py} around the \texttt{InferenceEngine} class, engineered to satisfy strict responsiveness constraints on commodity edge hardware ($<300$\,ms latency on standard multi-core CPUs and $<100$\,ms on CUDA-enabled GPUs).
+The backend inference service is implemented in \texttt{src/inference.py} around the \texttt{InferenceEngine} class, with CPU/CUDA device selection and deterministic evaluation preprocessing. The Flask adapter in \texttt{app/model\_engine.py} reuses this engine and the shared Grad-CAM implementation. Sub-300\,ms CPU and sub-100\,ms GPU execution are design targets, not universal latency guarantees; the complete request also includes image decoding, a separate gradient pass and serialization.
 
 \subsubsection{Model Ingestion and Device Management}
-To eliminate initialization latency on interactive web triggers, model loading decouples checkpoint weights from runtime evaluation loops. The engine automatically inspects local system capabilities, defaulting to \texttt{cuda:0} when an accelerator is present and safely falling back to CPU execution without manual configuration. In web deployment contexts (Streamlit), model instances are wrapped in \texttt{@st.cache\_resource}, ensuring that network architecture allocation and state dictionary mapping occur strictly once in the host process memory rather than repeating on successive user requests.
+To eliminate initialization latency on interactive web triggers, model loading decouples checkpoint weights from runtime evaluation loops. The engine automatically inspects local system capabilities, defaulting to \texttt{cuda:0} when an accelerator is present and safely falling back to CPU execution without manual configuration. In the current Flask deployment, a single engine is initialized at process startup. A re-entrant lock serializes model forwards and Grad-CAM hook activity within that process. A missing checkpoint, incompatible state dictionary or mismatched checkpoint class order prevents model readiness; the application never substitutes untrained-model predictions.
 
 \subsubsection{Input Ingestion, Sanitization, and Validation}
 In-field smartphone image uploads frequently feature diverse file formats, alpha channels, or transmission corruption. The preprocessing pipeline enforces strict data sanitization:
@@ -25,7 +32,7 @@ In-field smartphone image uploads frequently feature diverse file formats, alpha
         \mathbf{I}_{\text{RGB}} = \operatorname{Convert}(\mathbf{I}_{\text{input}}, \text{mode}=\text{RGB})
     \end{equation}
     preventing runtime channel-dimension mismatches in convolutional filters.
-    \item \textbf{Deterministic Evaluation Transform:} Standardized transforms match the validation protocol: bilinear resize to $256 \times 256$, center cropping to $224 \times 224 \times 3$, normalization to $[0.0, 1.0]$, and standard ImageNet channel centering:
+    \item \textbf{Deterministic Evaluation Transform:} Standardized transforms match the validation protocol: bilinear resize of the shorter edge to 256 pixels, center cropping to $224 \times 224 \times 3$, normalization to $[0.0, 1.0]$, and standard ImageNet channel centering:
     \begin{equation}
         \hat{x}_{c, i, j} = \frac{x_{c, i, j} - \mu_c}{\sigma_c}, \quad \mu = [0.485, 0.456, 0.406], \quad \sigma = [0.229, 0.224, 0.225]
     \end{equation}
@@ -41,7 +48,7 @@ Rather than emitting a single isolated label, the inference service extracts the
 \subsection{Explainable AI Pipeline: Grad-CAM Attribution}
 \label{subsec:gradcam_pipeline}
 % Section 11.3 - Owned by M. Anas (24L-3004)
-Deep neural network predictions in critical agronomic domains cannot rely on black-box heuristics. If a classifier makes a correct diagnosis by latching onto background soil, watermark tags, or fingers holding the leaf, it will fail catastrophically in unconstrained field deployments. To establish visual transparency and farmer trust, we implement a Gradient-weighted Class Activation Mapping (\textbf{Grad-CAM}) pipeline in \texttt{src/explainability/gradcam.py}.
+Deep neural network predictions in critical agronomic domains cannot rely on black-box heuristics. If a classifier makes a correct diagnosis by latching onto background soil, watermark tags, or fingers holding the leaf, it will fail catastrophically in unconstrained field deployments. To establish visual transparency and farmer trust, we implement a Gradient-weighted Class Activation Mapping (\textbf{Grad-CAM}) pipeline~\cite{gradcam} in \texttt{src/explainability/gradcam.py}.
 
 \subsubsection{Mathematical Formulation and Hook Architecture}
 Grad-CAM computes visual attribution by capturing spatial feature representations from the final convolutional layer of the backbone (the final bottleneck block of \texttt{layer4} in ResNet-50, yielding feature maps of spatial resolution $7 \times 7$ with 2048 channels). We register forward and backward PyTorch hooks to capture:
@@ -73,15 +80,59 @@ A colormap (such as \texttt{jet} or \texttt{turbo}) maps the normalized scalar i
 \begin{equation}
     \mathbf{I}_{\text{overlay}}(x, y) = (1 - \alpha) \cdot \mathbf{I}(x, y) + \alpha \cdot \mathbf{C}(x, y)
 \end{equation}
-This allows agronomists to slide smoothly between the natural leaf photograph and the heatmap, verifying that network attention directly aligns with necrotized lesion spots, pustules, or chlorotic leaf margins rather than healthy surrounding leaf tissue.
+The adapter overlays the heatmap on the exact $224\times224$ center-cropped model view, rather than stretching it over an uncropped photograph. The visualization identifies image regions contributing to the selected class score. It does not establish lesion segmentation, causal reasoning or a verified disease diagnosis. The REST endpoint supports a validated opacity parameter $\alpha\in[0,1]$; a visualization error produces an explicit notice rather than a synthetic overlay.
 
 \subsection{Agronomic Treatment Advisory Engine}
 \label{subsec:treatment_advisory}
 % Section 11.4 - Owned by M. Babar Shahzad
-\textit{[Authored by M. Babar Shahzad: Details treatment knowledge base schema, chemical/organic/cultural querying, and dosage guidelines.]}
+The advisory layer separates curated agronomic content from model execution. \texttt{knowledge\_base/kb\_service.py} implements \texttt{TreatmentKB}, which reads the existing 38-class JSON knowledge base once at startup. Before serving requests, it checks exact agreement with \texttt{splits/class\_names.json}, validates every record against the Draft-07 schema (including review-date format), verifies healthy flags, and requires the decision-support disclaimer and source URLs. Missing, unknown or malformed records disable treatment retrieval instead of falling back to a different disease.
+
+\subsubsection{Exact-Class Retrieval and Structured Panels}
+Each lookup returns an independent copy, preventing request-specific thresholding from changing the stored record. \texttt{app/treatment\_advisor.py} converts the record into a presentation-ready advisory with an explicit status, confidence policy and provenance. Four panels distinguish immediate action, chemical control, organic/biological options, and cultural prevention. Source links and the review date remain visible alongside every result. Extension references include NC State's bacterial-spot guidance~\cite{pepper_bacterial_spot} and the University of Minnesota's late-blight guidance~\cite{tomato_late_blight}; the full class-level reference registry remains in \texttt{knowledge\_base/SOURCES.md}.
+
+\subsubsection{Dosage and Regional Applicability}
+The curated entries do not provide universal numeric doses. Product formulation, concentration, crop registration and local restrictions can differ, so the service does not invent rates or infer a dose from a disease label. It displays the reviewed source wording and requires the applicable local product label for rate, protective equipment, re-entry interval and pre-harvest interval. The interface is decision support, not a prescription. Even confident predictions require local agronomist verification before product use. Healthy predictions recommend monitoring and cultural best practices rather than disease-control products.
+
+Figure~\ref{fig:advisory_workflow} summarizes retrieval and safety decisions; Figure~\ref{fig:advisory_examples} gives reproducible examples from the actual checkpoint.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{advisory_workflow.png}
+    \caption{Prediction-to-advisory workflow. Confidence is expressed on a 0--100 percentage scale. Both branches retain the source provenance and agronomic disclaimer; low-confidence requests receive no actionable product advice.}
+    \label{fig:advisory_workflow}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{advisory_prediction_examples.png}
+    \caption{Real baseline predictions, Grad-CAM overlays and confidence-gated advisory excerpts. The first manifest entry for each declared class/domain is used without correctness filtering. These examples do not replace the aggregate lab/field evaluation. Paths, predictions and checkpoint SHA-256 are recorded in \texttt{results/advisory\_demo/predictions.json}.}
+    \label{fig:advisory_examples}
+\end{figure}
 
 \subsection{Confidence Thresholding \& Error Handling}
 \label{subsec:confidence_thresholding}
 % Section 11.5 - Owned by M. Babar Shahzad
-\textit{[Authored by M. Babar Shahzad: Details fallback mechanisms, safety banners for low confidence predictions (<60\%), and ambiguous symptom warnings.]}
+\subsubsection{Server-Enforced Confidence Policy}
+Let $p_{\max}$ be the selected class probability from the original 38-class softmax, and $c=100p_{\max}$. The policy is
+\begin{equation}
+    \operatorname{status}(c,y)=
+    \begin{cases}
+        \text{uncertain}, & c<60,\\
+        \text{healthy}, & c\geq60\ \text{and }y\text{ is a healthy class},\\
+        \text{disease detected}, & c\geq60\ \text{otherwise}.
+    \end{cases}
+\end{equation}
+The exact boundary $c=60$ is not low confidence. Thresholding uses unrounded values and is applied on the server, not merely as a visual warning. Crop filtering restricts candidate ranking without renormalizing probabilities; otherwise a narrowly selected crop could create unjustifiably high confidence and bypass the gate.
+
+Below the threshold, the warning reads: ``Ambiguous symptoms detected. Verify in person before applying chemical treatments.'' Chemical and organic product instructions are withheld. Immediate-action and prevention text is replaced with conservative photo-retaking, scouting and sanitation guidance because the original fields can also contain spraying instructions. The API does not return an ungated second copy of the treatment. This applies even when the tentative class is healthy. At higher confidence, source-backed guidance remains subject to the same label and agronomist precautions. Confidence is not interpreted as disease severity; qualitative severity guidance is explicitly reference material for a confirmed diagnosis.
+
+\subsubsection{Failure Handling and Local Startup}
+Malformed JSON/base64, unsupported images, invalid crop/opacity parameters and images outside the size limits return HTTP~400. Requests above 10\,MB return HTTP~413. Images must be at least 32 pixels on each side and no more than 20 megapixels. Missing/incompatible model weights, missing verified treatment mappings and unavailable knowledge-base data return HTTP~503 without a diagnosis or treatment. Grad-CAM failures preserve an otherwise valid diagnosis but return a null overlay and explicit error notice. Missing local sample images return HTTP~404 rather than fabricated specimens. The browser checks HTTP status, clears stale results on new uploads or failed requests, and renders advisory content as text with safe source links.
+
+The Windows and POSIX launchers resolve paths relative to the repository, select a local virtual-environment interpreter, and run \texttt{scripts/run\_app.py}. Preflight checks verify dependencies, the trained checkpoint, knowledge-base readiness and port availability. The default launcher binds only to \texttt{127.0.0.1:8501}, opens a browser, disables debug mode and supports \texttt{--no-browser}, \texttt{--port} and \texttt{--check}. Direct execution of \texttt{app/app.py} retains port 5000 for compatibility.
+
+\subsubsection{Verification and Remaining Limitations}
+Unit and integration tests exercise all 38 mappings, independent-copy retrieval, corrupt/missing records, exact confidence boundaries, healthy/unknown classes, request validation, unavailable-model behavior and visualization failure handling. A separate real-checkpoint smoke test covers an actual image through prediction, Grad-CAM and sourced advisory retrieval. The optional Chromium smoke test covers real upload, language switching, warning rendering and mobile-width layout. Structural report checks validate citations, labels, included figures and the treatment-source registry; they do not constitute a fresh live-URL or agronomic-content review.
+
+The 60\% cutoff is a safety heuristic, not a calibrated correctness guarantee or an out-of-distribution detector. The saved baseline achieves 99.71\% accuracy on 4,768 lab test images but only 24.73\% on 93 field test images. A confidently wrong field prediction can still pass the gate. Consequently, the system remains an experimental decision-support tool, and independent local inspection is necessary before intervention.
 
