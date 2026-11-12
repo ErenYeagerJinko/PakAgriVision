@@ -802,15 +802,13 @@ svg { flex-shrink: 0; }
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.75;
+  opacity: 1;
 }
-.gradcam-heatmap-layer {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 45% 55%, rgba(220, 38, 38, 0.75) 0%, rgba(245, 158, 11, 0.5) 30%, rgba(34, 197, 94, 0.2) 60%, transparent 80%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
+.advisory-provenance { margin-top: 16px; font-size: 12px; overflow-wrap: anywhere; }
+.advisory-provenance p { margin: 8px 0; }
+.advisory-provenance ul { padding-inline-start: 20px; }
+#predictionError { padding: 12px; color: var(--text-main); border: 1px solid #d84315; }
+#predictionError[hidden] { display: none; }
 .gradcam-caption {
   font-size: 12px;
   color: var(--text-muted);
@@ -1456,7 +1454,7 @@ svg { flex-shrink: 0; }
           <div class="preview-overlay-info">
             <div>
               <div id="previewMetaText" style="font-weight: 700;">IMG_Field_Sample.jpg</div>
-              <div id="previewCompressText" style="opacity: 0.85;">Compressed to 224x224 (Low bandwidth mode)</div>
+              <div id="previewCompressText" style="opacity: 0.85;">Aspect ratio preserved; up to 1024 pixels</div>
             </div>
             <button type="button" class="btn-retake" id="btnRetakePhoto" data-i18n="btn_retake">Retake</button>
           </div>
@@ -1482,7 +1480,7 @@ svg { flex-shrink: 0; }
             <li data-i18n="tip_1">Focus on a <strong>single infected leaf</strong> rather than the entire bush.</li>
             <li data-i18n="tip_2">Avoid harsh solar glare; shade the leaf with your hand if sun is directly overhead.</li>
             <li data-i18n="tip_3">Make sure symptoms (spots, rust, mildew) are clearly visible and in focus.</li>
-            <li data-i18n="tip_4">Client automatically resizes to 224x224 to conserve cellular data.</li>
+            <li data-i18n="tip_4">Large images are resized without stretching to conserve cellular data.</li>
           </ul>
         </div>
 
@@ -1512,9 +1510,10 @@ svg { flex-shrink: 0; }
           <p style="font-size: 13px;" data-i18n="idle_desc">Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.</p>
         </div>
 
+        <p id="predictionError" role="alert" hidden></p>
         <!-- Active Results State -->
         <div class="results-active-container" id="resultsActiveState">
-          <!-- Simulation Transparency Notice -->
+          <!-- Runtime and knowledge-base provenance -->
           <div class="audit-disclaimer">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/>
@@ -1549,7 +1548,7 @@ svg { flex-shrink: 0; }
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
             <div>
-              <span data-i18n="low_conf_msg">Low model confidence (&lt;75%). Please retake the photo with better lighting, holding the leaf steady against a neutral background.</span>
+              <span id="advisoryWarningText">Ambiguous symptoms detected. Verify in person before applying chemical treatments.</span>
             </div>
           </div>
 
@@ -1603,10 +1602,10 @@ svg { flex-shrink: 0; }
             </div>
             <div class="gradcam-visual-container">
               <img id="gradcamBaseImg" class="gradcam-img-base" src="" alt="Grad-CAM base image">
-              <div class="gradcam-heatmap-layer" id="gradcamHeatmapLayer"></div>
+
             </div>
-            <p class="gradcam-caption" data-i18n="gradcam_desc">
-              <strong>Farmer Plain Language Guide:</strong> Red and warm highlighted areas show exactly where the neural network detected pathological lesions on the leaf tissue.
+            <p class="gradcam-caption" id="gradcamStatus" data-i18n="gradcam_desc">
+              <strong>Attention guide:</strong> Warm regions contributed to the model score. They do not prove the presence or location of disease.
             </p>
           </div>
 
@@ -1620,7 +1619,7 @@ svg { flex-shrink: 0; }
 
           <!-- Actionable Treatment Guidance Accordions -->
           <div class="treatment-plan-section">
-            <div class="treatment-section-title" data-i18n="treatment_heading">Prescribed Treatment & Management Plan</div>
+            <div class="treatment-section-title" data-i18n="treatment_heading">Treatment Guidance & Management</div>
             <div class="accordion-group">
               
               <!-- 1. Immediate Action -->
@@ -1635,7 +1634,7 @@ svg { flex-shrink: 0; }
                   </svg>
                 </button>
                 <div class="accordion-content open" id="accImmediate" role="region" aria-labelledby="btnAccImmediate">
-                  <p id="treatmentImmediateText">Spray the entire affected plot as soon as late blight is identified. Quickly remove and destroy infected pockets to stop air-borne spore spread. Avoid harvesting or entering rows while vines are wet.</p>
+                  <p id="treatmentImmediateText">Awaiting a verified prediction.</p>
                 </div>
               </div>
 
@@ -1651,7 +1650,7 @@ svg { flex-shrink: 0; }
                   </svg>
                 </button>
                 <div class="accordion-content" id="accChemical" role="region" aria-labelledby="btnAccChemical">
-                  <p id="treatmentChemicalText">Apply protectant fungicides such as chlorothalonil or mancozeb before symptoms escalate. Under severe pressure, alternate with systemic fungicides adhering strictly to FRAC group rotations to avoid chemical resistance.</p>
+                  <p id="treatmentChemicalText">Awaiting a verified prediction.</p>
                 </div>
               </div>
 
@@ -1667,7 +1666,7 @@ svg { flex-shrink: 0; }
                   </svg>
                 </button>
                 <div class="accordion-content" id="accOrganic" role="region" aria-labelledby="btnAccOrganic">
-                  <p id="treatmentOrganicText">OMRI-approved copper hydroxide or copper sulfate sprays. Combine with bio-fungicides such as Bacillus subtilis where allowed. Ensure complete leaf surface coverage on undersides.</p>
+                  <p id="treatmentOrganicText">Awaiting a verified prediction.</p>
                 </div>
               </div>
 
@@ -1683,10 +1682,19 @@ svg { flex-shrink: 0; }
                   </svg>
                 </button>
                 <div class="accordion-content" id="accPrevention" role="region" aria-labelledby="btnAccPrevention">
-                  <p id="treatmentPreventionText">Plant certified disease-free seeds/transplants. Practice 3-year crop rotation avoiding solanaceous plants. Ensure adequate furrow drainage and avoid late-afternoon overhead sprinkler irrigation.</p>
+                  <p id="treatmentPreventionText">Awaiting a verified prediction.</p>
                 </div>
               </div>
 
+            </div>
+            <div class="advisory-provenance">
+              <p id="treatmentSeverityText"></p>
+              <p id="dosageNotice"></p>
+              <p id="advisoryDisclaimer"></p>
+              <p id="knowledgeLanguageNotice"></p>
+              <p id="treatmentReview"></p>
+              <strong id="treatmentSourcesTitle">Sources</strong>
+              <ul id="treatmentSources"></ul>
             </div>
           </div>
 
@@ -1740,7 +1748,7 @@ svg { flex-shrink: 0; }
       <div class="workflow-card">
         <div class="step-badge">1</div>
         <h3 data-i18n="step1_title">Edge Photo Intake</h3>
-        <p data-i18n="step1_desc">The camera captures an uncompressed raw image. Client-side HTML5 canvas downsamples the image to 224x224 RGB, reducing payload from 5MB to under 40KB for rapid wireless transfer.</p>
+        <p data-i18n="step1_desc">The browser preserves image proportions while limiting the longest side to 1024 pixels. The backend then applies the shared evaluation transform.</p>
       </div>
       <div class="workflow-card">
         <div class="step-badge">2</div>
@@ -1750,7 +1758,7 @@ svg { flex-shrink: 0; }
       <div class="workflow-card">
         <div class="step-badge">3</div>
         <h3 data-i18n="step3_title">Knowledge Base Query</h3>
-        <p data-i18n="step3_desc">Diagnosis triggers a deterministic query to the curated treatments knowledge base (`treatments.json`), retrieving validated dosages, safety guidelines, and organic remedies.</p>
+        <p data-i18n="step3_desc">Diagnosis retrieves source-backed treatment options, product-label safety guidance, and prevention measures.</p>
       </div>
     </div>
   </div>
@@ -2024,6 +2032,7 @@ svg { flex-shrink: 0; }
      CLIENT SCRIPT: DATA-DRIVEN CSV CHARTS, BILINGUAL TRANSLATION,
      ACCORDIONS & REAL FLASK API INTEGRATION
      ───────────────────────────────────────────────────────────── -->
+<script src="{{ url_for('static', filename='advisory.js') }}" defer></script>
 <script>
 // RAW SERVER-SIDE DATA INJECTED DIRECTLY FROM results/ CSVs
 const SERVER_HISTORY = {{ (history or []) | tojson }};
@@ -2086,19 +2095,19 @@ const I18N = {
     tip_1: "Focus on a <strong>single infected leaf</strong> rather than the entire bush.",
     tip_2: "Avoid harsh solar glare; shade the leaf with your hand if sun is directly overhead.",
     tip_3: "Make sure symptoms (spots, rust, mildew) are clearly visible and in focus.",
-    tip_4: "Client automatically resizes to 224x224 to conserve cellular data.",
+    tip_4: "Large images are resized without stretching to conserve cellular data.",
     btn_run_scan: "Run AI Diagnosis",
     idle_title: "Diagnostic Results Awaiting Input",
     idle_desc: 'Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.',
     audit_notice: "Live Inference: Evaluated with official ResNet-50 weights & curated treatment knowledge base.",
-    low_conf_msg: "Low model confidence (<75%). Please retake the photo with better lighting, holding the leaf steady against a neutral background.",
+    low_conf_msg: "Ambiguous symptoms detected (<60%). Verify in person before applying chemical treatments.",
     top3_title: "Top-3 Model Predictions (Softmax Probabilities)",
     gradcam_title: "Grad-CAM Model Attention",
-    gradcam_desc: "<strong>Farmer Plain Language Guide:</strong> Red and warm highlighted areas show exactly where the neural network detected pathological lesions on the leaf tissue.",
+    gradcam_desc: "<strong>Attention guide:</strong> Warm regions contributed to the model score. They do not prove the presence or location of disease.",
     lbl_pathogen: "Pathogen:",
     ext_officer_title: "⚠️ Mandatory Safety & Agronomy Advisory",
     ext_officer_text: "Always consult your local Agriculture Extension Officer (محکمہ زراعت توسیع) before purchasing or spraying any commercial fungicide or pesticide. Strictly wear protective rubber gloves, mask, and boots when handling agricultural chemicals.",
-    treatment_heading: "Prescribed Treatment & Management Plan",
+    treatment_heading: "Treatment Guidance & Management",
     acc_immediate: "Immediate Action (First 24-48 Hours)",
     acc_chemical: "Chemical Treatment (Approved Fungicides)",
     acc_organic: "Organic & Biological Alternatives",
@@ -2115,11 +2124,11 @@ const I18N = {
     how_heading: "Three Steps from Leaf to Cure",
     how_sub: "A robust pipeline engineered to deliver actionable agronomical advice directly to Android devices under low-bandwidth rural conditions.",
     step1_title: "Edge Photo Intake",
-    step1_desc: "The camera captures an uncompressed raw image. Client-side HTML5 canvas downsamples the image to 224x224 RGB, reducing payload from 5MB to under 40KB for rapid wireless transfer.",
+    step1_desc: "The browser preserves image proportions while limiting the longest side to 1024 pixels. The backend applies the shared evaluation transform.",
     step2_title: "Deep Feature Extraction",
     step2_desc: "A ResNet-50 convolutional neural network computes spatial features through 4 bottleneck stages. The final 2048-dim embedding is classified into 38 distinct plant-disease combinations.",
     step3_title: "Knowledge Base Query",
-    step3_desc: "Diagnosis triggers a deterministic query to the curated treatments knowledge base (treatments.json), retrieving validated dosages, safety guidelines, and organic remedies.",
+    step3_desc: "Diagnosis queries the curated treatment knowledge base for source-backed options and prevention. Product advice is withheld below 60% confidence.",
     perf_tag: "Model Evaluation & Metrics",
     perf_heading: "Training History & Per-Class Verification",
     perf_sub: "Accurate reproduction from actual project runs (results/baseline/history.csv and test/per_class.csv).",
@@ -2194,10 +2203,10 @@ const I18N = {
     idle_title: "تشخیص کے لیے پتے کی تصویر درکار ہے",
     idle_desc: 'بائیں جانب سے تصویر کھینچیں یا اپلوڈ کریں، پھر "بیماری کی جانچ شروع کریں" پر کلک کریں۔',
     audit_notice: "براہ راست انفرنس: مستند ResNet-50 ماڈل ویٹس اور معلوماتی ڈیٹا سے منسلک۔",
-    low_conf_msg: "ماڈل کا یقین کم ہے (75% سے کم)۔ براہ کرم بہتر روشنی میں صاف تصویر دوبارہ لیں۔",
+    low_conf_msg: "ماڈل کا یقین 60% سے کم ہے۔ کیمیائی ادویات سے پہلے مقامی زرعی ماہر سے تصدیق کریں۔",
     top3_title: "سب سے زیادہ امکانی 3 بیماریاں (ماڈل امکانات)",
     gradcam_title: "Grad-CAM کی توجہ کا مرکز",
-    gradcam_desc: "<strong>کسان بھائیوں کے لیے سادہ رہنمائی:</strong> سرخ اور پیلے رنگ کا دائرہ وہ خاص جگہ ظاہر کرتا ہے جس کو دیکھ کر ماڈل نے بیماری کی شناخت کی۔",
+    gradcam_desc: "<strong>توجہ کی رہنمائی:</strong> گرم رنگ ماڈل کے اسکور میں اہم حصے دکھاتے ہیں؛ یہ بیماری کی موجودگی یا جگہ کا ثبوت نہیں ہیں۔",
     lbl_pathogen: "بیماری کا جرثومہ (پیتھوجن):",
     ext_officer_title: "⚠️ لازمی حفاظتی اور زرعی ہدایت",
     ext_officer_text: "کوئی بھی کیمیائی زہر یا فنجی سائیڈ سپرے کرنے سے قبل اپنے مقامی محکمہ زراعت (توسیع) کے فیلڈ آفیسر سے لازمی مشورہ کریں۔ سپرے کرتے وقت دستانے، ماسک اور بوٹ کا استعمال لازمی کریں۔",
@@ -2218,7 +2227,7 @@ const I18N = {
     how_heading: "پتے سے علاج تک تین آسان مراحل",
     how_sub: "دیہات کے کمزور انٹرنیٹ اور سستے اینڈرائڈ فونز پر فوری کام کرنے والا نظام۔",
     step1_title: "پتے کی تصویر",
-    step1_desc: "آپ کے فون کا کیمرہ پتے کو محفوظ کرتا ہے اور ایپ اسے فوری طور پر 224x224 سائز میں مختصر کر دیتی ہے۔",
+    step1_desc: "براؤزر تصویر کا تناسب برقرار رکھتے ہوئے بڑے کنارے کو 1024 پکسل تک محدود کرتا ہے؛ سرور ماڈل کی معیاری تیاری کرتا ہے۔",
     step2_title: "AI نیورل نیٹ ورک",
     step2_desc: "ResNet-50 ڈیپ لرننگ ماڈل پتے کے داغوں کا 38 مختلف بیماریوں سے موازنہ کرتا ہے۔",
     step3_title: "علاج کی معلومات",
@@ -2347,48 +2356,6 @@ function applyLanguage(lang) {
   // Update UI diagnostic card texts
   if (latestDiagnosis) {
     renderDiagnosisUI(latestDiagnosis);
-  } else {
-    // Localize default placeholder card
-    const resDisease = document.getElementById('resDiseaseName');
-    const resCrop = document.getElementById('resCropCategory');
-    const resSev = document.getElementById('resSeverityText');
-    const resCauseVal = document.getElementById('resCauseSnippetVal');
-    const c1N = document.getElementById('c1Name');
-    const c2N = document.getElementById('c2Name');
-    const c3N = document.getElementById('c3Name');
-    const pCompress = document.getElementById('previewCompressText');
-    const tImm = document.getElementById('treatmentImmediateText');
-    const tChem = document.getElementById('treatmentChemicalText');
-    const tOrg = document.getElementById('treatmentOrganicText');
-    const tPrev = document.getElementById('treatmentPreventionText');
-
-    if (lang === 'ur') {
-      if (resDisease) resDisease.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
-      if (resCrop) resCrop.textContent = 'فصل: ٹماٹر (Solanum lycopersicum)';
-      if (resSev) resSev.textContent = 'شدید خطرہ';
-      if (resCauseVal) resCauseVal.innerHTML = 'اوومیسیٹ (Oomycete) <em>Phytophthora infestans</em>';
-      if (c1N) c1N.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
-      if (c2N) c2N.textContent = 'ٹماٹر کا اگیتا جھلساؤ';
-      if (c3N) c3N.textContent = 'ٹماٹر کا سیپٹوریا پتا داغ';
-      if (pCompress) pCompress.textContent = '224x224 میں تبدیل (کم انٹرنیٹ موڈ)';
-      if (tImm) tImm.textContent = 'جیسے ہی پچھیتے جھلساؤ کی شناخت ہو، متاثرہ پودوں کو فوری تلف کریں تاکہ ہوا کے ذریعے بیضے نہ پھیلیں۔ پتے گیلے ہونے کی حالت میں کھیت میں کام کرنے سے گریز کریں۔';
-      if (tChem) tChem.textContent = 'ابتدائی علامات پر حفاظتی فنجی سائیڈ جیسے کلوروتھیلونل (Chlorothalonil) یا مینکوزیب (Mancozeb) سپرے کریں۔ شدید حملے کی صورت میں ڈائی فینوکونازول یا سسٹمک سپرے کریں۔';
-      if (tOrg) tOrg.textContent = 'کاپر ہائیڈرو آکسائیڈ یا بورڈو مکسچر کا دیسی سپرے کریں۔ نیم کا تیل اور بائیو فنجی سائیڈ ملا کر پتوں کی نچلی سطح پر اچھی طرح سپرے کریں۔';
-      if (tPrev) tPrev.textContent = 'صرف مصدقہ اور بیماری سے پاک بیج کاشت کریں۔ آلو اور ٹماٹر کے درمیان 3 سالہ فصلوں کا ہیر پھیر (Crop Rotation) اپنائیں اور کھیت میں پانی کھڑا نہ ہونے دیں۔';
-    } else {
-      if (resDisease) resDisease.textContent = 'Tomato Late Blight';
-      if (resCrop) resCrop.textContent = 'Crop: Tomato (Solanum lycopersicum)';
-      if (resSev) resSev.textContent = 'HIGH RISK';
-      if (resCauseVal) resCauseVal.innerHTML = 'Oomycete <em>Phytophthora infestans</em>';
-      if (c1N) c1N.textContent = 'Tomato Late Blight';
-      if (c2N) c2N.textContent = 'Tomato Early Blight';
-      if (c3N) c3N.textContent = 'Tomato Septoria Leaf Spot';
-      if (pCompress) pCompress.textContent = 'Compressed to 224x224 (Low bandwidth mode)';
-      if (tImm) tImm.textContent = 'Spray the entire affected plot as soon as late blight is identified. Quickly remove and destroy infected pockets to stop air-borne spore spread. Avoid harvesting or entering rows while vines are wet.';
-      if (tChem) tChem.textContent = 'Apply protectant fungicides such as chlorothalonil or mancozeb before symptoms escalate. Under severe pressure, alternate with systemic fungicides adhering strictly to FRAC group rotations to avoid chemical resistance.';
-      if (tOrg) tOrg.textContent = 'OMRI-approved copper hydroxide or copper sulfate sprays. Combine with bio-fungicides such as Bacillus subtilis where allowed. Ensure complete leaf surface coverage on undersides.';
-      if (tPrev) tPrev.textContent = 'Plant certified disease-free seeds/transplants. Practice 3-year crop rotation avoiding solanaceous plants. Ensure adequate furrow drainage and avoid late-afternoon overhead sprinkler irrigation.';
-    }
   }
 }
 
@@ -2467,27 +2434,52 @@ btnRetakePhoto.addEventListener('click', () => {
   cameraInput.value = '';
   galleryInput.value = '';
   activeImageDataUrl = null;
+  latestDiagnosis = null;
+  document.getElementById('predictionError').hidden = true;
   document.getElementById('resultsActiveState').classList.remove('visible');
   document.getElementById('resultsIdleState').style.display = 'block';
 });
 
 function processRawFile(file) {
+  latestDiagnosis = null;
+  activeImageDataUrl = null;
+  btnRunDiagnosis.disabled = true;
+  document.getElementById('resultsActiveState').classList.remove('visible');
+  document.getElementById('resultsIdleState').style.display = 'block';
+  const errorBox = document.getElementById('predictionError');
+  errorBox.hidden = true;
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 7 * 1024 * 1024) {
+    errorBox.textContent = 'Select a JPEG, PNG or WebP image up to 7 MB.';
+    errorBox.hidden = false;
+    return;
+  }
   const originalSizeKb = Math.round(file.size / 1024);
   const reader = new FileReader();
   reader.onload = (event) => {
     const img = new Image();
+    img.onerror = () => {
+      errorBox.textContent = 'The selected file could not be decoded as an image.';
+      errorBox.hidden = false;
+    };
     img.onload = () => {
+      if (Math.min(img.width, img.height) < 32 || img.width * img.height > 20000000) {
+        errorBox.textContent = 'Use an image at least 32 pixels per side and at most 20 megapixels.';
+        errorBox.hidden = false;
+        return;
+      }
       const canvas = document.createElement('canvas');
-      canvas.width = 224;
-      canvas.height = 224;
+      const scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, 224, 224);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       activeImageDataUrl = canvas.toDataURL('image/jpeg', 0.88);
       leafImagePreview.src = activeImageDataUrl;
       previewContainer.classList.add('active');
       dropzoneBox.style.display = 'none';
-      previewMetaText.textContent = `${file.name.substring(0, 22)} (${originalSizeKb}KB → 28KB)`;
+      const encodedSizeKb = Math.round(activeImageDataUrl.split(',')[1].length * 0.75 / 1024);
+      previewMetaText.textContent = `${file.name.substring(0, 22)} (${originalSizeKb}KB → ${encodedSizeKb}KB)`;
       btnRunDiagnosis.disabled = false;
     };
     img.src = event.target.result;
@@ -2507,6 +2499,7 @@ photoTipsToggle.addEventListener('click', () => {
 btnRunDiagnosis.addEventListener('click', async () => {
   if (!activeImageDataUrl) return;
 
+  const submittedImage = activeImageDataUrl;
   btnRunDiagnosis.disabled = true;
   document.getElementById('diagnoseSpinner').style.display = 'inline-block';
   document.getElementById('diagnoseArrow').style.display = 'none';
@@ -2523,7 +2516,10 @@ btnRunDiagnosis.addEventListener('click', async () => {
     });
 
     const result = await response.json();
+    if (submittedImage !== activeImageDataUrl) return;
+    if (!response.ok) throw new Error(result.error || 'Diagnosis unavailable');
     latestDiagnosis = result;
+    document.getElementById('predictionError').hidden = true;
 
     // Show Results
     document.getElementById('resultsIdleState').style.display = 'none';
@@ -2537,9 +2533,13 @@ btnRunDiagnosis.addEventListener('click', async () => {
     }
 
   } catch(err) {
-    alert('Prediction error: ' + err.message);
+    latestDiagnosis = null;
+    document.getElementById('resultsActiveState').classList.remove('visible');
+    const errorBox = document.getElementById('predictionError');
+    errorBox.textContent = err.message;
+    errorBox.hidden = false;
   } finally {
-    btnRunDiagnosis.disabled = false;
+    btnRunDiagnosis.disabled = !activeImageDataUrl;
     document.getElementById('diagnoseSpinner').style.display = 'none';
     document.getElementById('diagnoseArrow').style.display = 'inline-block';
     document.getElementById('diagnoseBtnText').textContent = I18N[currentLang].btn_run_scan;
@@ -2560,37 +2560,10 @@ function renderDiagnosisUI(result) {
   const pathogenText = tData.cause || (result.is_healthy ? (isUr ? 'کوئی نہیں (معمول کے مطابق تندرست پتا)' : 'None (Physiologically Normal)') : (isUr ? 'پتے میں جرثومہ پایا گیا ہے' : 'Pathogen identified in leaf tissue'));
   const resCause = document.getElementById('resCauseSnippet');
   if (resCause) {
-    resCause.innerHTML = `<strong data-i18n="lbl_pathogen">${isUr ? 'بیماری کا جرثومہ (پیتھوجن):' : 'Pathogen:'}</strong> <span>${pathogenText}</span>`;
+    resCause.textContent = `${isUr ? 'حوالہ شدہ سبب: ' : 'Reference cause: '}${pathogenText}`;
   }
 
-  // Update Severity Styling
-  const banner = document.getElementById('primaryBanner');
-  if (banner) banner.className = 'primary-diagnosis-banner severity-' + result.severity;
-  const badgeText = document.getElementById('resSeverityText');
-  const badgeIcon = document.getElementById('resSeverityIcon');
-  
-  if (badgeText && badgeIcon) {
-    if (result.severity === 'high') {
-      badgeText.textContent = isUr ? 'شدید خطرہ' : 'HIGH RISK';
-      badgeIcon.textContent = '🚨';
-    } else if (result.severity === 'moderate') {
-      badgeText.textContent = isUr ? 'درمیانہ خطرہ' : 'MODERATE';
-      badgeIcon.textContent = '⚠️';
-    } else {
-      badgeText.textContent = isUr ? 'تندرست' : 'HEALTHY';
-      badgeIcon.textContent = '✅';
-    }
-  }
-
-  // Low confidence alert trigger
-  const lowConfAlert = document.getElementById('lowConfidenceAlert');
-  if (lowConfAlert) {
-    if (result.confidence < 75) {
-      lowConfAlert.classList.add('visible');
-    } else {
-      lowConfAlert.classList.remove('visible');
-    }
-  }
+  renderTreatmentAdvisory(result, currentLang);
 
   // Top-3 Candidates
   const top3 = result.top_3 || [];
@@ -2608,7 +2581,7 @@ function renderDiagnosisUI(result) {
     const p2 = document.getElementById('c2Prob');
     if (p2) p2.textContent = top3[1].confidence.toFixed(1) + '%';
     const b2 = document.getElementById('c2Bar');
-    if (b2) b2.style.width = Math.min(top3[1].confidence * 3, 100) + '%';
+    if (b2) b2.style.width = Math.min(top3[1].confidence, 100) + '%';
   }
   if (top3[2]) {
     const c3 = document.getElementById('c3Name');
@@ -2616,7 +2589,7 @@ function renderDiagnosisUI(result) {
     const p3 = document.getElementById('c3Prob');
     if (p3) p3.textContent = top3[2].confidence.toFixed(1) + '%';
     const b3 = document.getElementById('c3Bar');
-    if (b3) b3.style.width = Math.min(top3[2].confidence * 6, 100) + '%';
+    if (b3) b3.style.width = Math.min(top3[2].confidence, 100) + '%';
   }
 
   // Grad-CAM visual
@@ -2624,23 +2597,14 @@ function renderDiagnosisUI(result) {
   if (camImg) {
     if (result.gradcam_base64) {
       camImg.src = result.gradcam_base64;
-    } else if (activeImageDataUrl) {
-      camImg.src = activeImageDataUrl;
+    } else {
+      camImg.removeAttribute('src');
     }
+    camImg.hidden = !result.gradcam_base64;
+    document.getElementById('gradcamStatus').textContent = result.gradcam_error ||
+      (isUr ? 'گرم رنگ ماڈل کی توجہ دکھاتے ہیں؛ یہ بیماری کا ثبوت نہیں۔' :
+        'Warm regions contributed to the model score; this is not proof of disease.');
   }
-
-  // Treatments
-  const tImm = document.getElementById('treatmentImmediateText');
-  if (tImm) tImm.textContent = tData.immediate_action || (isUr ? 'آس پاس کی فصل کا معائنہ کریں اور متاثرہ پتوں کو الگ کریں۔' : 'Inspect surrounding crops; isolate symptomatic leaves.');
-
-  const tChem = document.getElementById('treatmentChemicalText');
-  if (tChem) tChem.textContent = tData.chemical_treatment || (isUr ? 'زرعی فیلڈ آفیسر کے مشورے سے تجویز کردہ حفاظتی سپرے کریں۔' : 'Apply labeled protectant fungicides under extension officer direction.');
-
-  const tOrg = document.getElementById('treatmentOrganicText');
-  if (tOrg) tOrg.textContent = tData.organic_treatment || (isUr ? 'نامیاتی بائیو فنجی سائیڈ سپرے کریں اور پودوں میں ہوا کا گزر بہتر بنائیں۔' : 'Apply OMRI-listed bio-fungicides; improve airflow.');
-
-  const tPrev = document.getElementById('treatmentPreventionText');
-  if (tPrev) tPrev.textContent = tData.prevention || (isUr ? 'فصلوں کا ہیر پھیر (Crop rotation) اور کھیت کی صفائی کا خیال رکھیں۔' : 'Practice crop rotation and sanitation.');
 }
 
 // 7. ACCESSIBLE TREATMENT ACCORDIONS
