@@ -352,43 +352,58 @@ svg { flex-shrink: 0; }
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.crop-chips-scroll {
+.crop-chips-tiles {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow: visible;
+  padding: 4px 0 8px 0;
+  width: 100%;
 }
 .crop-chip-btn {
-  padding: 8px 14px;
-  border-radius: var(--radius-full);
-  font-size: 13px;
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 13.5px;
   font-weight: 600;
   background-color: var(--bg-surface);
-  border: 1px solid var(--border-medium);
+  border: 1.5px solid var(--border-medium);
   color: var(--text-main);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 .crop-chip-btn:hover {
   border-color: var(--brand-field);
+  background-color: var(--bg-subtle);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 .crop-chip-btn.active {
   background-color: var(--brand-field);
   color: #FFFFFF;
   border-color: var(--brand-field);
+  box-shadow: 0 4px 14px rgba(46, 92, 56, 0.32);
 }
 .crop-chip-btn .chip-count {
-  font-size: 10px;
-  background: rgba(0,0,0,0.1);
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+[data-theme="dark"] .crop-chip-btn .chip-count {
+  background: rgba(255, 255, 255, 0.15);
 }
 .crop-chip-btn.active .chip-count {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
 }
 
 /* SCAN CARD */
@@ -1264,7 +1279,6 @@ svg { flex-shrink: 0; }
       </div>
       <div>
         <span class="brand-name">PakAgriVision</span>
-        <span class="brand-badge" id="langTrackBadge">Deliverable 3</span>
       </div>
     </a>
 
@@ -1319,13 +1333,13 @@ svg { flex-shrink: 0; }
       </p>
     </div>
 
-    <!-- Crop Filter / Context Chips (Functional Model Filtering) -->
+    <!-- Crop Filter / Context Chips (Functional Model Filtering as Tiles) -->
     <div class="crop-filter-block">
       <div class="crop-filter-header">
         <span class="crop-filter-title" data-i18n="crop_filter_title">Select Crop Type (Filters Diagnostics)</span>
-        <span style="font-size: 12px; color: var(--text-muted);" id="activeCropStatus">All 14 Crops Active</span>
+        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="activeCropStatus" data-i18n="crop_status_all">All 14 Crops Active</span>
       </div>
-      <div class="crop-chips-scroll" role="radiogroup" aria-label="Filter diagnosis by crop">
+      <div class="crop-chips-tiles" role="radiogroup" aria-label="Filter diagnosis by crop">
         <button type="button" class="crop-chip-btn active" data-crop="all" role="radio" aria-checked="true">
           <span>🌿 <span data-i18n="crop_all">All Crops</span></span>
           <span class="chip-count">38</span>
@@ -1367,7 +1381,23 @@ svg { flex-shrink: 0; }
           <span class="chip-count">2</span>
         </button>
         <button type="button" class="crop-chip-btn" data-crop="Soybean" role="radio" aria-checked="false">
-          <span>🫘 <span data-i18n="crop_soybean">Soybean</span></span>
+          <span><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align: -2px; display: inline-block; margin-right: 4px;"><path d="M4 16C4 16 7 20 13 18C19 16 21 8 21 8C21 8 16 7 11 10C6 13 4 16 4 16Z" fill="#84CC16" stroke="#65A30D" stroke-width="1.2"/><circle cx="9.5" cy="14" r="2.2" fill="#FACC15"/><circle cx="14" cy="11.5" r="2.2" fill="#FACC15"/><circle cx="18" cy="9.5" r="1.6" fill="#FACC15"/></svg><span data-i18n="crop_soybean">Soybean</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Cherry" role="radio" aria-checked="false">
+          <span>🍒 <span data-i18n="crop_cherry">Cherry</span></span>
+          <span class="chip-count">2</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Blueberry" role="radio" aria-checked="false">
+          <span><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align: -2px; display: inline-block; margin-right: 4px;"><circle cx="12" cy="13" r="8" fill="#3B82F6"/><circle cx="12" cy="6" r="2.5" fill="#10B981"/><path d="M9 5.5 Q12 3.5 15 5.5" stroke="#10B981" stroke-width="1.8" fill="none"/></svg><span data-i18n="crop_blueberry">Blueberry</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Raspberry" role="radio" aria-checked="false">
+          <span>🍇 <span data-i18n="crop_raspberry">Raspberry</span></span>
+          <span class="chip-count">1</span>
+        </button>
+        <button type="button" class="crop-chip-btn" data-crop="Squash" role="radio" aria-checked="false">
+          <span>🎃 <span data-i18n="crop_squash">Squash</span></span>
           <span class="chip-count">1</span>
         </button>
       </div>
@@ -1491,7 +1521,7 @@ svg { flex-shrink: 0; }
               <line x1="12" y1="16" x2="12" y2="12"/>
               <line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
-            <span data-i18n="audit_notice">Live Inference: Evaluated with official Deliverable 2/3 ResNet-50 weights & curated treatment knowledge base.</span>
+            <span data-i18n="audit_notice">Live Inference: Evaluated with official ResNet-50 weights & curated treatment knowledge base.</span>
           </div>
 
           <!-- Primary Diagnosis Banner -->
@@ -1507,7 +1537,7 @@ svg { flex-shrink: 0; }
               </span>
             </div>
             <div class="cause-snippet" id="resCauseSnippet">
-              <strong>Pathogen:</strong> Oomycete <em>Phytophthora infestans</em>
+              <strong data-i18n="lbl_pathogen">Pathogen:</strong> <span id="resCauseSnippetVal">Oomycete <em>Phytophthora infestans</em></span>
             </div>
           </div>
 
@@ -1835,7 +1865,7 @@ svg { flex-shrink: 0; }
 
     <!-- HONEST SCIENTIFIC APPRAISAL: LAB VS. REAL FIELD DOMAIN SHIFT -->
     <div class="field-reality-box">
-      <strong data-i18n="field_box_title">Scientific Rigor & Deliverable 3 Reality Note:</strong>
+      <strong data-i18n="field_box_title">Scientific Rigor & Field Reality Note:</strong>
       <p data-i18n="field_box_desc">
         While ResNet-50 reaches 99.70% on curated benchmark test images, real-world field evaluations (tested against real PlantDoc in-the-wild captures) yield 24.7% Top-1 accuracy due to background clutter, soil occlusion, and varying outdoor illumination. This makes farmer guidance features (single leaf focus, shade recommendations, top-3 candidates) vital in production.
       </p>
@@ -1850,7 +1880,7 @@ svg { flex-shrink: 0; }
   <div class="container">
     <div class="section-tag" data-i18n="arch_tag">System Overview</div>
     <h2 class="section-heading" data-i18n="arch_heading">ResNet-50 Model Topology</h2>
-    <p class="section-subheading" data-i18n="arch_sub">Production-grade architecture matching the PakAgriVision Deliverable 2 codebase specification.</p>
+    <p class="section-subheading" data-i18n="arch_sub">Production-grade architecture matching the PakAgriVision codebase specification.</p>
 
     <div class="arch-grid">
       <div class="arch-step-card">
@@ -1901,7 +1931,7 @@ svg { flex-shrink: 0; }
         <div class="team-avatar-box">AA</div>
         <div class="team-info">
           <h4>Abdul Ahad</h4>
-          <div class="team-roll ltr-only">24L-3029 · Leader</div>
+          <div class="team-roll ltr-only">24L-3029</div>
           <div class="team-responsibility" data-i18n="team_aa">Model Training & Backbone Fine-tuning</div>
         </div>
       </div>
@@ -1996,9 +2026,27 @@ svg { flex-shrink: 0; }
      ───────────────────────────────────────────────────────────── -->
 <script>
 // RAW SERVER-SIDE DATA INJECTED DIRECTLY FROM results/ CSVs
-const SERVER_HISTORY = {{ history | tojson }};
-const ALL_PER_CLASS = {{ all_per_class | tojson }};
-const KEY_PER_CLASS = {{ per_class | tojson }};
+const SERVER_HISTORY = {{ (history or []) | tojson }};
+const ALL_PER_CLASS = {{ (all_per_class or []) | tojson }};
+const KEY_PER_CLASS = {{ (per_class or []) | tojson }};
+
+// Urdu crop map for data table rendering
+const URDU_CROP_MAP = {
+  "Tomato": "ٹماٹر",
+  "Potato": "آلو",
+  "Corn": "مکئی",
+  "Pepper": "شملہ مرچ",
+  "Apple": "سیب",
+  "Grape": "انگور",
+  "Orange": "مالٹا / ترشاوہ",
+  "Peach": "آڑو",
+  "Strawberry": "سٹرابیری",
+  "Soybean": "سویا بین",
+  "Blueberry": "بلیو بیری",
+  "Cherry": "چیری",
+  "Raspberry": "رس بھری",
+  "Squash": "حلوہ کدو"
+};
 
 // 1. COMPREHENSIVE BILINGUAL TRANSLATION DICTIONARY
 const I18N = {
@@ -2012,6 +2060,7 @@ const I18N = {
     hero_title: 'Detect Crop Disease with <span class="hero-highlight">AI</span> Diagnostic',
     hero_lead: "Designed for Pakistani farmers. Capture a clear leaf photo right in the field to receive instant disease identification, Grad-CAM attention heatmaps, and research-backed chemical and organic treatment plans.",
     crop_filter_title: "Select Crop Type (Filters Diagnostics)",
+    crop_status_all: "All 14 Crops Active",
     crop_all: "All Crops",
     crop_tomato: "Tomato",
     crop_potato: "Potato",
@@ -2023,6 +2072,10 @@ const I18N = {
     crop_strawberry: "Strawberry",
     crop_peach: "Peach",
     crop_soybean: "Soybean",
+    crop_cherry: "Cherry",
+    crop_blueberry: "Blueberry",
+    crop_raspberry: "Raspberry",
+    crop_squash: "Squash",
     upload_heading: "Step 1: Provide Leaf Photograph",
     btn_camera: "Take Photo",
     btn_gallery: "Gallery / Files",
@@ -2037,11 +2090,12 @@ const I18N = {
     btn_run_scan: "Run AI Diagnosis",
     idle_title: "Diagnostic Results Awaiting Input",
     idle_desc: 'Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.',
-    audit_notice: "Live Inference: Evaluated with official Deliverable 2/3 ResNet-50 weights & curated treatment knowledge base.",
+    audit_notice: "Live Inference: Evaluated with official ResNet-50 weights & curated treatment knowledge base.",
     low_conf_msg: "Low model confidence (<75%). Please retake the photo with better lighting, holding the leaf steady against a neutral background.",
     top3_title: "Top-3 Model Predictions (Softmax Probabilities)",
     gradcam_title: "Grad-CAM Model Attention",
     gradcam_desc: "<strong>Farmer Plain Language Guide:</strong> Red and warm highlighted areas show exactly where the neural network detected pathological lesions on the leaf tissue.",
+    lbl_pathogen: "Pathogen:",
     ext_officer_title: "⚠️ Mandatory Safety & Agronomy Advisory",
     ext_officer_text: "Always consult your local Agriculture Extension Officer (محکمہ زراعت توسیع) before purchasing or spraying any commercial fungicide or pesticide. Strictly wear protective rubber gloves, mask, and boots when handling agricultural chemicals.",
     treatment_heading: "Prescribed Treatment & Management Plan",
@@ -2080,11 +2134,13 @@ const I18N = {
     th_precision: "Precision",
     th_recall: "Recall",
     th_f1: "Macro-F1",
-    field_box_title: "Scientific Rigor & Deliverable 3 Reality Note:",
+    btn_view_all: "View All 38 Classes (CSV)",
+    btn_view_key: "Show Key Classes Only",
+    field_box_title: "Scientific Rigor & Field Reality Note:",
     field_box_desc: "While ResNet-50 reaches 99.70% on curated benchmark test images, real-world field evaluations (tested against real PlantDoc in-the-wild captures) yield 24.7% Top-1 accuracy due to background clutter, soil occlusion, and varying outdoor illumination. This makes farmer guidance features (single leaf focus, shade recommendations, top-3 candidates) vital in production.",
     arch_tag: "System Overview",
     arch_heading: "ResNet-50 Model Topology",
-    arch_sub: "Production-grade architecture matching the PakAgriVision Deliverable 2 codebase specification.",
+    arch_sub: "Production-grade architecture matching the PakAgriVision codebase specification.",
     team_tag: "FAST-NUCES Lahore",
     team_sub: "Developers and researchers behind PakAgriVision.",
     team_aa: "Model Training & Backbone Fine-tuning",
@@ -2107,6 +2163,7 @@ const I18N = {
     hero_title: 'فصلوں کی بیماریوں کی فوری <span class="hero-highlight">تشخیص</span> اور علاج',
     hero_lead: "پاکستانی کسان بھائیوں کے لیے خصوصی ڈیزائن۔ اپنے کھیت میں پودے کے بیمار پتے کی تصویر کھینچیں اور فوری طور پر بیماری کا نام، Grad-CAM نقشہ اور منظور شدہ ادویات و دیسی علاج حاصل کریں۔",
     crop_filter_title: "اپنی فصل منتخب کریں (تشخیص کو محدود کریں)",
+    crop_status_all: "تمام 14 فصلیں فعال ہیں",
     crop_all: "تمام فصلیں",
     crop_tomato: "ٹماٹر",
     crop_potato: "آلو",
@@ -2118,6 +2175,10 @@ const I18N = {
     crop_strawberry: "سٹرابیری",
     crop_peach: "آڑو",
     crop_soybean: "سویا بین",
+    crop_cherry: "چیری",
+    crop_blueberry: "بلیو بیری",
+    crop_raspberry: "رس بھری",
+    crop_squash: "حلوہ کدو",
     upload_heading: "مرحلہ 1: پتے کی تصویر فراہم کریں",
     btn_camera: "کیمرہ کھولیں",
     btn_gallery: "گیلری سے تصویر",
@@ -2132,11 +2193,12 @@ const I18N = {
     btn_run_scan: "بیماری کی جانچ شروع کریں",
     idle_title: "تشخیص کے لیے پتے کی تصویر درکار ہے",
     idle_desc: 'بائیں جانب سے تصویر کھینچیں یا اپلوڈ کریں، پھر "بیماری کی جانچ شروع کریں" پر کلک کریں۔',
-    audit_notice: "براہ راست انفرنس: ڈیلیورایبل 2/3 کے مستند ماڈل ویٹس اور معلوماتی ڈیٹا سے منسلک۔",
+    audit_notice: "براہ راست انفرنس: مستند ResNet-50 ماڈل ویٹس اور معلوماتی ڈیٹا سے منسلک۔",
     low_conf_msg: "ماڈل کا یقین کم ہے (75% سے کم)۔ براہ کرم بہتر روشنی میں صاف تصویر دوبارہ لیں۔",
     top3_title: "سب سے زیادہ امکانی 3 بیماریاں (ماڈل امکانات)",
     gradcam_title: "Grad-CAM کی توجہ کا مرکز",
     gradcam_desc: "<strong>کسان بھائیوں کے لیے سادہ رہنمائی:</strong> سرخ اور پیلے رنگ کا دائرہ وہ خاص جگہ ظاہر کرتا ہے جس کو دیکھ کر ماڈل نے بیماری کی شناخت کی۔",
+    lbl_pathogen: "بیماری کا جرثومہ (پیتھوجن):",
     ext_officer_title: "⚠️ لازمی حفاظتی اور زرعی ہدایت",
     ext_officer_text: "کوئی بھی کیمیائی زہر یا فنجی سائیڈ سپرے کرنے سے قبل اپنے مقامی محکمہ زراعت (توسیع) کے فیلڈ آفیسر سے لازمی مشورہ کریں۔ سپرے کرتے وقت دستانے، ماسک اور بوٹ کا استعمال لازمی کریں۔",
     treatment_heading: "تجویز کردہ زرعی علاج اور احتیاطی تدابیر",
@@ -2175,6 +2237,8 @@ const I18N = {
     th_precision: "درستی (Precision)",
     th_recall: "پہچان (Recall)",
     th_f1: "F1 سکور",
+    btn_view_all: "تمام 38 کلاسز دیکھیں (CSV)",
+    btn_view_key: "صرف اہم کلاسز دیکھیں",
     field_box_title: "سائنسی دیانت اور فیلڈ حقائق:",
     field_box_desc: "اگرچہ صاف لیبارٹری تصاویر پر ماڈل کی کارکردگی 99.70% ہے، لیکن اصلی کھیت میں پس منظر اور دھوپ کی وجہ سے دشواری پیش آ سکتی ہے۔ اسی لیے پتے کو ہاتھ سے فوکس کرنا ضروری ہے۔",
     arch_tag: "سافٹ ویئر ڈھانچہ",
@@ -2194,7 +2258,61 @@ const I18N = {
   }
 };
 
+// Dynamic crop selection translations for status indicator
+const CROP_TRANSLATIONS = {
+  en: {
+    all: "All 14 Crops Active",
+    Tomato: "Filtered to: Tomato (10 classes)",
+    Potato: "Filtered to: Potato (3 classes)",
+    Corn: "Filtered to: Corn (4 classes)",
+    Pepper: "Filtered to: Pepper (2 classes)",
+    Apple: "Filtered to: Apple (4 classes)",
+    Grape: "Filtered to: Grape (4 classes)",
+    Orange: "Filtered to: Citrus (1 class)",
+    Strawberry: "Filtered to: Strawberry (2 classes)",
+    Peach: "Filtered to: Peach (2 classes)",
+    Soybean: "Filtered to: Soybean (1 class)",
+    Cherry: "Filtered to: Cherry (2 classes)",
+    Blueberry: "Filtered to: Blueberry (1 class)",
+    Raspberry: "Filtered to: Raspberry (1 class)",
+    Squash: "Filtered to: Squash (1 class)",
+  },
+  ur: {
+    all: "تمام 14 فصلیں فعال ہیں",
+    Tomato: "صرف منتخب فصل: ٹماٹر (10 اقسام)",
+    Potato: "صرف منتخب فصل: آلو (3 اقسام)",
+    Corn: "صرف منتخب فصل: مکئی (4 اقسام)",
+    Pepper: "صرف منتخب فصل: شملہ مرچ (2 اقسام)",
+    Apple: "صرف منتخب فصل: سیب (4 اقسام)",
+    Grape: "صرف منتخب فصل: انگور (4 اقسام)",
+    Orange: "صرف منتخب فصل: مالٹا / ترشاوہ (1 قسم)",
+    Strawberry: "صرف منتخب فصل: سٹرابیری (2 اقسام)",
+    Peach: "صرف منتخب فصل: آڑو (2 اقسام)",
+    Soybean: "صرف منتخب فصل: سویا بین (1 قسم)",
+    Cherry: "صرف منتخب فصل: چیری (2 اقسام)",
+    Blueberry: "صرف منتخب فصل: بلیو بیری (1 قسم)",
+    Raspberry: "صرف منتخب فصل: رس بھری (1 قسم)",
+    Squash: "صرف منتخب فصل: حلوہ کدو (1 قسم)",
+  }
+};
+
 let currentLang = 'en';
+let selectedCropFilter = 'all';
+let latestDiagnosis = null;
+
+function updateCropStatus() {
+  const statusEl = document.getElementById('activeCropStatus');
+  if (!statusEl) return;
+  const transMap = CROP_TRANSLATIONS[currentLang] || CROP_TRANSLATIONS.en;
+  statusEl.textContent = transMap[selectedCropFilter] || (currentLang === 'ur' ? `صرف منتخب: ${selectedCropFilter}` : `Filtered to: ${selectedCropFilter}`);
+}
+
+function updateToggleAllBtn() {
+  const btn = document.getElementById('btnToggleAllClasses');
+  if (!btn) return;
+  const dict = I18N[currentLang];
+  btn.textContent = showingAllClasses ? dict.btn_view_key : dict.btn_view_all;
+}
 
 function applyLanguage(lang) {
   currentLang = lang;
@@ -2211,7 +2329,67 @@ function applyLanguage(lang) {
   });
 
   const langLabel = document.getElementById('langLabelText');
-  langLabel.textContent = lang === 'en' ? 'اردو (Urdu)' : 'English';
+  if (langLabel) {
+    langLabel.textContent = lang === 'en' ? 'اردو (Urdu)' : 'English';
+  }
+
+  // Update dynamic crop status badge
+  updateCropStatus();
+
+  // Update table toggle button
+  updateToggleAllBtn();
+
+  // Refresh table if active
+  if (typeof renderTableRows === 'function') {
+    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
+  }
+
+  // Update UI diagnostic card texts
+  if (latestDiagnosis) {
+    renderDiagnosisUI(latestDiagnosis);
+  } else {
+    // Localize default placeholder card
+    const resDisease = document.getElementById('resDiseaseName');
+    const resCrop = document.getElementById('resCropCategory');
+    const resSev = document.getElementById('resSeverityText');
+    const resCauseVal = document.getElementById('resCauseSnippetVal');
+    const c1N = document.getElementById('c1Name');
+    const c2N = document.getElementById('c2Name');
+    const c3N = document.getElementById('c3Name');
+    const pCompress = document.getElementById('previewCompressText');
+    const tImm = document.getElementById('treatmentImmediateText');
+    const tChem = document.getElementById('treatmentChemicalText');
+    const tOrg = document.getElementById('treatmentOrganicText');
+    const tPrev = document.getElementById('treatmentPreventionText');
+
+    if (lang === 'ur') {
+      if (resDisease) resDisease.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
+      if (resCrop) resCrop.textContent = 'فصل: ٹماٹر (Solanum lycopersicum)';
+      if (resSev) resSev.textContent = 'شدید خطرہ';
+      if (resCauseVal) resCauseVal.innerHTML = 'اوومیسیٹ (Oomycete) <em>Phytophthora infestans</em>';
+      if (c1N) c1N.textContent = 'ٹماٹر کا پچھیتا جھلساؤ';
+      if (c2N) c2N.textContent = 'ٹماٹر کا اگیتا جھلساؤ';
+      if (c3N) c3N.textContent = 'ٹماٹر کا سیپٹوریا پتا داغ';
+      if (pCompress) pCompress.textContent = '224x224 میں تبدیل (کم انٹرنیٹ موڈ)';
+      if (tImm) tImm.textContent = 'جیسے ہی پچھیتے جھلساؤ کی شناخت ہو، متاثرہ پودوں کو فوری تلف کریں تاکہ ہوا کے ذریعے بیضے نہ پھیلیں۔ پتے گیلے ہونے کی حالت میں کھیت میں کام کرنے سے گریز کریں۔';
+      if (tChem) tChem.textContent = 'ابتدائی علامات پر حفاظتی فنجی سائیڈ جیسے کلوروتھیلونل (Chlorothalonil) یا مینکوزیب (Mancozeb) سپرے کریں۔ شدید حملے کی صورت میں ڈائی فینوکونازول یا سسٹمک سپرے کریں۔';
+      if (tOrg) tOrg.textContent = 'کاپر ہائیڈرو آکسائیڈ یا بورڈو مکسچر کا دیسی سپرے کریں۔ نیم کا تیل اور بائیو فنجی سائیڈ ملا کر پتوں کی نچلی سطح پر اچھی طرح سپرے کریں۔';
+      if (tPrev) tPrev.textContent = 'صرف مصدقہ اور بیماری سے پاک بیج کاشت کریں۔ آلو اور ٹماٹر کے درمیان 3 سالہ فصلوں کا ہیر پھیر (Crop Rotation) اپنائیں اور کھیت میں پانی کھڑا نہ ہونے دیں۔';
+    } else {
+      if (resDisease) resDisease.textContent = 'Tomato Late Blight';
+      if (resCrop) resCrop.textContent = 'Crop: Tomato (Solanum lycopersicum)';
+      if (resSev) resSev.textContent = 'HIGH RISK';
+      if (resCauseVal) resCauseVal.innerHTML = 'Oomycete <em>Phytophthora infestans</em>';
+      if (c1N) c1N.textContent = 'Tomato Late Blight';
+      if (c2N) c2N.textContent = 'Tomato Early Blight';
+      if (c3N) c3N.textContent = 'Tomato Septoria Leaf Spot';
+      if (pCompress) pCompress.textContent = 'Compressed to 224x224 (Low bandwidth mode)';
+      if (tImm) tImm.textContent = 'Spray the entire affected plot as soon as late blight is identified. Quickly remove and destroy infected pockets to stop air-borne spore spread. Avoid harvesting or entering rows while vines are wet.';
+      if (tChem) tChem.textContent = 'Apply protectant fungicides such as chlorothalonil or mancozeb before symptoms escalate. Under severe pressure, alternate with systemic fungicides adhering strictly to FRAC group rotations to avoid chemical resistance.';
+      if (tOrg) tOrg.textContent = 'OMRI-approved copper hydroxide or copper sulfate sprays. Combine with bio-fungicides such as Bacillus subtilis where allowed. Ensure complete leaf surface coverage on undersides.';
+      if (tPrev) tPrev.textContent = 'Plant certified disease-free seeds/transplants. Practice 3-year crop rotation avoiding solanaceous plants. Ensure adequate furrow drainage and avoid late-afternoon overhead sprinkler irrigation.';
+    }
+  }
 }
 
 document.getElementById('langToggleBtn').addEventListener('click', () => {
@@ -2231,11 +2409,8 @@ try {
   if (saved) document.documentElement.setAttribute('data-theme', saved);
 } catch(e){}
 
-// 3. CROP CONTEXT CHIPS (FUNCTIONAL FILTER)
-let selectedCropFilter = 'all';
+// 3. CROP CONTEXT CHIPS (FUNCTIONAL FILTER AS TILES)
 const cropChips = document.querySelectorAll('.crop-chip-btn');
-const activeCropStatus = document.getElementById('activeCropStatus');
-
 cropChips.forEach(chip => {
   chip.addEventListener('click', () => {
     cropChips.forEach(c => {
@@ -2245,12 +2420,7 @@ cropChips.forEach(chip => {
     chip.classList.add('active');
     chip.setAttribute('aria-checked', 'true');
     selectedCropFilter = chip.getAttribute('data-crop');
-    
-    if (selectedCropFilter === 'all') {
-      activeCropStatus.textContent = currentLang === 'ur' ? 'تمام 14 فصلیں فعال' : 'All 14 Crops Active';
-    } else {
-      activeCropStatus.textContent = (currentLang === 'ur' ? 'صرف منتخب: ' : 'Restricted to: ') + selectedCropFilter;
-    }
+    updateCropStatus();
   });
 });
 
@@ -2353,76 +2523,14 @@ btnRunDiagnosis.addEventListener('click', async () => {
     });
 
     const result = await response.json();
-    const isUr = currentLang === 'ur';
+    latestDiagnosis = result;
 
     // Show Results
     document.getElementById('resultsIdleState').style.display = 'none';
     const activeBox = document.getElementById('resultsActiveState');
     activeBox.classList.add('visible');
 
-    // Populate Primary Diagnosis
-    document.getElementById('resDiseaseName').textContent = isUr ? result.disease_ur : `${result.crop} ${result.disease}`;
-    document.getElementById('resCropCategory').textContent = `${isUr ? 'فصل: ' : 'Crop: '} ${isUr ? (result.crop_ur || result.crop) : result.crop}`;
-    
-    const tData = result.treatment || {};
-    const pathogenText = tData.cause || (result.is_healthy ? 'None (Physiologically Normal)' : 'Pathogen identified in leaf tissue');
-    document.getElementById('resCauseSnippet').innerHTML = `<strong>${isUr ? 'بیماری کی وجہ: ' : 'Pathogen: '}</strong> ${pathogenText}`;
-
-    // Update Severity Styling
-    const banner = document.getElementById('primaryBanner');
-    banner.className = 'primary-diagnosis-banner severity-' + result.severity;
-    const badgeText = document.getElementById('resSeverityText');
-    const badgeIcon = document.getElementById('resSeverityIcon');
-    
-    if (result.severity === 'high') {
-      badgeText.textContent = isUr ? 'شدید خطرہ' : 'HIGH RISK';
-      badgeIcon.textContent = '🚨';
-    } else if (result.severity === 'moderate') {
-      badgeText.textContent = isUr ? 'درمیانہ خطرہ' : 'MODERATE';
-      badgeIcon.textContent = '⚠️';
-    } else {
-      badgeText.textContent = isUr ? 'تندرست' : 'HEALTHY';
-      badgeIcon.textContent = '✅';
-    }
-
-    // Low confidence alert trigger
-    const lowConfAlert = document.getElementById('lowConfidenceAlert');
-    if (result.confidence < 75) {
-      lowConfAlert.classList.add('visible');
-    } else {
-      lowConfAlert.classList.remove('visible');
-    }
-
-    // Top-3 Candidates
-    const top3 = result.top_3 || [];
-    if (top3[0]) {
-      document.getElementById('c1Name').textContent = isUr ? top3[0].disease_ur : `${top3[0].crop} ${top3[0].disease}`;
-      document.getElementById('c1Prob').textContent = top3[0].confidence.toFixed(1) + '%';
-      document.getElementById('c1Bar').style.width = top3[0].confidence + '%';
-    }
-    if (top3[1]) {
-      document.getElementById('c2Name').textContent = isUr ? top3[1].disease_ur : `${top3[1].crop} ${top3[1].disease}`;
-      document.getElementById('c2Prob').textContent = top3[1].confidence.toFixed(1) + '%';
-      document.getElementById('c2Bar').style.width = Math.min(top3[1].confidence * 3, 100) + '%';
-    }
-    if (top3[2]) {
-      document.getElementById('c3Name').textContent = isUr ? top3[2].disease_ur : `${top3[2].crop} ${top3[2].disease}`;
-      document.getElementById('c3Prob').textContent = top3[2].confidence.toFixed(1) + '%';
-      document.getElementById('c3Bar').style.width = Math.min(top3[2].confidence * 6, 100) + '%';
-    }
-
-    // Grad-CAM visual
-    if (result.gradcam_base64) {
-      document.getElementById('gradcamBaseImg').src = result.gradcam_base64;
-    } else {
-      document.getElementById('gradcamBaseImg').src = activeImageDataUrl;
-    }
-
-    // Treatments
-    document.getElementById('treatmentImmediateText').textContent = tData.immediate_action || 'Inspect surrounding crops; isolate symptomatic leaves.';
-    document.getElementById('treatmentChemicalText').textContent = tData.chemical_treatment || 'Apply labeled protectant fungicides under extension officer direction.';
-    document.getElementById('treatmentOrganicText').textContent = tData.organic_treatment || 'Apply OMRI-listed bio-fungicides; improve airflow.';
-    document.getElementById('treatmentPreventionText').textContent = tData.prevention || 'Practice crop rotation and sanitation.';
+    renderDiagnosisUI(result);
 
     if (window.innerWidth < 960) {
       document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2437,6 +2545,103 @@ btnRunDiagnosis.addEventListener('click', async () => {
     document.getElementById('diagnoseBtnText').textContent = I18N[currentLang].btn_run_scan;
   }
 });
+
+function renderDiagnosisUI(result) {
+  const isUr = currentLang === 'ur';
+
+  // Populate Primary Diagnosis
+  const resDis = document.getElementById('resDiseaseName');
+  if (resDis) resDis.textContent = isUr ? (result.disease_ur || result.disease) : `${result.crop} ${result.disease}`;
+
+  const resCrp = document.getElementById('resCropCategory');
+  if (resCrp) resCrp.textContent = `${isUr ? 'فصل: ' : 'Crop: '} ${isUr ? (result.crop_ur || result.crop) : result.crop}`;
+  
+  const tData = result.treatment || {};
+  const pathogenText = tData.cause || (result.is_healthy ? (isUr ? 'کوئی نہیں (معمول کے مطابق تندرست پتا)' : 'None (Physiologically Normal)') : (isUr ? 'پتے میں جرثومہ پایا گیا ہے' : 'Pathogen identified in leaf tissue'));
+  const resCause = document.getElementById('resCauseSnippet');
+  if (resCause) {
+    resCause.innerHTML = `<strong data-i18n="lbl_pathogen">${isUr ? 'بیماری کا جرثومہ (پیتھوجن):' : 'Pathogen:'}</strong> <span>${pathogenText}</span>`;
+  }
+
+  // Update Severity Styling
+  const banner = document.getElementById('primaryBanner');
+  if (banner) banner.className = 'primary-diagnosis-banner severity-' + result.severity;
+  const badgeText = document.getElementById('resSeverityText');
+  const badgeIcon = document.getElementById('resSeverityIcon');
+  
+  if (badgeText && badgeIcon) {
+    if (result.severity === 'high') {
+      badgeText.textContent = isUr ? 'شدید خطرہ' : 'HIGH RISK';
+      badgeIcon.textContent = '🚨';
+    } else if (result.severity === 'moderate') {
+      badgeText.textContent = isUr ? 'درمیانہ خطرہ' : 'MODERATE';
+      badgeIcon.textContent = '⚠️';
+    } else {
+      badgeText.textContent = isUr ? 'تندرست' : 'HEALTHY';
+      badgeIcon.textContent = '✅';
+    }
+  }
+
+  // Low confidence alert trigger
+  const lowConfAlert = document.getElementById('lowConfidenceAlert');
+  if (lowConfAlert) {
+    if (result.confidence < 75) {
+      lowConfAlert.classList.add('visible');
+    } else {
+      lowConfAlert.classList.remove('visible');
+    }
+  }
+
+  // Top-3 Candidates
+  const top3 = result.top_3 || [];
+  if (top3[0]) {
+    const c1 = document.getElementById('c1Name');
+    if (c1) c1.textContent = isUr ? (top3[0].disease_ur || top3[0].disease) : `${top3[0].crop} ${top3[0].disease}`;
+    const p1 = document.getElementById('c1Prob');
+    if (p1) p1.textContent = top3[0].confidence.toFixed(1) + '%';
+    const b1 = document.getElementById('c1Bar');
+    if (b1) b1.style.width = top3[0].confidence + '%';
+  }
+  if (top3[1]) {
+    const c2 = document.getElementById('c2Name');
+    if (c2) c2.textContent = isUr ? (top3[1].disease_ur || top3[1].disease) : `${top3[1].crop} ${top3[1].disease}`;
+    const p2 = document.getElementById('c2Prob');
+    if (p2) p2.textContent = top3[1].confidence.toFixed(1) + '%';
+    const b2 = document.getElementById('c2Bar');
+    if (b2) b2.style.width = Math.min(top3[1].confidence * 3, 100) + '%';
+  }
+  if (top3[2]) {
+    const c3 = document.getElementById('c3Name');
+    if (c3) c3.textContent = isUr ? (top3[2].disease_ur || top3[2].disease) : `${top3[2].crop} ${top3[2].disease}`;
+    const p3 = document.getElementById('c3Prob');
+    if (p3) p3.textContent = top3[2].confidence.toFixed(1) + '%';
+    const b3 = document.getElementById('c3Bar');
+    if (b3) b3.style.width = Math.min(top3[2].confidence * 6, 100) + '%';
+  }
+
+  // Grad-CAM visual
+  const camImg = document.getElementById('gradcamBaseImg');
+  if (camImg) {
+    if (result.gradcam_base64) {
+      camImg.src = result.gradcam_base64;
+    } else if (activeImageDataUrl) {
+      camImg.src = activeImageDataUrl;
+    }
+  }
+
+  // Treatments
+  const tImm = document.getElementById('treatmentImmediateText');
+  if (tImm) tImm.textContent = tData.immediate_action || (isUr ? 'آس پاس کی فصل کا معائنہ کریں اور متاثرہ پتوں کو الگ کریں۔' : 'Inspect surrounding crops; isolate symptomatic leaves.');
+
+  const tChem = document.getElementById('treatmentChemicalText');
+  if (tChem) tChem.textContent = tData.chemical_treatment || (isUr ? 'زرعی فیلڈ آفیسر کے مشورے سے تجویز کردہ حفاظتی سپرے کریں۔' : 'Apply labeled protectant fungicides under extension officer direction.');
+
+  const tOrg = document.getElementById('treatmentOrganicText');
+  if (tOrg) tOrg.textContent = tData.organic_treatment || (isUr ? 'نامیاتی بائیو فنجی سائیڈ سپرے کریں اور پودوں میں ہوا کا گزر بہتر بنائیں۔' : 'Apply OMRI-listed bio-fungicides; improve airflow.');
+
+  const tPrev = document.getElementById('treatmentPreventionText');
+  if (tPrev) tPrev.textContent = tData.prevention || (isUr ? 'فصلوں کا ہیر پھیر (Crop rotation) اور کھیت کی صفائی کا خیال رکھیں۔' : 'Practice crop rotation and sanitation.');
+}
 
 // 7. ACCESSIBLE TREATMENT ACCORDIONS
 const accordionTriggers = document.querySelectorAll('.accordion-trigger');
@@ -2530,22 +2735,26 @@ svgWrapper.addEventListener('mousemove', (e) => {
   tooltip.style.display = 'block';
   tooltip.style.left = (closest.x / 800 * 100) + '%';
   tooltip.style.top = '40%';
-  tooltip.innerHTML = `Epoch ${closest.epoch}<br><span style="color:var(--brand-wheat)">Train: ${closest.train}%</span> · <span style="color:var(--brand-field)">Val: ${closest.val}%</span>`;
+  const epochLabel = currentLang === 'ur' ? `دور ${closest.epoch}` : `Epoch ${closest.epoch}`;
+  tooltip.innerHTML = `${epochLabel}<br><span style="color:var(--brand-wheat)">Train: ${closest.train}%</span> · <span style="color:var(--brand-field)">Val: ${closest.val}%</span>`;
 });
 
 svgWrapper.addEventListener('mouseleave', () => {
   tooltip.style.display = 'none';
 });
 
-// 10. PER-CLASS CSV TABLE TOGGLE (7 KEY CLASSES vs ALL 38 CLASSES)
+// 10. PER-CLASS CSV TABLE TOGGLE (KEY CLASSES vs ALL 38 CLASSES)
 let showingAllClasses = false;
 const btnToggleAll = document.getElementById('btnToggleAllClasses');
 const tableBody = document.getElementById('perClassTableBody');
 
 function renderTableRows(dataset) {
-  tableBody.innerHTML = dataset.map(row => `
+  if (!tableBody) return;
+  tableBody.innerHTML = dataset.map(row => {
+    const cropName = currentLang === 'ur' ? (URDU_CROP_MAP[row.crop] || row.crop) : row.crop;
+    return `
     <tr>
-      <td><strong>${row.crop}</strong></td>
+      <td><strong>${cropName}</strong></td>
       <td>${row.disease}</td>
       <td class="ltr-only">${row.support}</td>
       <td class="ltr-only">${row.precision.toFixed(3)}</td>
@@ -2556,19 +2765,17 @@ function renderTableRows(dataset) {
         </strong>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
-btnToggleAll.addEventListener('click', () => {
-  showingAllClasses = !showingAllClasses;
-  if (showingAllClasses) {
-    renderTableRows(ALL_PER_CLASS);
-    btnToggleAll.textContent = 'View Key Crop Classes';
-  } else {
-    renderTableRows(KEY_PER_CLASS);
-    btnToggleAll.textContent = 'View All 38 Classes (CSV)';
-  }
-});
+if (btnToggleAll) {
+  btnToggleAll.addEventListener('click', () => {
+    showingAllClasses = !showingAllClasses;
+    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
+    updateToggleAllBtn();
+  });
+}
 </script>
 </body>
 </html>

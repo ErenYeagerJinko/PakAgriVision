@@ -1,7 +1,7 @@
 """PakAgriVision — AI Crop Disease Diagnostic & Treatment Advisor.
 
-Deliverable 3 - Flask Web Application Backend & REST API.
-Lead Frontend Architect: Abdul Ahad (24L-3029)
+PakAgriVision - Flask Web Application Backend & REST API.
+Frontend Architecture: Abdul Ahad (24L-3029)
 Team: Yeagerists++ (Ahad, Anas, Babar)
 Framework: Flask (Port 5000 / 8501)
 """
@@ -23,6 +23,10 @@ from PIL import Image
 # PATH RESOLUTION & FLASK SETUP
 # ─────────────────────────────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).resolve().parents[1]
+import sys
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 TEMPLATES_DIR = ROOT_DIR / "app" / "templates"
 SPLITS_DIR = ROOT_DIR / "splits"
 CLASS_NAMES_PATH = SPLITS_DIR / "class_names.json"
