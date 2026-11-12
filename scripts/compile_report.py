@@ -1,94 +1,113 @@
-"""Compile docs/report/main.tex to main.pdf using curl and online TeX engine."""
+"""Compile the consolidated report without replacing a valid PDF on failure.
 
+Prefers local pdflatex or Tectonic. --online explicitly permits uploading only
+referenced report sources/figures to the repository's existing LaTeXOnline service.
+"""
+
+from __future__ import annotations
+
+import argparse
 import io
+from pathlib import Path
 import re
+import shutil
 import subprocess
 import tarfile
-from pathlib import Path
+import tempfile
+import urllib.error
+import urllib.request
+
 from PIL import Image
 
+ROOT = Path(__file__).resolve().parents[1]
+REPORT = ROOT / "docs/report"
 
-def compress_image_for_tex(src_path: Path) -> bytes:
-    """Return compressed bytes of image for compact LaTeX compilation."""
+
+def compress_image_for_tex(src_path: Path, max_dim: int = 1400) -> bytes:
     if src_path.suffix.lower() == ".pdf":
         return src_path.read_bytes()
-
-    with Image.open(src_path) as img:
-        img = img.convert("RGB")
-        max_dim = 900
-        if max(img.size) > max_dim:
-            img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
-        out = io.BytesIO()
-        img.save(out, format="JPEG", quality=70, optimize=True)
-        return out.getvalue()
+    with Image.open(src_path) as image:
+        image = image.convert("RGB")
+        image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=80, optimize=True)
+        return buffer.getvalue()
 
 
-def compile_latex():
-    report_dir = Path("docs/report")
-    main_tex = report_dir / "main.tex"
-    output_pdf = report_dir / "main.pdf"
+def report_archive(max_dim: int) -> bytes:
+    buffer = io.BytesIO()
+    sources = [REPORT / "main.tex", *sorted((REPORT / "sections").glob("*.tex"))]
+    used_figures = set()
+    with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
+        for path in sources:
+            text = path.read_text(encoding="utf-8")
+            pattern = r"(\\includegraphics(?:\[[^\]]*\])?\{)([^}]+)(\})"
+            def normalize(match):
+                name = Path(match[2]).name
+                used_figures.add(name)
+                return match[1] + name + match[3]
+            text = re.sub(pattern, normalize, text)
+            raw = text.encode("utf-8")
+            info = tarfile.TarInfo(path.relative_to(REPORT).as_posix())
+            info.size = len(raw)
+            archive.addfile(info, io.BytesIO(raw))
+        for name in sorted(used_figures):
+            path = ROOT / "reports/figures" / name
+            raw = compress_image_for_tex(path, max_dim)
+            info = tarfile.TarInfo(f"reports/figures/{name}")
+            info.size = len(raw)
+            archive.addfile(info, io.BytesIO(raw))
+    return buffer.getvalue()
 
-    temp_tar = Path("temp_report.tar.gz")
-    with tarfile.open(temp_tar, "w:gz") as tar:
-        # Add main.tex
-        tar.add(main_tex, arcname="main.tex")
 
-        # Add sections
-        sections_dir = report_dir / "sections"
-        tex_sources = [main_tex.read_text(encoding="utf-8")]
-        for sec in sections_dir.glob("*.tex"):
-            tar.add(sec, arcname=f"sections/{sec.name}")
-            tex_sources.append(sec.read_text(encoding="utf-8"))
-
-        # Add compressed figures into reports/figures/ (only those the report includes;
-        # the online engine rejects uploads larger than about 1.5 MB)
-        used_figures = {
-            Path(name).name
-            for name in re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", "\n".join(tex_sources))
-        }
-        figures_dir = Path("reports/figures")
-        for fig in figures_dir.glob("*"):
-            if fig.name not in used_figures:
-                continue
-            if fig.is_file() and fig.suffix.lower() in (".png", ".jpg", ".jpeg", ".pdf"):
-                img_bytes = compress_image_for_tex(fig)
-                target_arc = f"reports/figures/{fig.name}"
-                tarinfo = tarfile.TarInfo(name=target_arc)
-                tarinfo.size = len(img_bytes)
-                tar.addfile(tarinfo, io.BytesIO(img_bytes))
-
-    tar_size_kb = temp_tar.stat().st_size / 1024
-    print(f"Packaged lightweight report archive: {tar_size_kb:.1f} KB. Compiling via TeX engine...")
-
-    cmd = [
-        "curl.exe",
-        "-s",
-        "--max-time", "180",
-        "-F", f"file=@{temp_tar}",
-        "https://latexonline.cc/data?target=main.tex",
-        "-o", str(output_pdf)
-    ]
-
+def online_compile() -> bytes:
+    # The service's reverse proxy caps multipart uploads at roughly 1 MB.
+    for max_dim in (1400, 1000, 850, 750, 650, 500):
+        archive = report_archive(max_dim)
+        if len(archive) < 980_000:
+            break
+    else:
+        raise RuntimeError("Report archive exceeds the online upload limit; use a local TeX engine")
+    boundary = "PakAgriVisionReportBoundary"
+    body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; "
+            f"filename=\"report.tar.gz\"\r\nContent-Type: application/gzip\r\n\r\n").encode()
+    body += archive + f"\r\n--{boundary}--\r\n".encode()
+    request = urllib.request.Request("https://latexonline.cc/data?target=main.tex", data=body,
+                                     headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+    print(f"Uploading referenced report sources/figures only ({len(archive):,} bytes) to LaTeXOnline.")
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        if output_pdf.exists() and output_pdf.stat().st_size > 5000:
-            with open(output_pdf, "rb") as f:
-                head = f.read(5)
-            if head == b"%PDF-":
-                print(f"SUCCESS: Generated {output_pdf} ({output_pdf.stat().st_size:,} bytes, ~{output_pdf.stat().st_size/1024/1024:.2f} MB)")
-            else:
-                print("Failed: Output is not a valid PDF. Header:", head)
-                with open(output_pdf, "r", errors="ignore") as f:
-                    print(f.read()[:800])
+        with urllib.request.urlopen(request, timeout=180) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        raise RuntimeError(exc.read().decode(errors="replace")[:3000]) from exc
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--online", action="store_true", help="Permit the existing online compiler if no local engine exists")
+    args = parser.parse_args()
+    pdflatex, tectonic = shutil.which("pdflatex"), shutil.which("tectonic")
+    with tempfile.TemporaryDirectory(prefix="pakagrivision-tex-") as directory:
+        output = Path(directory)
+        if pdflatex:
+            command = [pdflatex, "-interaction=nonstopmode", "-halt-on-error", f"-output-directory={output}", "main.tex"]
+            for _ in range(2):
+                subprocess.run(command, cwd=REPORT, check=True, timeout=180)
+            pdf = (output / "main.pdf").read_bytes()
+        elif tectonic:
+            subprocess.run([tectonic, "--outdir", str(output), "main.tex"], cwd=REPORT, check=True, timeout=240)
+            pdf = (output / "main.pdf").read_bytes()
+        elif args.online:
+            pdf = online_compile()
         else:
-            print("Failed: output PDF missing or too small.")
-            if output_pdf.exists():
-                with open(output_pdf, "r", errors="ignore") as f:
-                    print(f.read()[:800])
-    finally:
-        if temp_tar.exists():
-            temp_tar.unlink()
+            raise SystemExit("Install pdflatex/Tectonic, or explicitly permit the existing service with --online. Existing main.pdf was not changed.")
+        if not pdf.startswith(b"%PDF-") or len(pdf) < 5000 or b"%%EOF" not in pdf[-1024:]:
+            raise RuntimeError("Compiler did not return a valid PDF; existing main.pdf was not changed")
+        # Only publish a validated successful build. No failed response overwrites the report.
+        destination = REPORT / "main.pdf"
+        destination.write_bytes(pdf)
+        print(f"Compiled {destination.relative_to(ROOT)} ({len(pdf):,} bytes).")
 
 
 if __name__ == "__main__":
-    compile_latex()
+    main()
