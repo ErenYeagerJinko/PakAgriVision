@@ -208,6 +208,15 @@ def test_filtered_ranking_keeps_original_confidence(monkeypatch):
     assert diagnosis["confidence"] == 20
 
 
+def test_api_predict_isolate_leaf_toggle(client, payload):
+    payload["isolate_leaf"] = True
+    response = client.post("/api/predict", json=payload)
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["leaf_isolated"] is True
+    assert data["isolated_leaf_base64"] is not None
+
+
 def test_real_checkpoint_image_to_advisory():
     """One real image through actual checkpoint, Grad-CAM and treatment retrieval."""
     if not web.CHECKPOINT_PATH.is_file():

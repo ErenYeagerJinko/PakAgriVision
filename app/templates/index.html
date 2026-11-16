@@ -1484,6 +1484,21 @@ svg { flex-shrink: 0; }
           </ul>
         </div>
 
+        <!-- Field Mode Leaf Isolation Toggle -->
+        <div class="field-mode-toggle-wrap" style="margin: 12px 0 16px; padding: 10px 14px; background: var(--bg-surface-raised); border: 1px solid var(--border-medium); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-field)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12A10 10 0 0 1 12 2Z"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            <div>
+              <label for="chkIsolateLeaf" style="font-size: 13px; font-weight: 700; cursor: pointer; display: block;" data-i18n="field_mode_label">Field Mode (AI Leaf Isolation)</label>
+              <span style="font-size: 11px; color: var(--text-muted); display: block;" data-i18n="field_mode_desc">Removes soil, hands & background clutter before diagnosis</span>
+            </div>
+          </div>
+          <input type="checkbox" id="chkIsolateLeaf" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--brand-field);">
+        </div>
+
         <!-- Diagnostic Action CTA -->
         <button type="button" class="btn-diagnose-main" id="btnRunDiagnosis" disabled>
           <span class="spinner-icon" id="diagnoseSpinner"></span>
@@ -1861,9 +1876,15 @@ svg { flex-shrink: 0; }
             <td class="ltr-only">{{ "%.3f"|format(row.precision) }}</td>
             <td class="ltr-only">{{ "%.3f"|format(row.recall) }}</td>
             <td>
-              <strong class="ltr-only" style="color: {% if row.f1 >= 0.98 %}var(--brand-field){% else %}var(--brand-wheat){% endif %};">
+              {% if row.f1 >= 0.98 %}
+              <strong class="ltr-only" style="color: var(--brand-field);">
                 {{ "%.3f"|format(row.f1) }}
               </strong>
+              {% else %}
+              <strong class="ltr-only" style="color: var(--brand-wheat);">
+                {{ "%.3f"|format(row.f1) }}
+              </strong>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -2033,11 +2054,14 @@ svg { flex-shrink: 0; }
      ACCORDIONS & REAL FLASK API INTEGRATION
      ───────────────────────────────────────────────────────────── -->
 <script src="{{ url_for('static', filename='advisory.js') }}" defer></script>
+<script id="server-history-data" type="application/json">{{ (history or []) | tojson }}</script>
+<script id="all-per-class-data" type="application/json">{{ (all_per_class or []) | tojson }}</script>
+<script id="key-per-class-data" type="application/json">{{ (per_class or []) | tojson }}</script>
 <script>
 // RAW SERVER-SIDE DATA INJECTED DIRECTLY FROM results/ CSVs
-const SERVER_HISTORY = {{ (history or []) | tojson }};
-const ALL_PER_CLASS = {{ (all_per_class or []) | tojson }};
-const KEY_PER_CLASS = {{ (per_class or []) | tojson }};
+const SERVER_HISTORY = JSON.parse(document.getElementById('server-history-data').textContent || '[]');
+const ALL_PER_CLASS = JSON.parse(document.getElementById('all-per-class-data').textContent || '[]');
+const KEY_PER_CLASS = JSON.parse(document.getElementById('key-per-class-data').textContent || '[]');
 
 // Urdu crop map for data table rendering
 const URDU_CROP_MAP = {
@@ -2096,6 +2120,8 @@ const I18N = {
     tip_2: "Avoid harsh solar glare; shade the leaf with your hand if sun is directly overhead.",
     tip_3: "Make sure symptoms (spots, rust, mildew) are clearly visible and in focus.",
     tip_4: "Large images are resized without stretching to conserve cellular data.",
+    field_mode_label: "Field Mode (AI Leaf Isolation)",
+    field_mode_desc: "Removes soil, hands & background clutter before diagnosis",
     btn_run_scan: "Run AI Diagnosis",
     idle_title: "Diagnostic Results Awaiting Input",
     idle_desc: 'Take a photo or upload an image on the left, then tap "Run AI Diagnosis" to analyze pathology and generate immediate treatment steps.',
@@ -2199,6 +2225,8 @@ const I18N = {
     tip_2: "تیز دھوپ کی چمک سے بچیں؛ ہاتھ سے ہلکا سایہ کر لیں۔",
     tip_3: "پتے پر داغ یا بیماری کا نشان بالکل واضح ہونا چاہیے۔",
     tip_4: "آپ کے موبائل انٹرنیٹ کی بچت کے لیے تصویر خودکار کمپریس ہوتی ہے۔",
+    field_mode_label: "فیلڈ موڈ (پتے کی خودکار علیحدگی)",
+    field_mode_desc: "تشخیص سے پہلے مٹی، ہاتھ اور پس منظر صاف کرتا ہے",
     btn_run_scan: "بیماری کی جانچ شروع کریں",
     idle_title: "تشخیص کے لیے پتے کی تصویر درکار ہے",
     idle_desc: 'بائیں جانب سے تصویر کھینچیں یا اپلوڈ کریں، پھر "بیماری کی جانچ شروع کریں" پر کلک کریں۔',
@@ -2511,7 +2539,8 @@ btnRunDiagnosis.addEventListener('click', async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         image: activeImageDataUrl,
-        crop: selectedCropFilter
+        crop: selectedCropFilter,
+        isolate_leaf: Boolean(document.getElementById('chkIsolateLeaf') && document.getElementById('chkIsolateLeaf').checked)
       })
     });
 

@@ -219,13 +219,26 @@ def api_predict():
         raise ValueError("No image provided")
     alpha = parse_alpha(data.get("alpha", 0.55))
     crop = data.get("crop")
+    isolate_leaf = str(data.get("isolate_leaf", "false")).lower() in {"true", "1", "yes"}
     if crop is not None and (not isinstance(crop, str) or crop.casefold() not in
                             {"all", *(format_class_name(c)[0].casefold() for c in CLASS_NAMES)}):
         raise ValueError("Unknown crop filter")
     if TREATMENT_KB is None:
         raise ModelUnavailable("Treatment knowledge base is unavailable; restart after repairing its files")
+    
+    leaf_image = image
+    isolated_leaf_base64 = None
+    if isolate_leaf:
+        try:
+            from src.leaf_segmenter import extract_leaf_on_white
+            leaf_image = extract_leaf_on_white(image)
+            isolated_leaf_base64 = pil_to_base64(leaf_image)
+        except Exception:
+            app.logger.exception("Leaf segmentation failed; falling back to original image")
+            leaf_image = image
+
     try:
-        diagnosis = ENGINE.predict(image, filter_crop=crop)
+        diagnosis = ENGINE.predict(leaf_image, filter_crop=crop)
         advisory = build_advisory(TREATMENT_KB, diagnosis["predicted_class"], diagnosis["confidence"])
     except KeyError as exc:
         raise ModelUnavailable("Prediction has no verified treatment mapping") from exc
@@ -241,12 +254,13 @@ def api_predict():
     diagnosis["disease_ur"] = URDU_DISEASE_MAP.get(diagnosis["predicted_class"], diagnosis["disease"])
     cam_base64, cam_error = None, None
     try:
-        cam_base64 = pil_to_base64(ENGINE.generate_gradcam(image, diagnosis["predicted_class"], alpha))
+        cam_base64 = pil_to_base64(ENGINE.generate_gradcam(leaf_image, diagnosis["predicted_class"], alpha))
     except Exception:
         app.logger.exception("Grad-CAM unavailable")
         cam_error = "Grad-CAM is unavailable for this prediction; no substitute heatmap was generated."
     return jsonify({**diagnosis, "advisory": advisory, "treatment": advisory["treatment"],
-                    "gradcam_base64": cam_base64, "gradcam_error": cam_error})
+                    "gradcam_base64": cam_base64, "gradcam_error": cam_error,
+                    "leaf_isolated": isolate_leaf, "isolated_leaf_base64": isolated_leaf_base64})
 
 
 @app.route("/api/gradcam", methods=["POST"])
