@@ -31,7 +31,9 @@ TEMPLATES_DIR = ROOT_DIR / "app" / "templates"
 SPLITS_DIR = ROOT_DIR / "splits"
 CLASS_NAMES_PATH = SPLITS_DIR / "class_names.json"
 KB_PATH = ROOT_DIR / "knowledge_base" / "treatments.json"
-CHECKPOINT_PATH = ROOT_DIR / "runs" / "baseline" / "best.pt"
+CHECKPOINT_PATH = ROOT_DIR / "runs" / "field_cropped" / "best.pt"
+if not CHECKPOINT_PATH.exists():
+    CHECKPOINT_PATH = ROOT_DIR / "runs" / "baseline" / "best.pt"
 
 # Results Directory Paths
 RESULTS_DIR = ROOT_DIR / "results" / "baseline"
@@ -41,6 +43,7 @@ TEST_PER_CLASS_PATH = RESULTS_DIR / "test" / "per_class.csv"
 FIELD_METRICS_PATH = RESULTS_DIR / "field" / "metrics.json"
 
 SAMPLE_DIRS = [
+    ROOT_DIR / "data" / "raw" / "field_cropped",
     ROOT_DIR / "data" / "raw" / "field",
     ROOT_DIR / "data" / "raw" / "plantvillage" / "color",
 ]
