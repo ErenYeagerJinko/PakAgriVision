@@ -166,6 +166,8 @@ def get_dataloaders(
     seed: int = SEED,
     use_weighted_sampler: bool = False,
     class_weights: Optional[Sequence[float]] = None,
+    use_randaug: bool = False,
+    use_field_aug: bool = False,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     """Factory creating reproducible train, val, and test DataLoaders.
 
@@ -179,6 +181,8 @@ def get_dataloaders(
         seed: Random seed for generator reproducibility.
         use_weighted_sampler: Whether to sample training batches inversely to class frequency.
         class_weights: Weights required if use_weighted_sampler is True.
+        use_randaug: Whether to apply RandAugment to training data.
+        use_field_aug: Whether to apply heavy field-specific outdoor augmentations.
 
     Returns:
         (train_loader, val_loader, test_loader)
@@ -186,7 +190,7 @@ def get_dataloaders(
     train_dataset = PlantDataset(
         csv_source=train_manifest,
         root_dir=root_dir,
-        transform=get_train_transforms(),
+        transform=get_train_transforms(use_randaug=use_randaug, use_field_aug=use_field_aug),
     )
     val_dataset = PlantDataset(
         csv_source=val_manifest,

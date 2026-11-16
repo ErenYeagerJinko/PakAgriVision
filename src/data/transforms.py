@@ -23,6 +23,7 @@ def get_train_transforms(
     mean: Sequence[float] = IMAGENET_MEAN,
     std: Sequence[float] = IMAGENET_STD,
     use_randaug: bool = False,
+    use_field_aug: bool = False,
 ) -> transforms.Compose:
     """Build the stochastic data augmentation pipeline for model training.
 
@@ -31,9 +32,25 @@ def get_train_transforms(
     - RandomHorizontalFlip & RandomVerticalFlip: exploits rotational invariance.
     - RandomRotation (30 deg): simulates handheld mobile capture angles.
     - ColorJitter: simulates varied sunlight, shadows, and camera white-balance.
-    - Optional RandAugment: automated diverse augmentation policy.
+    - Optional RandAugment or FieldAug: automated diverse field augmentation policies.
     - Normalization: standard ImageNet mean and std.
     """
+    if use_field_aug:
+        transform_list: List[transforms.Transform] = [
+            transforms.RandomResizedCrop(img_size, scale=(0.5, 1.0)),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            transforms.RandomRotation(degrees=35),
+            transforms.ColorJitter(brightness=0.35, contrast=0.35, saturation=0.35, hue=0.08),
+            transforms.RandomAffine(degrees=15, translate=(0.08, 0.08), scale=(0.9, 1.1)),
+            transforms.RandomPerspective(distortion_scale=0.2, p=0.4),
+            transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 1.5)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std),
+            transforms.RandomErasing(p=0.25, scale=(0.02, 0.2), value="random"),
+        ]
+        return transforms.Compose(transform_list)
+
     transform_list: List[transforms.Transform] = [
         transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
         transforms.RandomHorizontalFlip(p=0.5),

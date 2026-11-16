@@ -250,6 +250,9 @@ def train(
     else:
         manifest_root = Path(manifest_root)
 
+    use_randaug = bool(data_cfg.get("use_randaug", False))
+    use_field_aug = bool(data_cfg.get("use_field_aug", False))
+
     train_loader, val_loader, _ = get_dataloaders(
         train_manifest=train_df,
         val_manifest=val_df,
@@ -258,6 +261,8 @@ def train(
         batch_size=batch_size,
         num_workers=num_workers,
         seed=seed,
+        use_randaug=use_randaug,
+        use_field_aug=use_field_aug,
     )
 
     # Build Model
