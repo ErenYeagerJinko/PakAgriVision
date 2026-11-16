@@ -1,28 +1,28 @@
 \section{Team Contributions \& Task Distribution}
 \label{sec:contributions}
 
-In accordance with course deliverable requirements, Table~\ref{tab:contribution_table} provides a transparent breakdown of individual contributions, module ownership, and verified development tasks across Deliverables~1 and 2.
+In accordance with course deliverable requirements, Table~\ref{tab:contribution_table} provides a transparent breakdown of individual contributions, module ownership, and verified development tasks across Deliverables~1, 2, and 3 (Phases 1 through 6).
 
 \begin{table}[h]
 \centering
-\caption{\textbf{Verified Team Contribution and Module Ownership Table.}}
+\caption{\textbf{Verified Team Contribution and Module Ownership Table across All Project Phases.}}
 \label{tab:contribution_table}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}p{2.6cm}l>{\raggedright\arraybackslash}p{9.2cm}c@{}}
 \toprule
-\textbf{Team Member} & \textbf{GitHub Handle} & \textbf{Owned Modules \& Technical Deliverables} & \textbf{Phase} \\
+\textbf{Team Member} & \textbf{GitHub Handle} & \textbf{Owned Modules \& Technical Deliverables} & \textbf{Phases} \\
 \midrule
 \textbf{Abdul Ahad} \newline (Leader, 24L-3029) & \texttt{@ErenYeagerJinko} & 
-\textbf{Deliverable 2:} Model architecture definitions (\texttt{src/models/classifier.py}), custom classification head, class-weighted loss and label smoothing (\texttt{src/losses.py}), AdamW optimizer and cosine warmup scheduler (\texttt{src/optim.py}), model test suite (\texttt{tests/test\_model.py}), YAML experiment configs (\texttt{configs/*.yaml}), baseline training execution (ResNet-50, 99.64\% val acc), model weights hosting and download automation (\texttt{scripts/download\_weights.py}), architecture diagram, full report drafting. \newline
-\textbf{Deliverable 1:} Repository architecture, dependencies (\texttt{requirements.txt}), .gitignore hygiene, raw PlantVillage acquisition. & 1--4 \\
+\textbf{Deliverable 3 (Phases 5 \& 6):} Web application backend and REST API engine (\texttt{app/app.py}), single-page responsive dashboard architecture (\texttt{app/templates/index.html}), Two-Stage Cascade integration (YOLOv8n leaf cropping $\rightarrow$ ResNet-50 classification with contextual crop prior), real-time Layer~4 Grad-CAM explainability pipeline with dynamic alpha blending, application test suite (\texttt{tests/test\_app.py}), Deliverable~3 final technical report lead and LaTeX compilation pipeline (\texttt{scripts/compile\_report.py}). \newline
+\textbf{Deliverables 1 \& 2 (Phases 1--4):} Model architecture definitions (\texttt{src/models/classifier.py}), custom classification head, class-weighted loss and label smoothing (\texttt{src/losses.py}), AdamW optimizer and cosine warmup scheduler (\texttt{src/optim.py}), model test suite (\texttt{tests/test\_model.py}), YAML experiment configs (\texttt{configs/*.yaml}), baseline training execution (ResNet-50, 99.64\% val acc), model weights hosting and download automation (\texttt{scripts/download\_weights.py}), repository architecture, dependencies (\texttt{requirements.txt}), full report drafting. & 1--6 \\
 \midrule
 \textbf{M. Anas} \newline (24L-3004) & \texttt{@Plagiaryze2} & 
-\textbf{Deliverable 2:} Training engine loop with mixed precision and gradient clipping (\texttt{src/engine.py}), CLI training orchestrator with checkpointing (\texttt{src/train.py}), hyperparameter tuning harness (\texttt{src/tune.py}), engine unit tests (\texttt{tests/test\_engine.py}), training curves plotting (\texttt{src/plotting.py}). \newline
-\textbf{Deliverable 1:} Dataset class and DataLoader factory (\texttt{src/data/dataset.py}), image transforms and augmentation pipeline (\texttt{src/data/transforms.py}), data quality and deduplication scan (\texttt{src/data/quality.py}). & 1--4 \\
+\textbf{Deliverable 3 (Phases 5 \& 6):} ResNet-50 field-cropped model fine-tuning and checkpoint management (\texttt{runs/field\_cropped/best.pt}), dataset manifest generation for 8,418 leaf crops (\texttt{splits/field\_cropped\_train.csv}), training engine validation loop maintenance, repository test suite verification and continuous testing hygiene. \newline
+\textbf{Deliverables 1 \& 2 (Phases 1--4):} Training engine loop with mixed precision and gradient clipping (\texttt{src/engine.py}), CLI training orchestrator with checkpointing (\texttt{src/train.py}), hyperparameter tuning harness (\texttt{src/tune.py}), engine unit tests (\texttt{tests/test\_engine.py}), training curves plotting (\texttt{src/plotting.py}), dataset class and DataLoader factory (\texttt{src/data/dataset.py}), image transforms and augmentation pipeline (\texttt{src/data/transforms.py}), data quality and deduplication scan (\texttt{src/data/quality.py}). & 1--6 \\
 \midrule
 \textbf{M. Babar Shahzad} \newline (24L-3047) & \texttt{@babarshahzad2005} & 
-\textbf{Deliverable 2:} Evaluation metrics suite (\texttt{src/metrics.py}), CLI evaluation module (\texttt{src/evaluate.py}), metric tests (\texttt{tests/test\_metrics.py}), error analysis and confusion matrix extraction (\texttt{src/analysis/error\_analysis.py}), systematic Bias Check auditing (\texttt{src/analysis/bias\_check.py}). \newline
-\textbf{Deliverable 1:} Field robustness image collection ($\ge 150$ images), field metadata mapping (\texttt{field\_meta/}), treatment knowledge base curation and JSON schema validation (\texttt{knowledge\_base/}). & 1--4 \\
+\textbf{Deliverable 3 (Phases 5 \& 6):} YOLOv8n leaf detector training on PlantDoc annotations (\texttt{models/yolo/leaf\_detector.pt}), empirical domain adaptation benchmarking on the 93 held-out field test images across all 6 model iterations, inference latency profiling and CPU benchmark analysis, bilingual Urdu/English translation dictionary expansion for treatments and disease diagnoses. \newline
+\textbf{Deliverables 1 \& 2 (Phases 1--4):} Evaluation metrics suite (\texttt{src/metrics.py}), CLI evaluation module (\texttt{src/evaluate.py}), metric tests (\texttt{tests/test\_metrics.py}), error analysis and confusion matrix extraction (\texttt{src/analysis/error\_analysis.py}), systematic Bias Check auditing (\texttt{src/analysis/bias\_check.py}), field robustness image collection ($\ge 150$ images), field metadata mapping (\texttt{field\_meta/}), treatment knowledge base curation and JSON schema validation (\texttt{knowledge\_base/}). & 1--6 \\
 \bottomrule
 \end{tabular}%
 }

@@ -34,7 +34,7 @@
 
 \title{
     \textbf{PakAgriVision: Crop Disease Detector}\\
-    \large Deliverable 2: Model Architecture, Training \& Evaluation (Phase 3 \& 4)\\
+    \large Deliverable 3: Final Deployment, In-the-Wild Domain Adaptation \& Technical Report (Phase 5 \& 6)\\
     \normalsize Track A: Application Development
 }
 
@@ -53,7 +53,7 @@
 \maketitle
 
 \begin{abstract}
-PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. Building upon Deliverable~1's curated dataset foundations ($\sim$32,000 balanced images across 38 classes and 38-class treatment knowledge base), this Deliverable~2 report presents the complete Phase~3 Model Architecture and Phase~4 Training and Evaluation pipeline. We implement a deep residual classifier (ResNet-50) featuring a custom regularization head ($p=0.30$ dropout and 38-class projection) and an explicit Grad-CAM explainability target layer. Training incorporates class-weighted cross-entropy with label smoothing, AdamW optimization, a two-stage progressive fine-tuning schedule (head-only warm-up followed by cosine annealing), and a structured 13-trial hyperparameter tuning protocol. The resulting baseline model achieves \textbf{99.64\% validation accuracy} and a \textbf{0.9961 macro-F1 score} with a validation loss of \textbf{0.0169}. We detail evaluation methodology across macro precision/recall, one-vs-rest AUC-ROC, top-3 metrics, error analysis, a comprehensive Bias Check auditing class-size disparities and lab-vs-field generalization gaps, and the complete individual contribution breakdown.
+PakAgriVision is an AI-driven agricultural decision-support tool addressing late crop disease detection for Pakistani smallholder farmers. Building upon Deliverable~1's curated dataset foundations ($\sim$32,000 balanced images across 38 classes and 38-class treatment knowledge base) and Deliverable~2's baseline ResNet-50 classifier (99.64\% lab validation accuracy), this Deliverable~3 final technical report marks the completion of Phase~5 (Output Execution / Web Application Deployment) and Phase~6 (Final Technical Documentation) for Track~A. While the laboratory baseline achieved 99.71\% test accuracy, evaluation on 93 held-out in-the-wild field test images revealed severe shortcut learning and background entanglement, resulting in a dramatic drop to 24.73\% Top-1 accuracy due to covariate shift between lab backdrops and unconstrained farm environments. We detail our systematic, empirical domain adaptation journey: few-shot field transfer (33.33\%), full-scale field adaptation on $\sim$2,000 images (54.84\% Top-1 / 82.80\% Top-3 / 0.9524 Macro AUC), and localized leaf-crop fine-tuning on $\sim$8,400 crops (61.05\% precision). To definitively solve background clutter, we implement and deploy a Two-Stage Cascade Architecture: an initial YOLOv8n leaf detector localizes the primary leaf region (achieving a 100.0\% leaf detection rate on field test images), followed by a field-cropped ResNet-50 classifier. Combined with user crop filtering, this system achieves \textbf{80.65\% Top-1 Accuracy}, \textbf{96.77\% Top-3 Accuracy}, and a \textbf{0.9850 Macro-AUC} on held-out field photos. The complete pipeline is operationalized within a production-ready Flask web application and responsive dashboard featuring real-time image diagnosis, dual-model inference, interactive Layer 4 Grad-CAM explainability, and bilingual (English/Urdu) agricultural extension treatment advisories.
 \end{abstract}
 
 % Deliverable 1 Foundations (Retained for complete context)
@@ -101,6 +101,11 @@ SGDR: Stochastic gradient descent with warm restarts.
 Singh, D., Jain, N., Jain, P., Kayal, P., Kumawat, S., \& Batra, N. (2020).
 PlantDoc: A dataset for visual plant disease detection.
 In \emph{Proceedings of the 7th ACM IKDD CoDS and 25th COMAD}, 249--253.
+
+\bibitem{yolov8}
+Jocher, G., Chaurasia, A., \& Qiu, J. (2023).
+Ultralytics YOLOv8.
+\emph{GitHub repository: \url{https://github.com/ultralytics/ultralytics}}.
 \end{thebibliography}
 
 \end{document}

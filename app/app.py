@@ -27,13 +27,24 @@ import sys
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+# Local pkgs folder for isolated dependencies (e.g. ultralytics)
+PKGS_DIR = ROOT_DIR / "pkgs"
+if PKGS_DIR.exists() and str(PKGS_DIR) not in sys.path:
+    sys.path.insert(0, str(PKGS_DIR))
+
 TEMPLATES_DIR = ROOT_DIR / "app" / "templates"
 SPLITS_DIR = ROOT_DIR / "splits"
 CLASS_NAMES_PATH = SPLITS_DIR / "class_names.json"
 KB_PATH = ROOT_DIR / "knowledge_base" / "treatments.json"
+
+# Model Checkpoints (Two-Stage Cascade Architecture)
 CHECKPOINT_PATH = ROOT_DIR / "runs" / "field_cropped" / "best.pt"
 if not CHECKPOINT_PATH.exists():
     CHECKPOINT_PATH = ROOT_DIR / "runs" / "baseline" / "best.pt"
+
+YOLO_CHECKPOINT = ROOT_DIR / "models" / "yolo" / "leaf_detector.pt"
+if not YOLO_CHECKPOINT.exists():
+    YOLO_CHECKPOINT = ROOT_DIR / "runs" / "yolo" / "best.pt"
 
 # Results Directory Paths
 RESULTS_DIR = ROOT_DIR / "results" / "baseline"
@@ -449,6 +460,74 @@ class ModelEngine:
         return Image.fromarray(np.clip(blended * 255, 0, 255).astype(np.uint8))
 
 
+class LeafDetector:
+    """YOLOv8n Leaf Localization Engine for Two-Stage In-The-Wild Diagnosis.
+    
+    Localizes the primary leaf in unconstrained farm photographs to isolate
+    pathology and discard complex field background clutter (soil, hands, sky).
+    """
+
+    def __init__(self, checkpoint_path: Path):
+        self.checkpoint_path = checkpoint_path
+        self.model = None
+        self.available = False
+        self._init_detector()
+
+    def _init_detector(self) -> None:
+        try:
+            if self.checkpoint_path.exists():
+                from ultralytics import YOLO
+                self.model = YOLO(str(self.checkpoint_path))
+                self.available = True
+                print(f"[LeafDetector] Loaded YOLOv8n leaf detector from {self.checkpoint_path}")
+            else:
+                print(f"[LeafDetector] YOLO weights not found at {self.checkpoint_path}")
+        except Exception as e:
+            print(f"[LeafDetector] Fallback mode (no YOLO): {e}")
+            self.available = False
+
+    def detect_and_crop(
+        self, image: Image.Image, conf_threshold: float = 0.25, padding_ratio: float = 0.05
+    ) -> Tuple[Image.Image, Optional[List[int]], float]:
+        """Detect leaf in image, returning (cropped_leaf_img, bbox [x1, y1, x2, y2], confidence).
+        
+        If no leaf is detected above conf_threshold, returns (original_image, None, 0.0).
+        """
+        if not self.available or self.model is None:
+            return image, None, 0.0
+
+        try:
+            results = self.model.predict(source=image, conf=conf_threshold, verbose=False)
+            if not results or len(results[0].boxes) == 0:
+                return image, None, 0.0
+
+            boxes = results[0].boxes
+            best_idx = int(boxes.conf.argmax())
+            best_box = boxes.xyxy[best_idx].tolist()
+            conf = float(boxes.conf[best_idx])
+
+            x1, y1, x2, y2 = best_box
+            w, h = image.size
+
+            # Proportional padding around the detected leaf
+            pad_w = (x2 - x1) * padding_ratio
+            pad_h = (y2 - y1) * padding_ratio
+
+            x1_pad = max(0, int(round(x1 - pad_w)))
+            y1_pad = max(0, int(round(y1 - pad_h)))
+            x2_pad = min(w, int(round(x2 + pad_w)))
+            y2_pad = min(h, int(round(y2 + pad_h)))
+
+            if (x2_pad - x1_pad) > 10 and (y2_pad - y1_pad) > 10:
+                leaf_crop = image.crop((x1_pad, y1_pad, x2_pad, y2_pad))
+                return leaf_crop, [x1_pad, y1_pad, x2_pad, y2_pad], conf
+            return image, None, 0.0
+        except Exception as e:
+            print(f"[LeafDetector] Detection error: {e}")
+            return image, None, 0.0
+
+
+LEAF_DETECTOR = LeafDetector(YOLO_CHECKPOINT)
 ENGINE = ModelEngine(CHECKPOINT_PATH)
 
 
@@ -483,17 +562,20 @@ def index():
 
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
-    """Run ResNet-50 prediction, generate Grad-CAM, and look up treatment advisory."""
+    """Run Two-Stage Cascade prediction (YOLOv8n Leaf Detector -> ResNet-50 Cropped),
+    generate Grad-CAM, and look up vetted treatment advisory."""
     try:
         pil_image = None
         alpha = 0.55
         filter_crop = None
+        use_yolo = True
 
         if request.is_json:
-            data = request.get_json()
+            data = request.get_json() or {}
             image_raw = data.get("image")
             alpha = float(data.get("alpha", 0.55))
             filter_crop = data.get("crop")
+            use_yolo = bool(data.get("use_yolo", True))
             if image_raw:
                 pil_image = base64_to_pil(image_raw)
         elif "image" in request.files:
@@ -501,16 +583,31 @@ def api_predict():
             pil_image = Image.open(file.stream).convert("RGB")
             alpha = float(request.form.get("alpha", 0.55))
             filter_crop = request.form.get("crop")
+            use_yolo = request.form.get("use_yolo", "true").lower() in ("true", "1")
 
         if pil_image is None:
             return jsonify({"error": "No image provided"}), 400
 
-        # Run Classification
-        diagnosis = ENGINE.predict(pil_image, filter_crop=filter_crop)
+        # Stage 1: Leaf Localization (YOLOv8n)
+        leaf_detected = False
+        leaf_bbox = None
+        leaf_conf = 0.0
+        input_image = pil_image
+
+        if use_yolo and LEAF_DETECTOR.available:
+            cropped_candidate, bbox, conf = LEAF_DETECTOR.detect_and_crop(pil_image)
+            if bbox is not None:
+                leaf_detected = True
+                leaf_bbox = bbox
+                leaf_conf = round(conf * 100.0, 1)
+                input_image = cropped_candidate
+
+        # Stage 2: Deep Residual Classification (ResNet-50 Cropped)
+        diagnosis = ENGINE.predict(input_image, filter_crop=filter_crop)
         pred_class = diagnosis["predicted_class"]
 
-        # Generate Grad-CAM Heatmap Overlay
-        cam_image = ENGINE.generate_gradcam(pil_image, target_class=pred_class, alpha=alpha)
+        # Explainability: Grad-CAM Heatmap Overlay
+        cam_image = ENGINE.generate_gradcam(input_image, target_class=pred_class, alpha=alpha)
         cam_base64 = pil_to_base64(cam_image, format="JPEG")
 
         # Fetch Treatment Advisory from treatments.json
@@ -536,6 +633,11 @@ def api_predict():
             "top_3": diagnosis["top_3"],
             "gradcam_base64": cam_base64,
             "treatment": treatment_data,
+            "pipeline": "Two-Stage Cascade (YOLOv8n + ResNet-50 Cropped)" if leaf_detected else "ResNet-50 Classifier",
+            "leaf_detected": leaf_detected,
+            "leaf_bbox": leaf_bbox,
+            "leaf_conf": leaf_conf,
+            "cropped_leaf_base64": pil_to_base64(input_image, format="JPEG") if leaf_detected else None,
         })
 
     except Exception as e:
@@ -619,6 +721,9 @@ def api_health():
         "app": "PakAgriVision",
         "framework": "Flask 3.x",
         "model": "ResNet-50",
+        "pipeline": "Two-Stage Cascade (YOLOv8n Leaf Detector + ResNet-50 Cropped)" if LEAF_DETECTOR.available else "ResNet-50 Classifier",
+        "yolo_available": LEAF_DETECTOR.available,
+        "checkpoint": str(CHECKPOINT_PATH.relative_to(ROOT_DIR) if CHECKPOINT_PATH.is_relative_to(ROOT_DIR) else CHECKPOINT_PATH),
         "num_classes": len(CLASS_NAMES),
         "device": ENGINE.device,
         "epochs_recorded": len(HISTORY_DATA),

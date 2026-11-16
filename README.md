@@ -114,10 +114,11 @@ PakAgriVision/
 │
 ├── docs/                      # LaTeX reports (COMMITTED)
 │   ├── proposal/              # Proposal .tex + compiled .pdf
-│   └── report/                # Main report LaTeX file
+│   └── report/                # Final Deliverable 3 LaTeX report & compiled main.pdf
 │
-└── app/                       # Streamlit app (Phase 5)
-    └── .gitkeep
+└── app/                       # Phase 5 Web Application & REST API
+    ├── app.py                 # Flask server & Two-Stage inference engine
+    └── templates/             # Jinja2 dashboard UI (index.html)
 ```
 
 ### Placement Rules (quick lookup)
@@ -213,79 +214,75 @@ python scripts/download_weights.py
 
 ---
 
-## Baseline Model Performance (ResNet-50)
+## Model Performance & Domain Adaptation Progression
 
+### 1. Laboratory Benchmark (PlantVillage 38 Classes)
 | Metric | Baseline Result |
 |---|---|
 | **Architecture** | ResNet-50 (ImageNet pretrained + Dropout 0.3 Head) |
 | **Best Val Accuracy** | **99.64%** (Epoch 14) |
 | **Best Val Macro-F1** | **0.9961** |
 | **Best Val Loss** | **0.0169** |
-| **Final Train Accuracy** | **99.81%** (Epoch 15) |
-| **Optimizer & Schedule** | AdamW (LR=3e-4, WD=1e-4) + Cosine Annealing (1 epoch warm-up) |
+| **Final Test Accuracy** | **99.71%** (4,768 held-out lab test images) |
 | **Weights Location** | `runs/baseline/best.pt` |
+
+### 2. In-the-Wild Field Robustness Progression (93 PlantDoc Field Test Images)
+| Model / Pipeline Stage | Training Domain | Top-1 Acc | Top-3 Acc | Macro Prec | Macro F1 | Macro AUC |
+|---|---|---|---|---|---|---|
+| **1. Day 2 Baseline** | 32k Lab-only (PlantVillage) | 24.73% | 46.24% | 0.2204 | 0.1970 | 0.8001 |
+| **2. Few-Shot Adapted** | 57 Curated Field Samples | 33.33% | 55.91% | 0.3424 | 0.2938 | 0.8558 |
+| **3. Full Field Scale** | ~2,000 Uncropped Field Images | 54.84% | 82.80% | 0.5829 | 0.5355 | 0.9524 |
+| **4. Leaf-Cropped ResNet-50** | 8,418 Bounding-Box Leaf Crops | 53.76% | 78.49% | 0.6105 | 0.5025 | 0.9459 |
+| **5. Two-Stage Cascade** | YOLOv8n Crop $\rightarrow$ ResNet-50 Cropped | 67.74% | 90.32% | 0.5980 | 0.5420 | 0.9610 |
+| **6. Two-Stage + Crop Prior** | **YOLO Crop + Active Crop Context** | **80.65%** | **96.77%** | **0.8240** | **0.7910** | **0.9850** |
 
 ---
 
-### 7. Verify the dataset & environment
+### 7. Launch Phase 5 Web Application
 
+Launch the full-featured Flask AI web application:
 ```bash
-# Check that data/ and runs/ structures are correct and ignored
-git status --short   # data/ and runs/ must NOT appear
-
-# Verify class names
-python -c "import json; print(json.load(open('splits/class_names.json'))[:5])"
+python app/app.py
 ```
+Open **`http://127.0.0.1:5000`** in your browser. The application features:
+- **Two-Stage Cascade Inference**: YOLOv8n automatically detects and crops the leaf to eliminate background clutter, then ResNet-50 classifies pathology.
+- **Explainability**: Interactive Layer 4 Grad-CAM activation heatmap overlay with live alpha blending slider.
+- **Bilingual Actionable Advisories**: Complete organic and chemical treatment advice translated into Urdu and English.
+- **Crop Context Filtering**: Optional crop filter toggle chips to refine diagnostic priors.
+- **1-Click Viva Presets**: Instant testing on pre-loaded diseased and healthy field specimens.
 
-### 8. Run the EDA notebook (optional)
-
-```bash
-jupyter notebook notebooks/01_eda.ipynb
-```
-
-### 9. Validate the treatment knowledge base
-
-```bash
-python data_scripts/validate_treatments.py
-```
-
-### 10. Build the field splits
-
-```bash
-python data_scripts/make_field_splits.py
-```
-
-### 11. Run the test suite
+### 8. Run the test suite
 
 ```bash
 pytest -v
 ```
 
-### 12. Compile the LaTeX report
+### 9. Compile the LaTeX report
 
 ```bash
-# From the docs/report/ directory
-cd docs/report
-pdflatex main.tex
+python scripts/compile_report.py
+# Or compile manually:
+cd docs/report && pdflatex main.tex
 ```
 
 ---
 
-## Team Contributions & Task Distribution
+## Team Contributions & Task Distribution (Phases 1 through 6)
 
-| Member | ID | Primary Responsibilities |
+| Member | ID | Primary Responsibilities across Deliverables 1, 2, and 3 |
 |---|---|---|
-| **Abdul Ahad** | 24L-3029 | Model architectures (`src/models/`), loss (`src/losses.py`), optimizer (`src/optim.py`), experiment configs (`configs/`), baseline training, weights hosting, `scripts/download_weights.py`, README |
-| **M. Anas** | 24L-3004 | Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), training curve analysis |
-| **M. Babar Shahzad** | 24L-3047 | Evaluation metrics (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, bias check, test set evaluation |
+| **Abdul Ahad** (Lead) | 24L-3029 | **D3:** Web application backend & REST API (`app/app.py`), single-page responsive UI (`app/templates/index.html`), Two-Stage Cascade integration with YOLO leaf cropping and crop-filtering, Grad-CAM interactive visualizer, app tests (`tests/test_app.py`), Deliverable 3 report compilation. <br>**D1-D2:** Model architectures (`src/models/`), losses (`src/losses.py`), optimizers (`src/optim.py`), experiment configs, baseline training, weights hosting. |
+| **M. Anas** | 24L-3004 | **D3:** ResNet-50 field-cropped model fine-tuning (`runs/field_cropped/best.pt`), dataset manifest generation for 8,418 leaf crops (`splits/field_cropped_train.csv`), test suite verification. <br>**D1-D2:** Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), dataset loader & transforms (`src/data/`). |
+| **M. Babar Shahzad** | 24L-3047 | **D3:** YOLOv8n leaf detector training on PlantDoc annotations (`models/yolo/leaf_detector.pt`), domain adaptation benchmarking across all 6 model iterations on 93 field test images, latency profiling, bilingual Urdu translation dictionary. <br>**D1-D2:** Evaluation metrics suite (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, systematic bias check, field data collection, treatment knowledge base (`knowledge_base/`). |
 
 ---
 
-## Key Project Goals
+## Key Project Deliverables Summary
 
-1. **Classifier**: Fine-tuned ResNet-50 / EfficientNet-B0 on PlantVillage (38 disease classes)
-2. **Explainability**: Grad-CAM heatmaps integrated into Streamlit UI
-3. **Treatment Engine**: Curated JSON mapping each of 38 classes to chemical/organic treatment, immediate action, and prevention measures
-4. **Robustness Testing**: Lab vs. field image performance gap analysis (≥150 real field images)
+1. **Two-Stage Cascade Classifier**: YOLOv8n leaf detector (100% field detection) + ResNet-50 cropped classifier achieving **80.65% Top-1** and **96.77% Top-3** field accuracy.
+2. **Phase 5 Web Application**: Production-ready Flask REST API and responsive agricultural dashboard at `http://127.0.0.1:5000`.
+3. **Explainability**: Real-time Layer 4 Grad-CAM activation overlays with interactive transparency control.
+4. **Treatment Engine**: Curated 38-class treatment advisory in English and Urdu covering biological controls, chemical remedies, dosages, and safety withdrawal periods.
+5. **Technical Report**: Comprehensive Deliverable 3 LaTeX report (`docs/report/main.pdf`) documenting the entire experimental progression and viva defense talking points.
 
 ---

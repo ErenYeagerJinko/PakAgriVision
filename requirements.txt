@@ -1,9 +1,10 @@
-# PakAgriVision Core Dependencies (Deliverables 1 & 2)
+# PakAgriVision Core Dependencies (Deliverables 1, 2, and 3)
 # Deep Learning & Computer Vision
 torch>=2.0.0
 torchvision>=0.15.0
 pillow>=10.0.0
 imagehash>=4.3.0
+ultralytics>=8.0.0
 
 # Scientific Computing & Data Processing
 numpy>=2.0.0
