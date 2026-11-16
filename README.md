@@ -230,7 +230,7 @@ python scripts/download_weights.py --target yolo
 | **Final Test Accuracy** | **99.71%** (4,768 held-out lab test images) |
 | **Weights Location** | `runs/baseline/best.pt` |
 
-### 2. In-the-Wild Field Robustness Progression (93 PlantDoc Field Test Images)
+### 2. In-the-Wild Field Robustness Progression (PlantDoc Field Test Images)
 | Model / Pipeline Stage | Training Domain | Top-1 Acc | Top-3 Acc | Macro Prec | Macro F1 | Macro AUC |
 |---|---|---|---|---|---|---|
 | **1. Day 2 Baseline** | 32k Lab-only (PlantVillage) | 24.73% | 46.24% | 0.2204 | 0.1970 | 0.8001 |

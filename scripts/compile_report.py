@@ -60,30 +60,37 @@ def compile_latex():
     tar_size_kb = temp_tar.stat().st_size / 1024
     print(f"Packaged lightweight report archive: {tar_size_kb:.1f} KB. Compiling via TeX engine...")
 
+    temp_pdf = report_dir / "temp_compiled.pdf"
     cmd = [
         "curl.exe",
         "-s",
         "--max-time", "180",
         "-F", f"file=@{temp_tar}",
         "https://latexonline.cc/data?target=main.tex",
-        "-o", str(output_pdf)
+        "-o", str(temp_pdf)
     ]
 
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        if output_pdf.exists() and output_pdf.stat().st_size > 5000:
-            with open(output_pdf, "rb") as f:
+        if temp_pdf.exists() and temp_pdf.stat().st_size > 5000:
+            with open(temp_pdf, "rb") as f:
                 head = f.read(5)
             if head == b"%PDF-":
-                print(f"SUCCESS: Generated {output_pdf} ({output_pdf.stat().st_size:,} bytes, ~{output_pdf.stat().st_size/1024/1024:.2f} MB)")
+                import shutil
+                try:
+                    shutil.move(str(temp_pdf), str(output_pdf))
+                    print(f"SUCCESS: Generated {output_pdf} ({output_pdf.stat().st_size:,} bytes, ~{output_pdf.stat().st_size/1024/1024:.2f} MB)")
+                except PermissionError:
+                    print(f"SUCCESS: Compiled valid PDF ({temp_pdf.stat().st_size:,} bytes).")
+                    print(f"⚠️ Note: {output_pdf} is currently open in a PDF viewer. Please close it so it can be replaced, or view {temp_pdf}.")
             else:
                 print("Failed: Output is not a valid PDF. Header:", head)
-                with open(output_pdf, "r", errors="ignore") as f:
+                with open(temp_pdf, "r", errors="ignore") as f:
                     print(f.read()[:800])
         else:
             print("Failed: output PDF missing or too small.")
-            if output_pdf.exists():
-                with open(output_pdf, "r", errors="ignore") as f:
+            if temp_pdf.exists():
+                with open(temp_pdf, "r", errors="ignore") as f:
                     print(f.read()[:800])
     finally:
         if temp_tar.exists():

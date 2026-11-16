@@ -351,6 +351,13 @@ This autonomous two-stage pipeline elevated Top-1 accuracy to \textbf{67.74\%} a
 \end{equation}
 By filtering out cross-crop false positives, the two-stage cascade achieves an outstanding \textbf{80.65\% Top-1 Accuracy}, \textbf{96.77\% Top-3 Accuracy}, \textbf{0.8240 Macro Precision}, and \textbf{0.9850 Macro AUC} on real-world in-the-wild test photographs.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{domain_adaptation_progression.png}
+\caption{\textbf{Empirical Domain Adaptation Progression across 6 Milestones on Held-Out Field Test Images.} Subfigure (a) illustrates the leap in Top-1 Accuracy ($24.73\% \rightarrow 80.65\%$) and Top-3 Accuracy ($46.24\% \rightarrow 96.77\%$) achieved by transitioning from laboratory-only training to leaf-crop fine-tuning, autonomous YOLOv8n localization, and crop-contextual priors. Subfigure (b) confirms continuous progression across Macro Precision, Macro F1, and Macro AUC ($0.8001 \rightarrow 0.9850$).}
+\label{fig:adaptation_progression}
+\end{figure}
+
 \subsection{Phase 5 Application Architecture, Integration \& Latency Budget}
 \label{subsec:deployment_integration}
 
@@ -364,6 +371,13 @@ Figure~\ref{fig:app_pipeline} illustrates the multi-stage operational workflow:
     \item \textbf{Interpretability Layer:} PyTorch gradient backpropagation on ResNet-50 Layer~4 generates a normalized Grad-CAM activation heatmap, overlaid onto the leaf with user-adjustable alpha transparency.
     \item \textbf{Bilingual Treatment Synthesis:} The predicted disease index maps into \texttt{knowledge\_base/treatments.json}, extracting vetted organic/chemical remedies, severity indicators, and bilingual English/Urdu translations for rural agricultural accessibility.
 \end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{app_pipeline.png}
+\caption{\textbf{PakAgriVision Phase 5 Two-Stage Deployment Architecture.} Unconstrained field photographs are ingested, processed through YOLOv8n for autonomous leaf localization, classified via field-adapted ResNet-50 with optional crop filtering, and rendered on the interactive Flask dashboard with Grad-CAM heatmaps and bilingual treatment advisories.}
+\label{fig:app_pipeline}
+\end{figure}
 
 \subsubsection{Inference Latency Profile}
 For practical deployment in rural areas, inference must be immediate. Table~\ref{tab:latency_budget} details the component latency benchmarks measured on standard CPU hardware (Intel Core i7 / AMD Ryzen equivalent) without requiring GPU acceleration.
