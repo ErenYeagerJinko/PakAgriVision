@@ -173,44 +173,48 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Download the Curated Dataset (`data.zip`)
+### 5. Download Datasets
 
 > **Dataset Curation & Kaggle Note:** Kaggle was used solely for the initial raw image intake (~54k images). We do **not** use raw Kaggle downloads for running or reproducing the project because the uncurated benchmark suffered from corrupted files, duplicate photographs, and severe class imbalance. 
 > 
 > We ran our automated quality and deduplication pipeline (`src/data/quality.py`, `data_scripts/clean_and_cap_dataset.py`), pruned corrupted files, removed exact duplicates (MD5) and near-duplicates (pHash), and capped dominant classes at a maximum of 1,000 clean images per class. This yielded our balanced, high-integrity dataset of **~32k images (31,694 verified clean images)** across all 38 classes.
 
-**Download both archives from Google Drive:**
-- **PlantVillage (curated)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). The archive's top-level folder is `color/`, so extract it into `data/raw/plantvillage/` to get `data/raw/plantvillage/color/<class>/`.
-- **Field set**: [Download field_images_v2.zip](https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing) (72 MB): 150 real-world PlantDoc images across 27 classes, exactly the images listed in `field_meta/field_labels.csv` (11 invalid images were replaced in label review). The top-level folder is `field/`, so extract it into `data/raw/` to get `data/raw/field/<class>/`.
-- **Check**: every path in `splits/val.csv`, `splits/test.csv` and `splits/field_test.csv` should then exist.
+**Download dataset archives from Google Drive:**
+- **PlantVillage (Curated Lab Benchmark)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). Extracted into `data/raw/plantvillage/color/<class>/`.
+- **Field Images (Real-World Foliar Crops — 8,418 Images)**: [Download Field Images Archive](https://drive.google.com/file/d/1cKcUttKrrHHJ5shimKVNdLOIkIsLj3-M/view?usp=sharing) (~410 MB): **8,418 high-resolution leaf crop images across 28 agricultural classes**, curated directly from in-the-wild PlantDoc field captures to train and benchmark field robustness. Extracted into `data/raw/field_cropped/` and `data/raw/field/`.
 
-**To download and extract automatically:**
+**To download datasets automatically via scripts:**
 ```bash
-# Download complete curated dataset (PlantVillage + Field images into data/raw/):
-python scripts/download_data.py
-
-# Or download and extract specifically the field robustness images into data/raw/field/:
+# Download and extract the 8,418 real-world field leaf images:
 python scripts/download_field_images.py
+
+# Download the curated PlantVillage lab dataset (~32k images):
+python scripts/download_data.py
 ```
-*(Or download manually from the Google Drive link above and extract the zip archive directly into `data/raw/`).*
 
-### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
+---
 
-The complete baseline run artifacts (weights, checkpoints, metrics, and configs) are packaged directly as `baseline/` in Google Drive (never committed to Git):
+### 6. Download Model Weights & Checkpoints
 
-- **Google Drive Link**: [Download Baseline Artifacts Archive](https://drive.google.com/file/d/1RBab1_qShQGObGJtnefs0HlR-G-orM1g/view?usp=drive_link)
-- **Archive Contents**:
-  - `baseline/best.pt`: Winning ResNet-50 weights (~270 MB, 99.64% val accuracy)
-  - `baseline/last.pt`: Final epoch checkpoint (~270 MB)
-  - `baseline/history.csv`: Full epoch-by-epoch loss, accuracy, and F1 logs
-  - `baseline/summary.json` & `baseline/config.yaml`: Run summary & config snapshot
-- **Extraction**: Extract the downloaded archive directly into `runs/` so that `runs/baseline/` is populated.
+All model checkpoints and run artifacts are hosted on Google Drive (never committed directly to Git):
 
-**To download and extract automatically:**
+- **Baseline Weights (ResNet-50 Day 2)**: [Download Baseline Weights](https://drive.google.com/file/d/1R1qFkk4v3-5dzNFdRMxG7-gZXFwyo8Cv/view?usp=sharing)
+  - *Contents*: `runs/baseline/` (`best.pt`, `last.pt`, `history.csv`, `summary.json`, `config.yaml`).
+- **Field Cropped Weights (ResNet-50 8.4k Leaves)**: [Download Field Cropped Weights](https://drive.google.com/file/d/14ygSAzCwERyvAMALDSy3i-G1oXwOnNri/view?usp=sharing)
+  - *Contents*: `runs/field_cropped/` (`best.pt`, `last.pt`, `history.csv`, `summary.json`, `config.yaml`).
+- **YOLOv8n Leaf Detector Weights**: [Download YOLO Weights](https://drive.google.com/file/d/10fqb4sptHYqq5Y83Atut6qQivv-tg063/view?usp=sharing)
+  - *Contents*: `models/yolo/leaf_detector.pt` (~6.5 MB), trained on PlantDoc bounding boxes for autonomous leaf localization.
+
+**To download and extract weights automatically via script:**
 ```bash
-python scripts/download_weights.py
+# Download ALL 3 model weights at once (baseline, field_cropped, and yolo):
+python scripts/download_weights.py --target all
+
+# Or download individual weights:
+python scripts/download_weights.py --target field_cropped
+python scripts/download_weights.py --target baseline
+python scripts/download_weights.py --target yolo
 ```
-*(Or download manually from the link above and extract the zip archive directly into `runs/`).*
 
 ---
 
