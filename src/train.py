@@ -239,11 +239,22 @@ def train(
     num_workers = int(data_cfg.get("num_workers", default_workers))
     batch_size = int(data_cfg.get("batch_size", 64))
 
+    # Determine root directory for images
+    manifest_root = data_cfg.get("root_dir")
+    if manifest_root is None:
+        sample_path = str(train_df["filepath"].iloc[0] if "filepath" in train_df.columns else train_df["path"].iloc[0])
+        if sample_path.startswith("data/") or sample_path.startswith("data\\"):
+            manifest_root = ROOT
+        else:
+            manifest_root = RAW_PV / "color"
+    else:
+        manifest_root = Path(manifest_root)
+
     train_loader, val_loader, _ = get_dataloaders(
         train_manifest=train_df,
         val_manifest=val_df,
         test_manifest=test_df,
-        root_dir=RAW_PV / "color",
+        root_dir=manifest_root,
         batch_size=batch_size,
         num_workers=num_workers,
         seed=seed,

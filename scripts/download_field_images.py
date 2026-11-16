@@ -18,7 +18,7 @@ try:
 except ImportError:
     gdown = None
 
-DRIVE_FILE_ID = "1OE17MYZqriiP9mBdCat_JglMxx_7MY1V"
+DRIVE_FILE_ID = "1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad"
 DEST_FIELD_DIR = Path("data/raw/field")
 
 
