@@ -263,6 +263,12 @@ def train(
     )
     model.to(device)
 
+    # Optional checkpoint weight initialization (e.g. for domain adaptation or transfer fine-tuning)
+    init_checkpoint = model_cfg.get("init_checkpoint") or cfg.get("init_checkpoint")
+    if init_checkpoint:
+        print(f"Loading initial model weights from: {init_checkpoint}")
+        load_checkpoint(checkpoint_path=init_checkpoint, model=model)
+
     # Load class names for checkpoint storage
     class_names_file = Path(SPLITS_DIR) / "class_names.json"
     class_names = load_class_names(class_names_file) if class_names_file.is_file() else []
@@ -489,6 +495,12 @@ def parse_args() -> argparse.Namespace:
         help="Override learning rate",
     )
     parser.add_argument(
+        "--init_checkpoint",
+        type=str,
+        default=None,
+        help="Path to checkpoint .pt file to initialize model weights from (for fine-tuning)",
+    )
+    parser.add_argument(
         "--run_dir",
         type=str,
         default=None,
@@ -515,6 +527,8 @@ def main() -> None:
         cfg.setdefault("data", {})["batch_size"] = args.batch_size
     if args.lr is not None:
         cfg.setdefault("training", {})["lr"] = args.lr
+    if args.init_checkpoint is not None:
+        cfg.setdefault("model", {})["init_checkpoint"] = args.init_checkpoint
 
     train(
         cfg=cfg,
