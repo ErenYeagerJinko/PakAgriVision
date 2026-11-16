@@ -374,7 +374,7 @@ Figure~\ref{fig:app_pipeline} illustrates the multi-stage operational workflow:
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{app_pipeline.png}
+\includegraphics[width=0.88\textwidth]{app_pipeline.png}
 \caption{\textbf{PakAgriVision Phase 5 Two-Stage Deployment Architecture.} Unconstrained field photographs are ingested, processed through YOLOv8n for autonomous leaf localization, classified via field-adapted ResNet-50 with optional crop filtering, and rendered on the interactive Flask dashboard with Grad-CAM heatmaps and bilingual treatment advisories.}
 \label{fig:app_pipeline}
 \end{figure}
@@ -382,22 +382,24 @@ Figure~\ref{fig:app_pipeline} illustrates the multi-stage operational workflow:
 \subsubsection{Inference Latency Profile}
 For practical deployment in rural areas, inference must be immediate. Table~\ref{tab:latency_budget} details the component latency benchmarks measured on standard CPU hardware (Intel Core i7 / AMD Ryzen equivalent) without requiring GPU acceleration.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{\textbf{End-to-End Latency Budget per Diagnostic Request (CPU Execution).}}
 \label{tab:latency_budget}
-\begin{tabular}{@{}llr@{}}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{3.8cm}p{7.0cm}r@{}}
 \toprule
-\textbf{Pipeline Stage} & \textbf{Component / Function} & \textbf{Latency (Mean $\pm$ Std)} \\
+\textbf{Pipeline Stage} & \textbf{Component / Subroutine} & \textbf{Latency (Mean $\pm$ Std)} \\
 \midrule
-1. Ingestion \& Decoding & Base64 to PIL Image & $8.2 \pm 1.4$\,ms \\
-2. Leaf Localization & YOLOv8n Inference (\texttt{models/yolo/}) & $22.4 \pm 3.1$\,ms \\
-3. Bounding Box Cropping & PIL sub-region extraction with 5\% margin & $2.1 \pm 0.5$\,ms \\
-4. Feature Extraction & ResNet-50 Forward Pass (\texttt{runs/field\_cropped/}) & $38.6 \pm 4.2$\,ms \\
-5. Explainability Synthesis & Grad-CAM Layer 4 Backprop \& Blending & $44.1 \pm 5.0$\,ms \\
-6. Advisory \& Serialization & Treatment KB lookup \& JSON response packaging & $4.8 \pm 0.8$\,ms \\
+1. Ingestion \& Decoding & Base64 image parsing to PIL format & $8.2 \pm 1.4$\,ms \\
+2. Leaf Localization & YOLOv8n inference (\texttt{models/yolo/}) & $22.4 \pm 3.1$\,ms \\
+3. Bounding Box Cropping & Sub-region crop with 5\% padding & $2.1 \pm 0.5$\,ms \\
+4. Feature Extraction & ResNet-50 forward pass (\texttt{runs/field\_cropped/}) & $38.6 \pm 4.2$\,ms \\
+5. Explainability Synthesis & Grad-CAM Layer 4 activation backprop & $44.1 \pm 5.0$\,ms \\
+6. Advisory \& Serialization & Treatment KB lookup \& JSON serialization & $4.8 \pm 0.8$\,ms \\
 \midrule
-\textbf{Total End-to-End} & \textbf{Full Diagnostic Cycle} & $\mathbf{120.2 \pm 9.5}$\,\textbf{ms} \\
+\textbf{Total End-to-End} & \textbf{Full Interactive Diagnostic Cycle} & $\mathbf{120.2 \pm 9.5}$\,\textbf{ms} \\
 \bottomrule
 \end{tabular}
 \end{table}
