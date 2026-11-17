@@ -239,14 +239,30 @@ def train(
     num_workers = int(data_cfg.get("num_workers", default_workers))
     batch_size = int(data_cfg.get("batch_size", 64))
 
+    # Determine root directory for images
+    manifest_root = data_cfg.get("root_dir")
+    if manifest_root is None:
+        sample_path = str(train_df["filepath"].iloc[0] if "filepath" in train_df.columns else train_df["path"].iloc[0])
+        if sample_path.startswith("data/") or sample_path.startswith("data\\"):
+            manifest_root = ROOT
+        else:
+            manifest_root = RAW_PV / "color"
+    else:
+        manifest_root = Path(manifest_root)
+
+    use_randaug = bool(data_cfg.get("use_randaug", False))
+    use_field_aug = bool(data_cfg.get("use_field_aug", False))
+
     train_loader, val_loader, _ = get_dataloaders(
         train_manifest=train_df,
         val_manifest=val_df,
         test_manifest=test_df,
-        root_dir=RAW_PV / "color",
+        root_dir=manifest_root,
         batch_size=batch_size,
         num_workers=num_workers,
         seed=seed,
+        use_randaug=use_randaug,
+        use_field_aug=use_field_aug,
     )
 
     # Build Model
@@ -262,6 +278,12 @@ def train(
         pretrained=pretrained,
     )
     model.to(device)
+
+    # Optional checkpoint weight initialization (e.g. for domain adaptation or transfer fine-tuning)
+    init_checkpoint = model_cfg.get("init_checkpoint") or cfg.get("init_checkpoint")
+    if init_checkpoint:
+        print(f"Loading initial model weights from: {init_checkpoint}")
+        load_checkpoint(checkpoint_path=init_checkpoint, model=model)
 
     # Load class names for checkpoint storage
     class_names_file = Path(SPLITS_DIR) / "class_names.json"
@@ -489,6 +511,12 @@ def parse_args() -> argparse.Namespace:
         help="Override learning rate",
     )
     parser.add_argument(
+        "--init_checkpoint",
+        type=str,
+        default=None,
+        help="Path to checkpoint .pt file to initialize model weights from (for fine-tuning)",
+    )
+    parser.add_argument(
         "--run_dir",
         type=str,
         default=None,
@@ -515,6 +543,8 @@ def main() -> None:
         cfg.setdefault("data", {})["batch_size"] = args.batch_size
     if args.lr is not None:
         cfg.setdefault("training", {})["lr"] = args.lr
+    if args.init_checkpoint is not None:
+        cfg.setdefault("model", {})["init_checkpoint"] = args.init_checkpoint
 
     train(
         cfg=cfg,

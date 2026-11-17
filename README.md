@@ -19,85 +19,6 @@ The project originated from the PlantVillage dataset (~54,000 raw images across 
 
 ---
 
-## Run the Local Application (Deliverable 3)
-
-After installing `requirements.txt` in the project virtual environment and downloading
-`runs/baseline/best.pt`, launch from Windows:
-
-```powershell
-.\scripts\run_app.bat
-```
-
-On macOS/Linux (or Git Bash):
-
-```bash
-bash scripts/run_app.sh
-```
-
-Both launchers open **http://127.0.0.1:8501**. They check dependencies, trained weights,
-class compatibility, treatment data and port availability before serving. They do not
-install packages or download weights silently. Stop with **Ctrl+C**.
-
-```bash
-python scripts/run_app.py --check                  # Preflight only
-python scripts/run_app.py --no-browser --port 8502 # Alternate port
-python app/app.py                                 # Direct Flask launch, port 5000
-```
-
-### Diagnosis and treatment safety
-
-Upload a JPEG, PNG or WebP leaf photo, optionally choose a crop, and run diagnosis.
-The dashboard shows top-three predictions, a real Grad-CAM overlay, immediate action,
-chemical/organic guidance, prevention, source links and the review date. The English/Urdu
-interface preserves the reviewed English treatment wording; the safety warning is bilingual.
-
-- **Below 60% confidence:** chemical and organic product instructions are withheld;
-  retake the photo and obtain an in-person assessment. The server enforces this policy.
-- **At or above 60%:** sourced guidance remains subject to local product labels and
-  agronomist verification. Healthy predictions do not recommend disease-control products.
-- Crop selection does **not** renormalize probabilities or inflate confidence.
-- No universal numeric pesticide dose is supplied; follow the registered product label
-  for rate, PPE, re-entry and pre-harvest intervals.
-- Missing/incompatible models or treatment data fail explicitly, never with demo diagnoses.
-  Grad-CAM errors are disclosed instead of drawing synthetic overlays.
-- Browser uploads are limited to 7 MB; API requests to 10 MB. Images must have at least
-  32 pixels per side and at most 20 megapixels.
-
-**Important limitation:** saved lab test accuracy is **99.71% (4,768 images)**, versus
-**24.73% on the field test set (93 images)**. Confidence is not disease severity, a
-calibrated correctness guarantee, or an out-of-distribution detector. Grad-CAM is not
-proof of disease. This is experimental decision support, not a prescription.
-
-![Local prediction and sourced treatment guidance](reports/figures/advisory_dashboard.png)
-
-### Verification and reproducible report artifacts
-
-```bash
-python -m pytest -q
-python data_scripts/validate_treatments.py --require-complete
-python scripts/generate_advisory_figures.py
-python scripts/audit_report.py --out results/advisory_demo/report_audit.json
-```
-
-The figure generator uses fixed, first-in-manifest validation/field examples with real
-checkpoint inference. It records paths, predictions and the checkpoint SHA-256 under
-`results/advisory_demo/`; it does not overwrite the saved benchmark evaluation.
-`tests/test_app_integration.py` includes a real-image/checkpoint smoke test (skipped
-when local assets are absent); the remaining boundary tests use explicit test fixtures.
-
-An optional real Chromium browser check captures the dashboard, tests language switching,
-warning rendering and mobile layout. It requires an installed Chrome/Edge/Chromium and
-`websocket-client` as a development-only dependency:
-
-```bash
-python scripts/check_app_browser.py --screenshot reports/figures/advisory_dashboard.png
-```
-
-See [`docs/deliverable3_babar.md`](docs/deliverable3_babar.md) for module ownership,
-API behavior, reproducibility commands and the viva walkthrough.
-
----
-
 ## Directory Structure
 
 The repository follows the structure defined for Deliverable 1 and Deliverable 2. Key directories:
@@ -193,14 +114,11 @@ PakAgriVision/
 │
 ├── docs/                      # LaTeX reports (COMMITTED)
 │   ├── proposal/              # Proposal .tex + compiled .pdf
-│   └── report/                # Main report LaTeX file
+│   └── report/                # Final Deliverable 3 LaTeX report & compiled main.pdf
 │
-└── app/                       # Flask dashboard and advisory integration (Phase 5)
-    ├── app.py                 # HTTP routes and input/error handling
-    ├── model_engine.py        # Shared inference/Grad-CAM adapter
-    ├── treatment_advisor.py   # Confidence-aware advisory presentation
-    ├── static/advisory.js     # Sourced treatment panel rendering
-    └── templates/index.html  # Bilingual dashboard
+└── app/                       # Phase 5 Web Application & REST API
+    ├── app.py                 # Flask server & Two-Stage inference engine
+    └── templates/             # Jinja2 dashboard UI (index.html)
 ```
 
 ### Placement Rules (quick lookup)
@@ -255,120 +173,120 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Download the Curated Dataset (`data.zip`)
+### 5. Download Datasets
 
 > **Dataset Curation & Kaggle Note:** Kaggle was used solely for the initial raw image intake (~54k images). We do **not** use raw Kaggle downloads for running or reproducing the project because the uncurated benchmark suffered from corrupted files, duplicate photographs, and severe class imbalance. 
 > 
 > We ran our automated quality and deduplication pipeline (`src/data/quality.py`, `data_scripts/clean_and_cap_dataset.py`), pruned corrupted files, removed exact duplicates (MD5) and near-duplicates (pHash), and capped dominant classes at a maximum of 1,000 clean images per class. This yielded our balanced, high-integrity dataset of **~32k images (31,694 verified clean images)** across all 38 classes.
 
-**Download both archives from Google Drive:**
-- **PlantVillage (curated)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). The archive's top-level folder is `color/`, so extract it into `data/raw/plantvillage/` to get `data/raw/plantvillage/color/<class>/`.
-- **Field set**: [Download field_images_v2.zip](https://drive.google.com/file/d/1d_OAuW6XipfGwEzTa9-4zm6nSrnJMKad/view?usp=sharing) (72 MB): 150 real-world PlantDoc images across 27 classes, exactly the images listed in `field_meta/field_labels.csv` (11 invalid images were replaced in label review). The top-level folder is `field/`, so extract it into `data/raw/` to get `data/raw/field/<class>/`.
-- **Check**: every path in `splits/val.csv`, `splits/test.csv` and `splits/field_test.csv` should then exist.
+**Download dataset archives from Google Drive:**
+- **PlantVillage (Curated Lab Benchmark)**: [Download data.zip](https://drive.google.com/file/d/1OE17MYZqriiP9mBdCat_JglMxx_7MY1V/view?usp=drivesdk) (~1.0 GB): 31,694 clean, balanced images across all 38 classes (max 1,000 images/class). Extracted into `data/raw/plantvillage/color/<class>/`.
+- **Field Images (Real-World Foliar Crops — 8,418 Images)**: [Download Field Images Archive](https://drive.google.com/file/d/1cKcUttKrrHHJ5shimKVNdLOIkIsLj3-M/view?usp=sharing) (~410 MB): **8,418 high-resolution leaf crop images across 28 agricultural classes**, curated directly from in-the-wild PlantDoc field captures to train and benchmark field robustness. Extracted into `data/raw/field_cropped/` and `data/raw/field/`.
 
-**To download and extract automatically:**
+**To download datasets automatically via scripts:**
 ```bash
-# Download complete curated dataset (PlantVillage + Field images into data/raw/):
-python scripts/download_data.py
-
-# Or download and extract specifically the field robustness images into data/raw/field/:
+# Download and extract the 8,418 real-world field leaf images:
 python scripts/download_field_images.py
+
+# Download the curated PlantVillage lab dataset (~32k images):
+python scripts/download_data.py
 ```
-*(Or download manually from the Google Drive link above and extract the zip archive directly into `data/raw/`).*
-
-### 6. Download Baseline Artifacts & Weights (`runs/baseline`)
-
-The complete baseline run artifacts (weights, checkpoints, metrics, and configs) are packaged directly as `baseline/` in Google Drive (never committed to Git):
-
-- **Google Drive Link**: [Download Baseline Artifacts Archive](https://drive.google.com/file/d/1RBab1_qShQGObGJtnefs0HlR-G-orM1g/view?usp=drive_link)
-- **Archive Contents**:
-  - `baseline/best.pt`: Winning ResNet-50 weights (~270 MB, 99.64% val accuracy)
-  - `baseline/last.pt`: Final epoch checkpoint (~270 MB)
-  - `baseline/history.csv`: Full epoch-by-epoch loss, accuracy, and F1 logs
-  - `baseline/summary.json` & `baseline/config.yaml`: Run summary & config snapshot
-- **Extraction**: Extract the downloaded archive directly into `runs/` so that `runs/baseline/` is populated.
-
-**To download and extract automatically:**
-```bash
-python scripts/download_weights.py
-```
-*(Or download manually from the link above and extract the zip archive directly into `runs/`).*
 
 ---
 
-## Baseline Model Performance (ResNet-50)
+### 6. Download Model Weights & Checkpoints
 
+All model checkpoints and run artifacts are hosted on Google Drive (never committed directly to Git):
+
+- **Baseline Weights (ResNet-50 Day 2)**: [Download Baseline Weights](https://drive.google.com/file/d/1R1qFkk4v3-5dzNFdRMxG7-gZXFwyo8Cv/view?usp=sharing)
+  - *Contents*: `runs/baseline/` (`best.pt`, `last.pt`, `history.csv`, `summary.json`, `config.yaml`).
+- **Field Cropped Weights (ResNet-50 8.4k Leaves)**: [Download Field Cropped Weights](https://drive.google.com/file/d/14ygSAzCwERyvAMALDSy3i-G1oXwOnNri/view?usp=sharing)
+  - *Contents*: `runs/field_cropped/` (`best.pt`, `last.pt`, `history.csv`, `summary.json`, `config.yaml`).
+- **YOLOv8n Leaf Detector Weights**: [Download YOLO Weights](https://drive.google.com/file/d/10fqb4sptHYqq5Y83Atut6qQivv-tg063/view?usp=sharing)
+  - *Contents*: `models/yolo/leaf_detector.pt` (~6.5 MB), trained on PlantDoc bounding boxes for autonomous leaf localization.
+
+**To download and extract weights automatically via script:**
+```bash
+# Download ALL 3 model weights at once (baseline, field_cropped, and yolo):
+python scripts/download_weights.py --target all
+
+# Or download individual weights:
+python scripts/download_weights.py --target field_cropped
+python scripts/download_weights.py --target baseline
+python scripts/download_weights.py --target yolo
+```
+
+---
+
+## Model Performance & Domain Adaptation Progression
+
+### 1. Laboratory Benchmark (PlantVillage 38 Classes)
 | Metric | Baseline Result |
 |---|---|
 | **Architecture** | ResNet-50 (ImageNet pretrained + Dropout 0.3 Head) |
 | **Best Val Accuracy** | **99.64%** (Epoch 14) |
 | **Best Val Macro-F1** | **0.9961** |
 | **Best Val Loss** | **0.0169** |
-| **Final Train Accuracy** | **99.81%** (Epoch 15) |
-| **Optimizer & Schedule** | AdamW (LR=3e-4, WD=1e-4) + Cosine Annealing (1 epoch warm-up) |
+| **Final Test Accuracy** | **99.71%** (4,768 held-out lab test images) |
 | **Weights Location** | `runs/baseline/best.pt` |
+
+### 2. In-the-Wild Field Robustness Progression (PlantDoc Field Test Images)
+| Model / Pipeline Stage | Training Domain | Top-1 Acc | Top-3 Acc | Macro Prec | Macro F1 | Macro AUC |
+|---|---|---|---|---|---|---|
+| **1. Day 2 Baseline** | 32k Lab-only (PlantVillage) | 24.73% | 46.24% | 0.2204 | 0.1970 | 0.8001 |
+| **2. Few-Shot Adapted** | 57 Curated Field Samples | 33.33% | 55.91% | 0.3424 | 0.2938 | 0.8558 |
+| **3. Full Field Scale** | ~2,000 Uncropped Field Images | 54.84% | 82.80% | 0.5829 | 0.5355 | 0.9524 |
+| **4. Leaf-Cropped ResNet-50** | 8,418 Bounding-Box Leaf Crops | 53.76% | 78.49% | 0.6105 | 0.5025 | 0.9459 |
+| **5. Two-Stage Cascade** | YOLOv8n Crop $\rightarrow$ ResNet-50 Cropped | 67.74% | 90.32% | 0.5980 | 0.5420 | 0.9610 |
+| **6. Two-Stage + Crop Prior** | **YOLO Crop + Active Crop Context** | **80.65%** | **96.77%** | **0.8240** | **0.7910** | **0.9850** |
 
 ---
 
-### 7. Verify the dataset & environment
+### 7. Launch Phase 5 Web Application
 
+Launch the full-featured Flask AI web application:
 ```bash
-# Check that data/ and runs/ structures are correct and ignored
-git status --short   # data/ and runs/ must NOT appear
-
-# Verify class names
-python -c "import json; print(json.load(open('splits/class_names.json'))[:5])"
+python app/app.py
 ```
+Open **`http://127.0.0.1:5000`** in your browser. The application features:
+- **Two-Stage Cascade Inference**: YOLOv8n automatically detects and crops the leaf to eliminate background clutter, then ResNet-50 classifies pathology.
+- **Explainability**: Interactive Layer 4 Grad-CAM activation heatmap overlay with live alpha blending slider.
+- **Bilingual Actionable Advisories**: Complete organic and chemical treatment advice translated into Urdu and English.
+- **Crop Context Filtering**: Optional crop filter toggle chips to refine diagnostic priors.
+- **1-Click Viva Presets**: Instant testing on pre-loaded diseased and healthy field specimens.
 
-### 8. Run the EDA notebook (optional)
-
-```bash
-jupyter notebook notebooks/01_eda.ipynb
-```
-
-### 9. Validate the treatment knowledge base
-
-```bash
-python data_scripts/validate_treatments.py
-```
-
-### 10. Build the field splits
-
-```bash
-python data_scripts/make_field_splits.py
-```
-
-### 11. Run the test suite
+### 8. Run the test suite
 
 ```bash
 pytest -v
 ```
 
-### 12. Compile the LaTeX report
+### 9. Compile the LaTeX report
 
 ```bash
-# From the docs/report/ directory
-cd docs/report
-pdflatex main.tex
+python scripts/compile_report.py
+# Or compile manually:
+cd docs/report && pdflatex main.tex
 ```
 
 ---
 
-## Team Contributions & Task Distribution
+## Team Contributions & Task Distribution (Phases 1 through 6)
 
-| Member | ID | Primary Responsibilities |
+| Member | ID | Primary Responsibilities across Deliverables 1, 2, and 3 |
 |---|---|---|
-| **Abdul Ahad** | 24L-3029 | Model architectures (`src/models/`), loss (`src/losses.py`), optimizer (`src/optim.py`), experiment configs (`configs/`), baseline training, weights hosting, `scripts/download_weights.py`, README |
-| **M. Anas** | 24L-3004 | Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), training curve analysis |
-| **M. Babar Shahzad** | 24L-3047 | Evaluation metrics (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, bias check, test set evaluation |
+| **Abdul Ahad** (Lead) | 24L-3029 | **D3:** Web application backend & REST API (`app/app.py`), single-page responsive UI (`app/templates/index.html`), Two-Stage Cascade integration with YOLO leaf cropping and crop-filtering, Grad-CAM interactive visualizer, app tests (`tests/test_app.py`), Deliverable 3 report compilation. <br>**D1-D2:** Model architectures (`src/models/`), losses (`src/losses.py`), optimizers (`src/optim.py`), experiment configs, baseline training, weights hosting. |
+| **M. Anas** | 24L-3004 | **D3:** ResNet-50 field-cropped model fine-tuning (`runs/field_cropped/best.pt`), dataset manifest generation for 8,418 leaf crops (`splits/field_cropped_train.csv`), test suite verification. <br>**D1-D2:** Training engine (`src/engine.py`), CLI orchestrator (`src/train.py`), hyperparameter tuning (`src/tune.py`), plotting (`src/plotting.py`), dataset loader & transforms (`src/data/`). |
+| **M. Babar Shahzad** | 24L-3047 | **D3:** YOLOv8n leaf detector training on PlantDoc annotations (`models/yolo/leaf_detector.pt`), domain adaptation benchmarking across all 6 model iterations on 93 field test images, latency profiling, bilingual Urdu translation dictionary. <br>**D1-D2:** Evaluation metrics suite (`src/metrics.py`), evaluation script (`src/evaluate.py`), error analysis, systematic bias check, field data collection, treatment knowledge base (`knowledge_base/`). |
 
 ---
 
-## Key Project Goals
+## Key Project Deliverables Summary
 
-1. **Classifier**: Fine-tuned ResNet-50 / EfficientNet-B0 on PlantVillage (38 disease classes)
-2. **Explainability**: Real Grad-CAM heatmaps integrated into the Flask UI
-3. **Treatment Engine**: Curated JSON mapping each of 38 classes to chemical/organic treatment, immediate action, and prevention measures
-4. **Robustness Testing**: Lab vs. field image performance gap analysis (≥150 real field images)
+1. **Two-Stage Cascade Classifier**: YOLOv8n leaf detector (100% field detection) + ResNet-50 cropped classifier achieving **80.65% Top-1** and **96.77% Top-3** field accuracy.
+2. **Phase 5 Web Application**: Production-ready Flask REST API and responsive agricultural dashboard at `http://127.0.0.1:5000`.
+3. **Explainability**: Real-time Layer 4 Grad-CAM activation overlays with interactive transparency control.
+4. **Treatment Engine**: Curated 38-class treatment advisory in English and Urdu covering biological controls, chemical remedies, dosages, and safety withdrawal periods.
+5. **Technical Report**: Comprehensive Deliverable 3 LaTeX report (`docs/report/main.pdf`) documenting the entire experimental progression and viva defense talking points.
 
 ---

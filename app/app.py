@@ -17,6 +17,11 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+# Local pkgs folder for isolated dependencies (e.g. ultralytics)
+PKGS_DIR = ROOT_DIR / "pkgs"
+if PKGS_DIR.exists() and str(PKGS_DIR) not in sys.path:
+    sys.path.insert(0, str(PKGS_DIR))
+
 from flask import Flask, jsonify, render_template, request
 from PIL import Image, UnidentifiedImageError
 
@@ -27,15 +32,77 @@ from knowledge_base.kb_service import KnowledgeBaseError, TreatmentKB
 SPLITS_DIR = ROOT_DIR / "splits"
 CLASS_NAMES_PATH = SPLITS_DIR / "class_names.json"
 KB_PATH = ROOT_DIR / "knowledge_base/treatments.json"
-CHECKPOINT_PATH = ROOT_DIR / "runs/baseline/best.pt"
+
+CHECKPOINT_PATH = ROOT_DIR / "runs/field_cropped/best.pt"
+if not CHECKPOINT_PATH.is_file():
+    CHECKPOINT_PATH = ROOT_DIR / "runs/baseline/best.pt"
+
+YOLO_CHECKPOINT = ROOT_DIR / "models/yolo/leaf_detector.pt"
+if not YOLO_CHECKPOINT.is_file():
+    YOLO_CHECKPOINT = ROOT_DIR / "runs/yolo/best.pt"
+
 RESULTS_DIR = ROOT_DIR / "results/baseline"
 HISTORY_PATH = RESULTS_DIR / "history.csv"
 TEST_METRICS_PATH = RESULTS_DIR / "test/metrics.json"
 TEST_PER_CLASS_PATH = RESULTS_DIR / "test/per_class.csv"
 SAMPLE_DIRS = [ROOT_DIR / "data/raw/field", ROOT_DIR / "data/raw/plantvillage/color"]
 
-app = Flask(__name__, template_folder=str(ROOT_DIR / "app/templates"))
+app = Flask(
+    __name__,
+    template_folder=str(ROOT_DIR / "app/templates"),
+    static_folder=str(ROOT_DIR / "app/static"),
+)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TWO-STAGE CASCADE: YOLOV8 LEAF DETECTOR (STAGE 1)
+# ─────────────────────────────────────────────────────────────────────────────
+class LeafDetector:
+    """Stage 1 YOLOv8n leaf detector isolating leaf regions from field backgrounds."""
+
+    def __init__(self, weights_path: Path):
+        self.weights_path = weights_path
+        self.model = None
+        self.available = False
+        self._init_model()
+
+    def _init_model(self):
+        if not self.weights_path.is_file():
+            return
+        try:
+            from ultralytics import YOLO
+            self.model = YOLO(str(self.weights_path))
+            self.available = True
+        except Exception:
+            self.model = None
+            self.available = False
+
+    def detect_and_crop(self, pil_img: Image.Image, conf_threshold: float = 0.25, safety_margin: float = 0.05):
+        if not self.available or self.model is None:
+            return None, False, None, None
+        try:
+            results = self.model.predict(source=pil_img, conf=conf_threshold, verbose=False)
+            if not results or len(results[0].boxes) == 0:
+                return None, False, None, None
+            boxes = results[0].boxes
+            best_idx = int(boxes.conf.argmax())
+            best_conf = float(boxes.conf[best_idx].cpu().item())
+            xyxy = boxes.xyxy[best_idx].cpu().numpy().tolist()
+            w, h = pil_img.size
+            x1 = max(0, int(xyxy[0] - w * safety_margin))
+            y1 = max(0, int(xyxy[1] - h * safety_margin))
+            x2 = min(w, int(xyxy[2] + w * safety_margin))
+            y2 = min(h, int(xyxy[3] + h * safety_margin))
+            if (x2 - x1) < 16 or (y2 - y1) < 16:
+                return None, False, None, None
+            cropped = pil_img.crop((x1, y1, x2, y2))
+            return cropped, True, best_conf, [x1, y1, x2, y2]
+        except Exception:
+            return None, False, None, None
+
+
+LEAF_DETECTOR = LeafDetector(YOLO_CHECKPOINT)
 
 
 def load_history_csv():
@@ -224,8 +291,18 @@ def api_predict():
         raise ValueError("Unknown crop filter")
     if TREATMENT_KB is None:
         raise ModelUnavailable("Treatment knowledge base is unavailable; restart after repairing its files")
+
+    # Optional Stage 1 YOLO leaf crop
+    use_yolo = data.get("use_yolo", False) if isinstance(data, dict) else False
+    leaf_crop, leaf_detected, leaf_conf, leaf_bbox = None, False, None, None
+    infer_img = image
+    if use_yolo or LEAF_DETECTOR.available:
+        leaf_crop, leaf_detected, leaf_conf, leaf_bbox = LEAF_DETECTOR.detect_and_crop(image)
+        if leaf_detected and leaf_crop is not None:
+            infer_img = leaf_crop
+
     try:
-        diagnosis = ENGINE.predict(image, filter_crop=crop)
+        diagnosis = ENGINE.predict(infer_img, filter_crop=crop)
         advisory = build_advisory(TREATMENT_KB, diagnosis["predicted_class"], diagnosis["confidence"])
     except KeyError as exc:
         raise ModelUnavailable("Prediction has no verified treatment mapping") from exc
@@ -241,12 +318,23 @@ def api_predict():
     diagnosis["disease_ur"] = URDU_DISEASE_MAP.get(diagnosis["predicted_class"], diagnosis["disease"])
     cam_base64, cam_error = None, None
     try:
-        cam_base64 = pil_to_base64(ENGINE.generate_gradcam(image, diagnosis["predicted_class"], alpha))
+        cam_base64 = pil_to_base64(ENGINE.generate_gradcam(infer_img, diagnosis["predicted_class"], alpha))
     except Exception:
         app.logger.exception("Grad-CAM unavailable")
         cam_error = "Grad-CAM is unavailable for this prediction; no substitute heatmap was generated."
-    return jsonify({**diagnosis, "advisory": advisory, "treatment": advisory["treatment"],
-                    "gradcam_base64": cam_base64, "gradcam_error": cam_error})
+
+    response_payload = {
+        **diagnosis,
+        "advisory": advisory,
+        "treatment": advisory["treatment"],
+        "gradcam_base64": cam_base64,
+        "gradcam_error": cam_error,
+        "pipeline": "Two-Stage Cascade (YOLOv8n + ResNet-50)" if leaf_detected else "ResNet-50",
+        "leaf_detected": leaf_detected,
+        "leaf_conf": leaf_conf,
+        "leaf_bbox": leaf_bbox,
+    }
+    return jsonify(response_payload)
 
 
 @app.route("/api/gradcam", methods=["POST"])
@@ -303,10 +391,19 @@ def api_viva_sample(class_name):
 @app.route("/api/health")
 def api_health():
     ready = ENGINE.ready and TREATMENT_KB is not None
-    return jsonify(status="healthy" if ready else "unavailable", app="PakAgriVision",
-                   framework="Flask 3.x", model="ResNet-50", model_ready=ENGINE.ready,
-                   kb_ready=TREATMENT_KB is not None, num_classes=len(CLASS_NAMES),
-                   device=ENGINE.device, epochs_recorded=len(HISTORY_DATA)), 200 if ready else 503
+    return jsonify(
+        status="healthy" if ready else "unavailable",
+        app="PakAgriVision",
+        framework="Flask 3.x",
+        model="ResNet-50",
+        pipeline="Two-Stage Cascade (YOLOv8n + ResNet-50)" if LEAF_DETECTOR.available else "ResNet-50",
+        yolo_available=LEAF_DETECTOR.available,
+        model_ready=ENGINE.ready,
+        kb_ready=TREATMENT_KB is not None,
+        num_classes=len(CLASS_NAMES),
+        device=ENGINE.device,
+        epochs_recorded=len(HISTORY_DATA),
+    ), 200 if ready else 503
 
 
 if __name__ == "__main__":

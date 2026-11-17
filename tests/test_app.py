@@ -108,3 +108,19 @@ def test_api_predict_with_crop_filter(client, sample_leaf_b64):
     data = response.get_json()
     assert data["crop"] == "Tomato"
 
+
+def test_api_predict_two_stage_cascade(client, sample_leaf_b64):
+    """Test Two-Stage Cascade fields in /api/predict response."""
+    payload = {
+        "image": sample_leaf_b64,
+        "use_yolo": True,
+    }
+    response = client.post("/api/predict", json=payload)
+    assert response.status_code == 200
+    data = response.get_json()
+    assert "pipeline" in data
+    assert "leaf_detected" in data
+    assert isinstance(data["leaf_detected"], bool)
+    assert "leaf_conf" in data
+    assert "leaf_bbox" in data
+

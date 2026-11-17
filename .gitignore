@@ -6,6 +6,7 @@ data/*
 # ---------- Models / checkpoints ----------
 models/*
 !models/.gitkeep
+!models/yolo/.gitkeep
 *.pth
 *.pt
 *.ckpt
@@ -15,6 +16,10 @@ models/*
 *.npy
 *.npz
 *.pkl
+
+# ---------- Local isolated package installs ----------
+pkgs/
+lib/
 
 # ---------- Python ----------
 __pycache__/
