@@ -264,12 +264,7 @@ def unavailable(error):
 
 @app.route("/")
 def index():
-    key_names = ["Tomato___Late_blight", "Tomato___Early_blight", "Potato___Late_blight",
-                 "Corn___Northern_Leaf_Blight", "Corn___Cercospora_leaf_spot Gray_leaf_spot",
-                 "Pepper___bell_Bacterial_spot", "Apple___Apple_scab"]
-    key_classes = [c for c in PER_CLASS_DATA if c["class_name"] in key_names]
-    return render_template("index.html", history=HISTORY_DATA, test_metrics=TEST_METRICS,
-                           per_class=key_classes or PER_CLASS_DATA[:7], all_per_class=PER_CLASS_DATA)
+    return render_template("index.html", history=HISTORY_DATA, test_metrics=TEST_METRICS)
 
 
 @app.route("/api/predict", methods=["POST"])

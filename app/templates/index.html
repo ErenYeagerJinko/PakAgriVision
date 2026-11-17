@@ -2095,8 +2095,6 @@ svg { flex-shrink: 0; }
 <script>
 // RAW SERVER-SIDE DATA INJECTED DIRECTLY FROM results/ CSVs
 const SERVER_HISTORY = {{ (history or []) | tojson }};
-const ALL_PER_CLASS = {{ (all_per_class or []) | tojson }};
-const KEY_PER_CLASS = {{ (per_class or []) | tojson }};
 
 // Urdu crop map for data table rendering
 const URDU_CROP_MAP = {
@@ -2393,13 +2391,6 @@ function updateCropStatus() {
   statusEl.textContent = transMap[selectedCropFilter] || (currentLang === 'ur' ? `صرف منتخب: ${selectedCropFilter}` : `Filtered to: ${selectedCropFilter}`);
 }
 
-function updateToggleAllBtn() {
-  const btn = document.getElementById('btnToggleAllClasses');
-  if (!btn) return;
-  const dict = I18N[currentLang];
-  btn.textContent = showingAllClasses ? dict.btn_view_key : dict.btn_view_all;
-}
-
 function applyLanguage(lang) {
   currentLang = lang;
   const html = document.documentElement;
@@ -2421,14 +2412,6 @@ function applyLanguage(lang) {
 
   // Update dynamic crop status badge
   updateCropStatus();
-
-  // Update table toggle button
-  updateToggleAllBtn();
-
-  // Refresh table if active
-  if (typeof renderTableRows === 'function') {
-    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
-  }
 
   // Update UI diagnostic card texts
   if (latestDiagnosis) {
@@ -2744,20 +2727,20 @@ function renderDiagnosisUI(result) {
 
   // Update Severity Styling
   const banner = document.getElementById('primaryBanner');
-  if (banner) banner.className = 'primary-diagnosis-banner severity-' + result.severity;
+  // The API reports is_healthy only; severity cannot be inferred from a photo,
+  // so any diseased prediction is flagged as "disease detected", never "healthy".
+  const healthy = result.is_healthy === true;
+  if (banner) banner.className = 'primary-diagnosis-banner ' + (healthy ? 'severity-healthy' : 'severity-moderate');
   const badgeText = document.getElementById('resSeverityText');
   const badgeIcon = document.getElementById('resSeverityIcon');
-  
+
   if (badgeText && badgeIcon) {
-    if (result.severity === 'high') {
-      badgeText.textContent = isUr ? 'شدید خطرہ' : 'HIGH RISK';
-      badgeIcon.textContent = '🚨';
-    } else if (result.severity === 'moderate') {
-      badgeText.textContent = isUr ? 'درمیانہ خطرہ' : 'MODERATE';
-      badgeIcon.textContent = '⚠️';
-    } else {
+    if (healthy) {
       badgeText.textContent = isUr ? 'تندرست' : 'HEALTHY';
       badgeIcon.textContent = '✅';
+    } else {
+      badgeText.textContent = isUr ? 'بیماری کی نشاندہی' : 'DISEASE DETECTED';
+      badgeIcon.textContent = '⚠️';
     }
   }
 
@@ -3228,39 +3211,6 @@ svgWrapper.addEventListener('mouseleave', () => {
   tooltip.style.display = 'none';
 });
 
-// 10. PER-CLASS CSV TABLE TOGGLE (KEY CLASSES vs ALL 38 CLASSES)
-let showingAllClasses = false;
-const btnToggleAll = document.getElementById('btnToggleAllClasses');
-const tableBody = document.getElementById('perClassTableBody');
-
-function renderTableRows(dataset) {
-  if (!tableBody) return;
-  tableBody.innerHTML = dataset.map(row => {
-    const cropName = currentLang === 'ur' ? (URDU_CROP_MAP[row.crop] || row.crop) : row.crop;
-    return `
-    <tr>
-      <td><strong>${cropName}</strong></td>
-      <td>${row.disease}</td>
-      <td class="ltr-only">${row.support}</td>
-      <td class="ltr-only">${row.precision.toFixed(3)}</td>
-      <td class="ltr-only">${row.recall.toFixed(3)}</td>
-      <td>
-        <strong class="ltr-only" style="color: ${row.f1 >= 0.98 ? 'var(--brand-field)' : 'var(--brand-wheat)'};">
-          ${row.f1.toFixed(3)}
-        </strong>
-      </td>
-    </tr>
-  `;
-  }).join('');
-}
-
-if (btnToggleAll) {
-  btnToggleAll.addEventListener('click', () => {
-    showingAllClasses = !showingAllClasses;
-    renderTableRows(showingAllClasses ? ALL_PER_CLASS : KEY_PER_CLASS);
-    updateToggleAllBtn();
-  });
-}
 </script>
 </body>
 </html>
