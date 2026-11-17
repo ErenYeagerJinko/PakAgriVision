@@ -10,7 +10,7 @@ model:
 data:
   splits_dir: "splits"
   train_split: "splits/field_full_train.csv"
-  val_split: "splits/field_test.csv"
+  val_split: "splits/val.csv"
   test_split: "splits/field_test.csv"
   img_size: 224
   batch_size: 32

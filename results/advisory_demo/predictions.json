@@ -1,0 +1,193 @@
+{
+  "checkpoint": "runs/baseline/best.pt",
+  "checkpoint_sha256": "316f8b9c566e2f05d7bb7b57e2945a786529b9479ae96efd15e64dbcbaf50a52",
+  "selection": "First manifest row for each fixed class/domain; no correctness filtering",
+  "device": "cpu",
+  "examples": [
+    {
+      "split": "val",
+      "path": "data/raw/plantvillage/color/Tomato___Late_blight/image (100).JPG",
+      "reference_label": "Tomato___Late_blight",
+      "prediction": {
+        "predicted_class": "Tomato___Late_blight",
+        "crop": "Tomato",
+        "disease": "Late Blight",
+        "confidence": 99.82261061668396,
+        "is_healthy": false,
+        "top_3": [
+          {
+            "class": "Tomato___Late_blight",
+            "crop": "Tomato",
+            "disease": "Late Blight",
+            "confidence": 99.82261061668396
+          },
+          {
+            "class": "Potato___Late_blight",
+            "crop": "Potato",
+            "disease": "Late Blight",
+            "confidence": 0.115327094681561
+          },
+          {
+            "class": "Pepper___healthy",
+            "crop": "Pepper",
+            "disease": "Healthy",
+            "confidence": 0.033163573243655264
+          }
+        ],
+        "latency_ms": 175.68
+      },
+      "advisory": {
+        "status": "disease_detected",
+        "low_confidence": false,
+        "confidence_threshold": 60.0,
+        "chemical_advice_allowed": true,
+        "warning": "",
+        "warning_ur": "",
+        "disclaimer": "Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.",
+        "dosage_notice": "No universal dose is specified by this service. Use only products registered for the crop and disease; follow the local product label for concentration, rate, protective equipment, re-entry interval and pre-harvest interval. Consult a local agronomist.",
+        "knowledge_language": "en",
+        "treatment": {
+          "crop": "Tomato",
+          "disease": "Late blight",
+          "is_healthy": false,
+          "cause": "Oomycete Phytophthora infestans",
+          "symptoms": "Large water-soaked grey-green lesions that turn brown/black quickly; white sporulation on leaf undersides in humid weather; firm brown fruit lesions.",
+          "chemical_treatment": "Apply late-blight\u2013labeled fungicides promptly when risk is high; protectants alone may be insufficient under severe pressure (follow the product label and local alerts).",
+          "organic_treatment": "Copper products labeled for late blight plus immediate removal of infected plants; coverage must be thorough.",
+          "immediate_action": "Bag and destroy infected plants (do not compost); notify nearby growers if outbreaks are regional.",
+          "prevention": "Resistant cultivars where available, night-time leaf wetness reduction, and monitoring of late-blight forecast systems.",
+          "severity_guidance": "Any confirmed late blight in humid weather is high severity \u2014 act the same day to limit spread.",
+          "sources": [
+            "University of Minnesota Extension \u2014 Late Blight of Tomato, https://extension.umn.edu/diseases/late-blight, accessed 2026-10-11",
+            "Penn State Extension \u2014 Scouting and Identifying Tomato Diseases, https://extension.psu.edu/scouting-and-identifying-tomato-diseases, accessed 2026-10-11"
+          ],
+          "last_reviewed": "2026-10-11",
+          "reviewed_by": "Babar"
+        }
+      }
+    },
+    {
+      "split": "val",
+      "path": "data/raw/plantvillage/color/Tomato___healthy/image (100).JPG",
+      "reference_label": "Tomato___healthy",
+      "prediction": {
+        "predicted_class": "Tomato___healthy",
+        "crop": "Tomato",
+        "disease": "Healthy",
+        "confidence": 100.0,
+        "is_healthy": true,
+        "top_3": [
+          {
+            "class": "Tomato___healthy",
+            "crop": "Tomato",
+            "disease": "Healthy",
+            "confidence": 100.0
+          },
+          {
+            "class": "Apple___healthy",
+            "crop": "Apple",
+            "disease": "Healthy",
+            "confidence": 1.5907300365824995e-06
+          },
+          {
+            "class": "Soybean___healthy",
+            "crop": "Soybean",
+            "disease": "Healthy",
+            "confidence": 4.850416512880429e-07
+          }
+        ],
+        "latency_ms": 181.98
+      },
+      "advisory": {
+        "status": "healthy",
+        "low_confidence": false,
+        "confidence_threshold": 60.0,
+        "chemical_advice_allowed": false,
+        "warning": "",
+        "warning_ur": "",
+        "disclaimer": "Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.",
+        "dosage_notice": "No universal dose is specified by this service. Use only products registered for the crop and disease; follow the local product label for concentration, rate, protective equipment, re-entry interval and pre-harvest interval. Consult a local agronomist.",
+        "knowledge_language": "en",
+        "treatment": {
+          "crop": "Tomato",
+          "disease": "Healthy",
+          "is_healthy": true,
+          "cause": "No pathogen; plant shows normal growth.",
+          "symptoms": "Even green foliage without spots, mold, mosaic, curling, or stippling; normal flowering and fruit set.",
+          "chemical_treatment": "No disease-control chemicals indicated by this prediction. Continue monitoring.",
+          "organic_treatment": "No disease-control products indicated by this prediction. Continue cultural best practices.",
+          "immediate_action": "Continue weekly scouting of lower leaves and leaf undersides.",
+          "prevention": "Good airflow, drip irrigation, rotation, and resistant cultivars matched to local disease pressure.",
+          "severity_guidance": "No disease action required.",
+          "sources": [
+            "Clemson HGIC \u2014 Tomato Diseases & Disorders, https://hgic.clemson.edu/factsheet/tomato-diseases-disorders/, accessed 2026-10-11"
+          ],
+          "last_reviewed": "2026-10-11",
+          "reviewed_by": "Babar"
+        }
+      }
+    },
+    {
+      "split": "field_test",
+      "path": "data/raw/field/Tomato___Late_blight/plantdoc_tomato_late_blight_002.jpg",
+      "reference_label": "Tomato___Late_blight",
+      "prediction": {
+        "predicted_class": "Tomato___Late_blight",
+        "crop": "Tomato",
+        "disease": "Late Blight",
+        "confidence": 80.49609065055847,
+        "is_healthy": false,
+        "top_3": [
+          {
+            "class": "Tomato___Late_blight",
+            "crop": "Tomato",
+            "disease": "Late Blight",
+            "confidence": 80.49609065055847
+          },
+          {
+            "class": "Pepper___bell_Bacterial_spot",
+            "crop": "Pepper",
+            "disease": "Bell Bacterial Spot",
+            "confidence": 17.016366124153137
+          },
+          {
+            "class": "Pepper___healthy",
+            "crop": "Pepper",
+            "disease": "Healthy",
+            "confidence": 1.6494089737534523
+          }
+        ],
+        "latency_ms": 185.94
+      },
+      "advisory": {
+        "status": "disease_detected",
+        "low_confidence": false,
+        "confidence_threshold": 60.0,
+        "chemical_advice_allowed": true,
+        "warning": "",
+        "warning_ur": "",
+        "disclaimer": "Decision support only. Consult a local agronomist before applying any product. Always follow product labels and local regulations.",
+        "dosage_notice": "No universal dose is specified by this service. Use only products registered for the crop and disease; follow the local product label for concentration, rate, protective equipment, re-entry interval and pre-harvest interval. Consult a local agronomist.",
+        "knowledge_language": "en",
+        "treatment": {
+          "crop": "Tomato",
+          "disease": "Late blight",
+          "is_healthy": false,
+          "cause": "Oomycete Phytophthora infestans",
+          "symptoms": "Large water-soaked grey-green lesions that turn brown/black quickly; white sporulation on leaf undersides in humid weather; firm brown fruit lesions.",
+          "chemical_treatment": "Apply late-blight\u2013labeled fungicides promptly when risk is high; protectants alone may be insufficient under severe pressure (follow the product label and local alerts).",
+          "organic_treatment": "Copper products labeled for late blight plus immediate removal of infected plants; coverage must be thorough.",
+          "immediate_action": "Bag and destroy infected plants (do not compost); notify nearby growers if outbreaks are regional.",
+          "prevention": "Resistant cultivars where available, night-time leaf wetness reduction, and monitoring of late-blight forecast systems.",
+          "severity_guidance": "Any confirmed late blight in humid weather is high severity \u2014 act the same day to limit spread.",
+          "sources": [
+            "University of Minnesota Extension \u2014 Late Blight of Tomato, https://extension.umn.edu/diseases/late-blight, accessed 2026-10-11",
+            "Penn State Extension \u2014 Scouting and Identifying Tomato Diseases, https://extension.psu.edu/scouting-and-identifying-tomato-diseases, accessed 2026-10-11"
+          ],
+          "last_reviewed": "2026-10-11",
+          "reviewed_by": "Babar"
+        }
+      }
+    }
+  ]
+}

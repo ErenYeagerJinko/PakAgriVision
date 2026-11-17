@@ -18,7 +18,7 @@ The deep learning pipeline is implemented using \textbf{PyTorch 2.x} and \textbf
 \subsection{Network Architecture \& Custom Classification Head}
 \label{subsec:architecture}
 
-Agricultural leaf disease detection presents unique computer vision challenges: distinguishing fine-grained textural symptoms (e.g., fungal rust pustules vs.\ bacterial leaf spots) while ignoring non-diagnostic background variations. We implement a modular architecture centered on \textbf{ResNet-50} as our primary deep feature extractor, with \textbf{EfficientNet-B0} available as a lightweight alternative for comparative benchmarking.
+Agricultural leaf disease detection presents unique computer vision challenges: distinguishing fine-grained textural symptoms (e.g., fungal rust pustules vs.\ bacterial leaf spots) while ignoring non-diagnostic background variations. We implement a modular architecture centered on \textbf{ResNet-50}~\cite{resnet} as our primary deep feature extractor, with \textbf{EfficientNet-B0} available as a lightweight alternative for comparative benchmarking.
 
 \subsubsection{Backbone Feature Extractor}
 ResNet-50 utilizes residual learning with bottleneck blocks across four hierarchical stages. Each residual unit computes:
@@ -90,7 +90,7 @@ where $w_y$ is the inverse frequency class weight for true class $y$ computed st
 with smoothing parameter $\alpha \in [0.0, 0.10]$. Label smoothing prevents the model from generating overconfident, saturated logit predictions, significantly improving post-softmax calibration on uncertain field photographs.
 
 \subsubsection{AdamW Optimizer \& Decoupled Weight Decay}
-We select \textbf{AdamW} as our primary optimizer over standard SGD with momentum. AdamW decouples weight decay from the moving average gradient updates:
+We select \textbf{AdamW}~\cite{adamw} as our primary optimizer over standard SGD with momentum. AdamW decouples weight decay from the moving average gradient updates:
 \begin{equation}
     \theta_{t+1} = \theta_t - \eta_t \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} - \eta_t \lambda \theta_t
 \end{equation}
@@ -101,7 +101,7 @@ Directly fine-tuning all layers simultaneously with a randomly initialized class
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{Stage 1: Head Warm-up (Epoch 1):} All backbone convolutional parameters are frozen via \texttt{set\_backbone\_trainable(model, False)} such that $\nabla_{\theta_{\text{backbone}}} \mathcal{L} = 0$. Only the randomly initialized weights of the custom head are optimized for one epoch with a linear learning rate warmup factor from $0.1 \times \eta_{\max}$ to $\eta_{\max} = 3 \times 10^{-4}$.
-    \item \textbf{Stage 2: Full Fine-Tuning (Epochs 2--15):} The backbone is unfrozen (\texttt{set\_backbone\_trainable(model, True)}). All $23.5$\,M parameters are jointly fine-tuned using a \textbf{Cosine Annealing Schedule}:
+    \item \textbf{Stage 2: Full Fine-Tuning (Epochs 2--15):} The backbone is unfrozen (\texttt{set\_backbone\_trainable(model, True)}). All $23.5$\,M parameters are jointly fine-tuned using a \textbf{Cosine Annealing Schedule}~\cite{cosine_annealing}:
     \begin{equation}
         \eta_t = \eta_{\min} + \frac{1}{2}(\eta_{\max} - \eta_{\min})\left(1 + \cos\left(\frac{t - t_{\text{warmup}}}{T_{\text{max}} - t_{\text{warmup}}}\pi\right)\right)
     \end{equation}

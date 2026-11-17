@@ -335,7 +335,7 @@ To overcome these limitations, we conducted a 5-stage experimental progression o
 
 \paragraph{Iteration 4 $\rightarrow$ 5: Two-Stage Cascade Architecture (+14.0\% Top-1, 90.32\% Top-3).} In real farm deployment, users photograph unconstrained scenes. To bridge the gap between whole-scene user uploads and our leaf-cropped classifier, we engineered a Two-Stage Cascade:
 \begin{enumerate}
-    \item \textbf{Stage 1 (YOLOv8n Leaf Detector):} A lightweight YOLOv8n detector (\texttt{models/yolo/leaf\_detector.pt}, 6.5\,MB) trained on PlantDoc bounding box annotations. On the 93 held-out field test images, it achieved a \textbf{100.0\% leaf detection rate} (93/93 images detected with confidence $>0.25$).
+    \item \textbf{Stage 1 (YOLOv8n Leaf Detector):} A lightweight YOLOv8n detector~\cite{yolov8} (\texttt{models/yolo/leaf\_detector.pt}, 6.5\,MB) trained on PlantDoc bounding box annotations. On the 93 held-out field test images, it achieved a \textbf{100.0\% leaf detection rate} (93/93 images detected with confidence $>0.25$).
     \item \textbf{Stage 2 (Leaf Crop Extraction):} The highest-confidence bounding box is extracted with a 5\% safety margin, automatically discarding external background clutter (soil, hands, sky).
     \item \textbf{Stage 3 (ResNet-50 Classification):} The cropped leaf is processed by \texttt{runs/field\_cropped/best.pt}.
 \end{enumerate}
