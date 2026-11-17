@@ -124,3 +124,19 @@ def test_api_predict_two_stage_cascade(client, sample_leaf_b64):
     assert "leaf_conf" in data
     assert "leaf_bbox" in data
 
+
+
+def test_dashboard_badge_uses_is_healthy_not_missing_severity(client):
+    """The API never returns `severity`; the badge must key off `is_healthy`
+    so diseased predictions are never labelled HEALTHY."""
+    html = client.get("/").get_data(as_text=True)
+    assert "result.is_healthy === true" in html
+    assert "result.severity" not in html
+    assert "DISEASE DETECTED" in html
+
+
+def test_dashboard_has_no_per_class_table(client):
+    """The key-plants per-class CSV table was removed from the UI."""
+    html = client.get("/").get_data(as_text=True)
+    assert "perClassTableBody" not in html
+    assert "ALL_PER_CLASS" not in html
